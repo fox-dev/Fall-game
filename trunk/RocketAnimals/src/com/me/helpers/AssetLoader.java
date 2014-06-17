@@ -36,7 +36,7 @@ public class AssetLoader {
 	
 	public static TextureRegion rocketLeft, rocket, rocketRight, meteor, hotAirBalloon, hotAirBalloon_flipped, 
 	 							jetPlane, jetPlane_flipped, rocketFire1, rocketFire2, rocketFire3, gameOver,
-	 							skyDiver, helicopter, helicopterL, chopperBlade1, chopperBlade2, chopperBlade3;
+	 							skyDiver, helicopter, helicopterL, chopperBlade1, chopperBlade2, chopperBlade3, crate;
 	
 	public static Animation rocketAnimation, rocketFireAnimation, chopperAnimation;
 	
@@ -159,6 +159,10 @@ public class AssetLoader {
 		TextureRegion[] copterSpin = {chopperBlade1, chopperBlade2, chopperBlade3};
 		chopperAnimation = new Animation(0.05f, copterSpin);
 		chopperAnimation.setPlayMode(Animation.PlayMode.LOOP);
+		
+		//crate texture
+		crate = new TextureRegion(texture, 263, 13, 38, 38);
+		crate.flip(false, true);
 		
 		// Load audio
 		hit1 = Gdx.audio.newSound(Gdx.files.internal("data/hit1.wav"));

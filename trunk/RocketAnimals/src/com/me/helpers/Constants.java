@@ -51,5 +51,4 @@ public class Constants {
 	public static final int BALLOON_MIN_Y_SPEED = 100;
 	public static final int BALLOON_MAX_Y_SPEED = 300;
 	
-	
 }

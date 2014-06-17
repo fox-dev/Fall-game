@@ -56,7 +56,7 @@ public class GameRenderer {
 	// Game sprites;
 	TextureRegion rocketLeft, rocketMid, rocketRight, sMeteor, hotAirBalloon, hotAirBalloon_flipped, 
 	 			jetPlane, jetPlane_flipped, fire1, fire2, fire3, gameOver, skyDiver,helicopter, helicopterL, 
-	 			chopperBlade1, chopperBlade2, chopperBlade3;
+	 			chopperBlade1, chopperBlade2, chopperBlade3, crate;
 	
 	TextureRegion bullets;
 	
@@ -182,22 +182,6 @@ public class GameRenderer {
         	//AssetLoader.shadow.draw(spriteBatch, "Game Over", 25, 56);
            // AssetLoader.font.draw(spriteBatch, "Game Over", 24, 55);
         }
-
-        // Draw shadow first
-        /*if(!world.isGameOver()){
-        	AssetLoader.shadow.draw(spriteBatch, "" + world.getScore(), (136 / 2)
-                - (3 * score.length()), 12);
-        	// Draw text
-        	AssetLoader.font.draw(spriteBatch, "" + world.getScore(), (136 / 2)
-                - (3 * score.length() - 1), 11);
-        }
-        else{
-        	AssetLoader.shadow.draw(spriteBatch, "" + world.getFinalScore(), (136 / 2)
-                - (3 * score.length()), 12);
-            // Draw text
-            AssetLoader.font.draw(spriteBatch, "" + world.getFinalScore(), (136 / 2)
-                - (3 * score.length() - 1), 11);
-        }*/
         
         // Draw Game Over
         
@@ -252,6 +236,10 @@ public class GameRenderer {
 				// spriteBatch.draw(sMeteor, items.getX(), items.getY(), items.getWidth(), items.getHeight());
 				spriteBatch.draw(sMeteor, items.getX(), items.getY(), items.getMiddleX(), items.getMiddleY(), items.getWidth(), items.getHeight(), 1f, 1f, items.getRotation());
 			}
+			else if (items instanceof Crate)
+			{
+				spriteBatch.draw(crate, items.getX(), items.getY(), items.getMiddleX(), items.getMiddleY(), items.getWidth(), items.getHeight(), 1f, 1f, items.getRotation());
+			}
 			else if(items instanceof HotAirBalloon)
 			{
 				if (items.getDirection().equals(DIRECTION.DOWN_RIGHT))
@@ -286,11 +274,11 @@ public class GameRenderer {
 			{
 				if(items.getDirection().equals(DIRECTION.DOWN_LEFT))
 				{
-					spriteBatch.draw(chopperAnimation.getKeyFrame(runTime), items.getX(), items.getY() - 15, 86, 15);
+					spriteBatch.draw(chopperAnimation.getKeyFrame(runTime), items.getX() - 5, items.getY() - 15, 86, 15);
 					spriteBatch.draw(helicopter, items.getX(), items.getY(), items.getWidth(), items.getHeight());
 				}
 				else{
-					spriteBatch.draw(chopperAnimation.getKeyFrame(runTime), items.getX() + 17, items.getY() - 15, 86, 15);
+					spriteBatch.draw(chopperAnimation.getKeyFrame(runTime), items.getX(), items.getY() - 15, 86, 15);
 					spriteBatch.draw(helicopterL, items.getX(), items.getY(), items.getWidth(), items.getHeight());
 				}
 			}
@@ -341,6 +329,8 @@ public class GameRenderer {
 		helicopter = AssetLoader.helicopter;
 		helicopterL = AssetLoader.helicopterL;
 		chopperAnimation = AssetLoader.chopperAnimation;
+		crate = AssetLoader.crate;
+		
 		
 		gameOver = AssetLoader.gameOver;
 		

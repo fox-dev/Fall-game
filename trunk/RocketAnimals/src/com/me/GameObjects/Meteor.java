@@ -12,14 +12,15 @@ public class Meteor extends AbstractObstacle{
 		super(x, y, width, height, scrollSpeed);
 
 		rotation = 0;
-		rotateNum = (int)(Math.random() * Constants.METEOR_MAX_ROTATE);
+		rotateNum = randInt(1, 15);
+		collisionCirc = new Circle(position, (width + height) / 4);
 	}
 	
 	public Meteor(float x, float y, int width, int height, float scrollSpeed, float xSpeed, Constants.DIRECTION direction) {
 		super(x, y, width, height, scrollSpeed, xSpeed, direction);
 		
 		rotation = 0;
-		rotateNum = (int)(Math.random() * Constants.METEOR_MAX_ROTATE);
+		rotateNum = randInt(1, 15);
 		
 		collisionCirc = new Circle(position, (width + height) / 4);
 	}

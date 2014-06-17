@@ -31,7 +31,6 @@ public class ScrollableHandler
 	private Rocket playerRocket;
 	
 	
-	
 	public ScrollableHandler()
 	{	
 		
@@ -51,9 +50,6 @@ public class ScrollableHandler
 		dodged = e.getDodged();
 		
 	}
-	
-
-	
 	
 	public void scrollBackgroundUpdate(float delta){
 		bg.update(delta);

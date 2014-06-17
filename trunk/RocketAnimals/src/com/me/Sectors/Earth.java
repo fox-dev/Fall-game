@@ -19,7 +19,6 @@ import com.me.GameObjects.*;
 
 public class Earth extends Sector
 {
-	
 
 	int numObstacles = 0;
 	private Background bg; //temp
@@ -203,13 +202,13 @@ public class Earth extends Sector
 		//System.out.println(eventInt);
 		
 		//System.out.println("R = " + numObstacles);
-		double rMeteor = Math.random();
+		double rCrate = Math.random();
 		//Chance of Meteors 4%
-		if(rMeteor < 0.06 && numObstacles < 8) 
+		if(rCrate < 0.06 && numObstacles < 8) 
 		{	
 			// Add objects with down direction first
 			                        // (x position, y position, width, height, ySpeed, xSpeed, direction)
-			obstacleList.add(new Meteor(xDrop - 15, yDrop, 30, 30, randInt(Constants.METEOR_MIN_SPEED_Y/2, Constants.METEOR_MAX_SPEED_Y), 0f, Constants.DIRECTION.DOWN));
+			obstacleList.add(new Crate(xDrop - 15, yDrop, 30, 30, randInt(Constants.METEOR_MIN_SPEED_Y/2, Constants.METEOR_MAX_SPEED_Y), 0f, Constants.DIRECTION.DOWN));
 			numObstacles++;
 			spawnCount++;
 	
@@ -246,37 +245,34 @@ public class Earth extends Sector
 			spawning = false;	
 		}
 		
-		
 	}
-	
-	
+
 	
 	@Override
 	public void addGenerics(float delta){
 		
 		int eventInt = randInt(0,10);
 		//System.out.println(eventInt);
-		double rMeteor = Math.random();
-		if(rMeteor < 0.04 && numObstacles < OBSTACLE_LIMIT) 
+		double rCrate = Math.random();
+		if(rCrate < 0.04 && numObstacles < OBSTACLE_LIMIT) 
 		{	
 			// Add objects with down direction first
 			                        // (x position, y position, width, height, ySpeed, xSpeed, direction)
-			obstacleList.add(new Meteor(r.nextInt(305), -30, 30, 30, randInt(Constants.METEOR_MIN_SPEED_Y, Constants.METEOR_MAX_SPEED_Y), 0f, Constants.DIRECTION.DOWN));
+			obstacleList.add(new Crate(r.nextInt(305), -30, 30, 30, randInt(Constants.METEOR_MIN_SPEED_Y, Constants.METEOR_MAX_SPEED_Y), 0f, Constants.DIRECTION.DOWN));
 			numObstacles++;
 	
 		}
 		
 		double rPlane = Math.random();
 		//Chance of Planes .4%
-		if(rPlane < 0.04 && numObstacles < OBSTACLE_LIMIT && runTime >= SECOND_WAVE_TIME
+		if(rPlane < 0.05 && numObstacles < OBSTACLE_LIMIT && runTime >= SECOND_WAVE_TIME
 			)
 		{
-			flipObjectX = ((int)(rPlane * 50)) == 1 ? false : true; // Should alternate often
 			
-			if (flipObjectX) 
+			if (Math.random() < .5) 
 			{
 				if(PLANE_EVENT == false && eventInt == 9){
-					obstacleList.add(new JetPlane(-100, randInt(0,100), 100, 50, randInt(Constants.PLANE_MIN_Y_SPEED, Constants.PLANE_MAX_Y_SPEED), randInt(Constants.PLANE_MIN_X_SPEED, Constants.PLANE_MAX_X_SPEED), Constants.DIRECTION.DOWN_RIGHT));
+					obstacleList.add(new JetPlane(-100, randInt(0,100), 125, 70, randInt(Constants.PLANE_MIN_Y_SPEED, Constants.PLANE_MAX_Y_SPEED), randInt(Constants.PLANE_MIN_X_SPEED, Constants.PLANE_MAX_X_SPEED), Constants.DIRECTION.DOWN_RIGHT));
 					numObstacles++;
 					PLANE_EVENT = true;
 					System.out.println(PLANE_EVENT);
@@ -286,7 +282,7 @@ public class Earth extends Sector
 			{
 				if(PLANE_EVENT == false && eventInt == 9)
 				{
-					obstacleList.add(new JetPlane(320, randInt(0,100), 100, 50, randInt(Constants.PLANE_MIN_Y_SPEED, Constants.PLANE_MAX_Y_SPEED), randInt(Constants.PLANE_MIN_X_SPEED, Constants.PLANE_MAX_X_SPEED), Constants.DIRECTION.DOWN_LEFT));
+					obstacleList.add(new JetPlane(320, randInt(0,100), 125, 70, randInt(Constants.PLANE_MIN_Y_SPEED, Constants.PLANE_MAX_Y_SPEED), randInt(Constants.PLANE_MIN_X_SPEED, Constants.PLANE_MAX_X_SPEED), Constants.DIRECTION.DOWN_LEFT));
 					numObstacles++;
 					PLANE_EVENT = true;
 					System.out.println(PLANE_EVENT);
@@ -299,9 +295,8 @@ public class Earth extends Sector
 		//Chance of Hot Air Balloons 4%
 		if(rHotAirBalloon < 0.04 && numObstacles < OBSTACLE_LIMIT && runTime >= FIRST_WAVE_TIME)
 		{
-			boolean flipObjectX2 = ((int)(rHotAirBalloon * 50)) == 1 ? false : true; // Should alternate often
 			
-			if (flipObjectX2) 
+			if (Math.random() < .5) 
 			{
 				if(runTime >= 0 && runTime <= 100 && (eventInt == 1 ||  eventInt == 5 || eventInt == 7) )
 				{
@@ -321,9 +316,8 @@ public class Earth extends Sector
 		double rSkydiver = Math.random();
 		if (rSkydiver > 0.95 && numObstacles < OBSTACLE_LIMIT && runTime >= SECOND_WAVE_TIME) 
 		{
-			boolean flipObjectX3 = ((int)(rSkydiver * 50)) == 1 ? false : true;
 			
-			if (flipObjectX3) 
+			if (Math.random() < .5) 
 			{
 				obstacleList.add(new ParaTroop(randInt(0,Constants.TRUE_WIDTH), -30, 30, 30, randInt(150,250), 25, Constants.DIRECTION.DOWN_RIGHT));
 				numObstacles++;
@@ -339,16 +333,15 @@ public class Earth extends Sector
 		double rCopter = Math.random();
 		if(rCopter < 0.04 && numObstacles < OBSTACLE_LIMIT && runTime >= SECOND_WAVE_TIME)
 		{
-			boolean flipObjectX4 = ((int)(rCopter * 50)) == 1 ? false : true; // Should alternate often
 			
-			if (flipObjectX4) 
+			if (Math.random() < .5) 
 			{
-				obstacleList.add(new Helicopter(r.nextInt(305), -30, 101, 52, randInt(100, 250), randInt(25, 75), Constants.DIRECTION.DOWN_RIGHT));
+				obstacleList.add(new Helicopter(r.nextInt(305), -30, 75, 30, randInt(100, 250), randInt(25, 75), Constants.DIRECTION.DOWN_RIGHT));
 				numObstacles++;
 			} 
 			else 
 			{
-				obstacleList.add(new Helicopter(r.nextInt(305), -30, 101, 52, randInt(100, 250), randInt(25, 75), Constants.DIRECTION.DOWN_LEFT));
+				obstacleList.add(new Helicopter(r.nextInt(305), -30, 75, 30, randInt(100, 250), randInt(25, 75), Constants.DIRECTION.DOWN_LEFT));
 				numObstacles++;
 			}
 		}
@@ -356,8 +349,8 @@ public class Earth extends Sector
 	
 	//Remove all objects when restarting game
 	@Override
-	public void resetObjects(){
-		
+	public void resetObjects()
+	{
 		
 		numObstacles = 0;
 				

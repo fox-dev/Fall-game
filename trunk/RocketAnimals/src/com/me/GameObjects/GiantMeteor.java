@@ -3,11 +3,11 @@ package com.me.GameObjects;
 import com.badlogic.gdx.math.Circle;
 import com.me.helpers.Constants;
 
-public class Meteor extends AbstractObstacle{
+public class GiantMeteor extends AbstractObstacle{
 
 	private int rotateNum;
 	
-	public Meteor(float x, float y, int width, int height, float scrollSpeed, boolean flag) {
+	public GiantMeteor(float x, float y, int width, int height, float scrollSpeed, boolean flag) {
 		
 		super(x, y, width, height, scrollSpeed);
 
@@ -16,7 +16,7 @@ public class Meteor extends AbstractObstacle{
 		collisionCirc = new Circle(position, (width + height) / 4);
 	}
 	
-	public Meteor(float x, float y, int width, int height, float scrollSpeed) {
+	public GiantMeteor(float x, float y, int width, int height, float scrollSpeed) {
 		
 		super(x, y, width, height, scrollSpeed);
 
@@ -25,7 +25,7 @@ public class Meteor extends AbstractObstacle{
 		collisionCirc = new Circle(position, (width + height) / 4);
 	}
 	
-	public Meteor(float x, float y, int width, int height, float scrollSpeed, float xSpeed, Constants.DIRECTION direction) {
+	public GiantMeteor(float x, float y, int width, int height, float scrollSpeed, float xSpeed, Constants.DIRECTION direction) {
 		super(x, y, width, height, scrollSpeed, xSpeed, direction);
 		
 		rotation = 0;

@@ -2,7 +2,6 @@ package com.me.Sectors;
 
 import java.util.Random;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.me.GameObjects.AbstractObstacle;
 import com.me.GameObjects.Alien;
@@ -11,11 +10,9 @@ import com.me.GameObjects.CargoPlane;
 import com.me.GameObjects.Helicopter;
 import com.me.GameObjects.HotAirBalloon;
 import com.me.GameObjects.JetPlane;
-import com.me.GameObjects.Meteor;
 import com.me.GameObjects.ParaTroop;
 import com.me.GameObjects.Projectile;
 import com.me.GameObjects.Rocket;
-import com.me.helpers.AssetLoader;
 import com.me.helpers.Constants;
 import com.me.GameObjects.*;
 
@@ -25,7 +22,7 @@ public class Earth extends Sector
 	int numObstacles = 0;
 
 	
-	private float runTime = 0;
+	private float runTime = 40;
 	
 	//EventFlags with default - false
 	private boolean PLANE_EVENT = false;
@@ -70,9 +67,12 @@ public class Earth extends Sector
 			addGenerics(delta);
 		}
 		
+		/*
 		if(runTime >= 7 && CARGOPLANE_EVENT_COUNT == 0){
 			initEvent_1(delta);
 		}
+		*/
+		
 		
 		if(runTime >= 30 && ALIEN_EVENT_COUNT == 0){
 			initEvent_2(delta);
@@ -90,7 +90,7 @@ public class Earth extends Sector
 
             if((o instanceof Alien) && doneFiring == true){
                     o.setVelocity(0, 80);  
-                    eventsFinished = true;
+                    
             }
             
             if((o instanceof CargoPlane) && doneSpawning == true){
@@ -121,6 +121,7 @@ public class Earth extends Sector
 					ALIEN_EVENT = false;
 					ALIEN_EVENT_COUNT++;
 					bulletCount = 0;
+					eventsFinished = true;
 					
 				}
 				if(o instanceof CargoPlane){

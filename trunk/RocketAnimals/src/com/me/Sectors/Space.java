@@ -3,6 +3,7 @@ package com.me.Sectors;
 import com.badlogic.gdx.utils.Array;
 import com.me.GameObjects.AbstractObstacle;
 import com.me.GameObjects.Background;
+import com.me.GameObjects.GiantMeteor;
 import com.me.GameObjects.Meteor;
 import com.me.GameObjects.Rocket;
 import com.me.helpers.AssetLoader;
@@ -13,7 +14,10 @@ public class Space extends Sector{
 	int numObstacles = 0;
 
 	
-	private float runTime = 0;
+
+	boolean METEOR_EVENT = false;
+	
+	private float runTime = 40;
 
 	public Space(Array<AbstractObstacle> myList, Rocket p) {
 		super(myList, p);
@@ -30,7 +34,12 @@ public class Space extends Sector{
 	@Override
 	public void update(float delta){
 		runTime += delta;
-		addGenerics(delta);
+		if(METEOR_EVENT == false){
+			addGenerics(delta);
+		}
+		if(runTime >= 5){
+			initEvent_1(delta);
+		}
 		
 		iterator = obstacleList.iterator();
 		while(iterator.hasNext())
@@ -62,6 +71,15 @@ public class Space extends Sector{
 			}
 			
 		}
+	}
+	
+	@Override
+	public void initEvent_1(float delta){
+		if(METEOR_EVENT == false){
+			METEOR_EVENT = true;
+			obstacleList.add(new GiantMeteor(Constants.TRUE_WIDTH/2 - 150, -300, 300, 300, 15, false));
+		}
+		
 	}
 	
 	@Override

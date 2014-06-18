@@ -63,7 +63,7 @@ public class AssetLoader {
 		texture2.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		
 		space = new Texture(Gdx.files.internal("data/stars.png"));
-		texture2.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		space.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		
 		//Logo Texture
 		logoTexture = new Texture(Gdx.files.internal("data/logo.png"));

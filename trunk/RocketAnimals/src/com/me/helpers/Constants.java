@@ -22,7 +22,7 @@ public class Constants {
 	public static final int OBSTACLE_MAX_GLIDE_SPEED_Y = 80;
 	
 	// Player constants
-	public static final int ROCKET_VELOCITY = 200;
+	public static final int ROCKET_VELOCITY = 300;
 	public static final int ROCKET_WIDTH = 30;
 	public static final int ROCKET_HEIGHT = 30;
 	public static final int ROCKET_STARTING_X = (TRUE_WIDTH / 2) - (ROCKET_WIDTH / 2); // Half of screen, adjust for rocket width

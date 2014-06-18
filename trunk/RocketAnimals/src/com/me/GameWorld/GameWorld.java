@@ -3,11 +3,11 @@ package com.me.GameWorld;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
 import com.me.GameObjects.AbstractObstacle;
+import com.me.GameObjects.GiantMeteor;
 import com.me.GameObjects.HotAirBalloon;
 import com.me.GameObjects.JetPlane;
 import com.me.GameObjects.Rocket;
 import com.me.GameObjects.ScrollableHandler;
-
 import com.me.helpers.AssetLoader;
 import com.me.helpers.Constants;
 
@@ -27,6 +27,8 @@ public class GameWorld {
 	private int finalScore = 0;
 	
 	private GameState currentState;
+	
+	private boolean inMet = false;
 	
 	
 	//Zones
@@ -108,9 +110,14 @@ public class GameWorld {
 		for (AbstractObstacle tempObj : scrollObjects) 
 		{
 			if (rocket.overlapsWith(tempObj)) {
-				
-				AssetLoader.hitSounds.random().play();
-				//gameOver();
+				if(tempObj instanceof GiantMeteor){
+					inMet = true;
+				}
+				else{
+					inMet = false;
+					AssetLoader.hitSounds.random().play();
+					//gameOver();
+				}
 			}
 		}
 	}
@@ -168,6 +175,8 @@ public class GameWorld {
 	public Zone getSector(){
 		return currentZone;
 	}
+	
+	public boolean getInMet(){ return inMet; }
 	
 	
 	

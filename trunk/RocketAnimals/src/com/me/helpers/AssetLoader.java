@@ -15,6 +15,8 @@ public class AssetLoader {
 	
 	public static Texture texture, texture2, logoTexture; //temporary
 	
+	public static Texture space;
+	
 	//UFO Boss Texture
 	public static TextureRegion uFOTop, uFOSide;
 	
@@ -28,6 +30,8 @@ public class AssetLoader {
 	public static TextureRegion logo;
 	
 	public static TextureRegion bg; //temp
+	
+	public static TextureRegion bg_Space;
 	
 	
 	//Button Textures
@@ -56,6 +60,9 @@ public class AssetLoader {
 		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		
 		texture2 = new Texture(Gdx.files.internal("data/texture.png")); //temporary
+		texture2.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		
+		space = new Texture(Gdx.files.internal("data/stars.png"));
 		texture2.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		
 		//Logo Texture
@@ -90,6 +97,9 @@ public class AssetLoader {
 		//Bg temp
 		bg = new TextureRegion(texture2, 0, 0, 136, 43);
 		bg.flip(false, true);
+		
+		bg_Space = new TextureRegion(space, 0, 0, 99, 208);
+		bg_Space.flip(false, true);
 		
 		
 		// Rocket

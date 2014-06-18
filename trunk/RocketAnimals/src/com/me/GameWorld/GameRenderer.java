@@ -20,6 +20,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.me.GameObjects.*;
+import com.me.GameWorld.GameWorld.Zone;
 import com.me.TweenAccessors.Value;
 import com.me.TweenAccessors.ValueAccessor;
 import com.me.helpers.AssetLoader;
@@ -29,6 +30,10 @@ import com.me.ui.SimpleButton;
 import com.me.helpers.InputHandler;
 
 public class GameRenderer {
+	
+	float r = 55;
+	float g = 80;
+	float b = 100;
 	
 	private GameWorld world;
 	private OrthographicCamera cam;
@@ -66,6 +71,7 @@ public class GameRenderer {
 	
 	//temp
 	TextureRegion bg;
+	TextureRegion bg_Space;
 	private Background background; 
 	
 	public GameRenderer(GameWorld world, int gameHeight, int midPointY) {
@@ -109,6 +115,7 @@ public class GameRenderer {
 	}*/
 	
 	public void render(float delta, float runTime) {
+		background = world.getScroller().getFrontBackground();
 		// Update camera
 		cam.update();
 		//cam.apply(Gdx.gl20);
@@ -122,16 +129,36 @@ public class GameRenderer {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		// Draw Background color
-		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.setColor(55 / 255.0f, 80 / 255.0f, 100 / 255.0f, 1);
-		shapeRenderer.rect(0, 0, Constants.TRUE_WIDTH, Constants.TRUE_HEIGHT);
-		shapeRenderer.end();
+		
+		
+		if(world.getSector() == Zone.Earth){
+			shapeRenderer.begin(ShapeType.Filled);
+			shapeRenderer.setColor(r / 255.0f, g / 255.0f, b / 255.0f, 1);
+			shapeRenderer.rect(0, 0, Constants.TRUE_WIDTH, Constants.TRUE_HEIGHT);
+			shapeRenderer.end();
+		}
+		
+		if(world.getSector() == Zone.Space){
+			r = (float) (r - 0.25);
+			g = (float) (g - 0.25);
+			b = (float) (b - 0.25);
+			shapeRenderer.begin(ShapeType.Filled);
+			shapeRenderer.setColor(r / 255.0f, g / 255.0f, b / 255.0f, 1);
+			shapeRenderer.rect(0, 0, Constants.TRUE_WIDTH, Constants.TRUE_HEIGHT);
+			shapeRenderer.end();
+		}
 		
 		// Draw sprites
 		spriteBatch.begin();
 		
 		//spriteBatch.draw(bg, 0, Constants.TRUE_HEIGHT - 102, Constants.TRUE_WIDTH, 102);
-		spriteBatch.draw(bg, background.getX(), background.getY(), Constants.TRUE_WIDTH, 102);
+		if(world.getSector() == Zone.Earth){
+			spriteBatch.draw(bg, background.getX(), background.getY(), Constants.TRUE_WIDTH, background.getHeight());
+		}
+		
+		if(world.getSector() == Zone.Space){
+			spriteBatch.draw(bg_Space, background.getX(), background.getY(), Constants.TRUE_WIDTH, background.getHeight());
+		}
 		drawObjects(runTime);
 		
 		if(world.isRunning())
@@ -335,6 +362,7 @@ public class GameRenderer {
 		gameOver = AssetLoader.gameOver;
 		
 		bg = AssetLoader.bg;
+		bg_Space = AssetLoader.bg_Space;
 		
 		bullets = AssetLoader.bulletRed; //different sprites added here.
 		bossPlane = AssetLoader.bossPlane;

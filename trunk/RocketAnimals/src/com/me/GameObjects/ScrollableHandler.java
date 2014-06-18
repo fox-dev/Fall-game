@@ -4,8 +4,10 @@ import java.util.Iterator;
 import java.util.Random;
 
 import com.badlogic.gdx.utils.Array;
+import com.me.GameWorld.GameWorld.Zone;
 import com.me.Sectors.Earth;
 import com.me.Sectors.Sector;
+import com.me.Sectors.Space;
 import com.me.helpers.Constants;
 
 
@@ -31,23 +33,46 @@ public class ScrollableHandler
 	private Rocket playerRocket;
 	
 	
+
+	private Zone currentZone;
+	
+
 	public ScrollableHandler()
 	{	
 		
 		e = new Earth(obstacleList, playerRocket);
+		currentZone = Zone.Earth;
+		
 		//iterator = new AbstractObstacle(0, 0, 30, 30, SCROLL_SPEED); //using default bird sprite, change sprite and position later
 		r = new Random();
 			
-		bg = new Background(0, Constants.TRUE_HEIGHT - 102, Constants.TRUE_WIDTH, 102, 15);
+		//bg = new Background(0, Constants.TRUE_HEIGHT - 102, Constants.TRUE_WIDTH, 102, 15);
+		bg = e.getBackground();
+		//bg = new Background(0, 0, 99, 500, 15);
+				
 	}
 	                   
 	public void update(float delta){
+		bg = e.getBackground();
 		System.out.println("Runtime : " + runTime);
+		System.out.println("Sector : " + currentZone);
+		System.out.println("Dodged : " + dodged);
 		runTime += delta;
 		
 		e.update(delta);
 		e.setRocket(playerRocket);
 		dodged = e.getDodged();
+		
+		
+		if(e.eventsDone() == true){
+			System.out.println("Changing");
+			e = new Space(obstacleList, playerRocket,dodged);
+			bg = e.getBackground();
+			e.setRocket(playerRocket);
+			currentZone = Zone.Space;
+			
+			
+		}
 		
 	}
 	
@@ -91,6 +116,10 @@ public class ScrollableHandler
 	//Set rocket
 	public void setRocket(Rocket rocket){
 		playerRocket = rocket;
+	}
+	
+	public Zone getSector(){
+		return currentZone;
 	}
 
 }

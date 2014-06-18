@@ -7,17 +7,20 @@ import com.me.GameObjects.HotAirBalloon;
 import com.me.GameObjects.JetPlane;
 import com.me.GameObjects.Rocket;
 import com.me.GameObjects.ScrollableHandler;
+
 import com.me.helpers.AssetLoader;
 import com.me.helpers.Constants;
 
 
 public class GameWorld {
 	
+	
 	private Rocket rocket;
 	private ScrollableHandler scroller;
 	private Array<AbstractObstacle> scrollObjects;
 	private HotAirBalloon hab;
 	
+	public Zone currentZone;
 	
 	private float runTime = 0;
 	
@@ -25,6 +28,11 @@ public class GameWorld {
 	
 	private GameState currentState;
 	
+	
+	//Zones
+	public enum Zone {
+		Earth, Space;
+	}
 	// Game states
 	public enum GameState {
 		READY, STANDBY, RUNNING, GAMEOVER
@@ -47,6 +55,7 @@ public class GameWorld {
 	{
 		System.out.println("CurrentState: " + currentState);
 		scroller.setRocket(rocket);
+		currentZone = scroller.getSector();
 		
 		//System.out.println(("CurrentState: " + currentState));
 		switch(currentState) 
@@ -101,7 +110,7 @@ public class GameWorld {
 			if (rocket.overlapsWith(tempObj)) {
 				
 				AssetLoader.hitSounds.random().play();
-				gameOver();
+				//gameOver();
 			}
 		}
 	}
@@ -154,6 +163,10 @@ public class GameWorld {
 	
 	public int getFinalScore(){
 		return finalScore;
+	}
+	
+	public Zone getSector(){
+		return currentZone;
 	}
 	
 	

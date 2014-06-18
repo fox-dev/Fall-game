@@ -11,7 +11,7 @@ import com.me.helpers.Constants;
 
 public class Sector 
 {
-	private Background bg;
+	protected Background bg;
 	
 	public static final int SCROLL_SPEED = 150;
 	
@@ -33,6 +33,8 @@ public class Sector
 	
 	protected int dodged = 0;
 	
+	protected boolean eventsFinished = false;
+	
 	
 	public Sector(Array<AbstractObstacle> myList, Rocket p)
 	{
@@ -42,6 +44,18 @@ public class Sector
 		bg = new Background(0, Constants.TRUE_HEIGHT - 102, Constants.TRUE_WIDTH, 102, 15);
 		
 		r = new Random();
+	}
+	
+	public Sector(Array<AbstractObstacle> myList, Rocket p, int dodged)
+	{
+		obstacleList = myList;
+		playerRocket = p;
+		
+		bg = new Background(0, Constants.TRUE_HEIGHT - 102, Constants.TRUE_WIDTH, 102, 15);
+		
+		r = new Random();
+		
+		this.dodged = dodged;
 	}
 	
 	
@@ -85,11 +99,21 @@ public class Sector
 	
 	
 	
+	
+	
 	public Array<AbstractObstacle> getList(){return obstacleList;}
 	
 	public int getDodged(){return dodged;}
 	
 	public void setRocket(Rocket rocket){playerRocket = rocket;}
+	
+	public boolean eventsDone(){
+		return eventsFinished;
+	}
+	
+	public Background getBackground(){
+		return bg;
+	}
 
 
 	

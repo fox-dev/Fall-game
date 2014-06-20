@@ -1,11 +1,9 @@
 package com.me.GameWorld;
 
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
 import com.me.GameObjects.AbstractObstacle;
 import com.me.GameObjects.GiantMeteor;
 import com.me.GameObjects.HotAirBalloon;
-import com.me.GameObjects.JetPlane;
 import com.me.GameObjects.Rocket;
 import com.me.GameObjects.ScrollableHandler;
 import com.me.helpers.AssetLoader;
@@ -96,8 +94,10 @@ public class GameWorld {
 	}
 	
 	private void updateRunning(float delta) {
+		
 		runTime += delta;
 		finalScore = scroller.getDodged();
+		
 		//System.out.println("Gameworld runtime is: " + runTime);
 		rocket.update(delta);
 		scroller.update(delta);
@@ -109,12 +109,13 @@ public class GameWorld {
 		scrollObjects = scroller.getAbstractObstacles();
 		for (AbstractObstacle tempObj : scrollObjects) 
 		{
+			inMet = false;
 			if (rocket.overlapsWith(tempObj)) {
 				if(tempObj instanceof GiantMeteor){
 					inMet = true;
 				}
 				else{
-					inMet = false;
+					
 					AssetLoader.hitSounds.random().play();
 					//gameOver();
 				}

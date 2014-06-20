@@ -15,7 +15,14 @@ public class AssetLoader {
 	
 	public static Texture texture, texture2, logoTexture; //temporary
 	
+	
 	public static Texture space;
+	
+	//The rocket (temp)
+	public static Texture textureship;
+	public static TextureRegion rLeft, rMid, rRight;
+	public static TextureRegion boost1, boost2, boost3;
+	
 	
 	//UFO Boss Texture
 	public static TextureRegion uFOTop, uFOSide;
@@ -54,6 +61,9 @@ public class AssetLoader {
 		
 		hitSounds = new Array<Sound>();
 		
+		//load ship and boost texture
+		textureship = new Texture(Gdx.files.internal("data/SpriteSheetObjectsNew.png"));
+		textureship.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		
 		// Load the texture
 		texture = new Texture(Gdx.files.internal("data/SpriteSheetObjects.png"));
@@ -103,9 +113,22 @@ public class AssetLoader {
 		
 		
 		// Rocket
-		rocketLeft = new TextureRegion(texture, 0, 0, 45, 48);
-		rocket = new TextureRegion(texture, 58, 0, 45, 48); // Spritesheet may need fixing
-		rocketRight = new TextureRegion(texture, 115, 0, 45, 48	);
+		//rocketLeft = new TextureRegion(texture, 0, 0, 45, 48);
+		//rocket = new TextureRegion(texture, 58, 0, 45, 48); // Spritesheet may need fixing
+		//rocketRight = new TextureRegion(texture, 115, 0, 45, 48	);
+		
+		rocketLeft = new TextureRegion(textureship, 4, 20, 43, 47);
+		rocket = new TextureRegion(textureship, 62, 20, 44, 47);
+		rocketRight = new TextureRegion(textureship, 119, 20, 44, 47);
+		
+		
+		//New Rocket
+		//rLeft= new TextureRegion(textureship, 0, 20, 47, 67);
+		//rMid = new TextureRegion(textureship, 62, 20, 106, 67);
+		//rRight = new TextureRegion(textureship, 119, 20, 163, 67);
+		//boost1 = new TextureRegion(textureship, 8, 71, 42, 102);
+		//boost2 = new TextureRegion(textureship, 66, 71, 102, 102);
+		//boost3 = new TextureRegion(textureship, 124, 71, 160, 102);
 		
 		rocketLeft.flip(false, true);
 		rocket.flip(false, true);
@@ -117,9 +140,13 @@ public class AssetLoader {
 		rocketAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
 		
 		// Rocket fire
-		rocketFire1 = new TextureRegion(texture, 3, 48, 39, 30);
-		rocketFire2 = new TextureRegion(texture, 61, 48, 39, 30);
-		rocketFire3 = new TextureRegion(texture, 118, 48, 39, 30);
+		//rocketFire1 = new TextureRegion(texture, 3, 48, 39, 30);
+		//rocketFire2 = new TextureRegion(texture, 61, 48, 39, 30);
+		//rocketFire3 = new TextureRegion(texture, 118, 48, 39, 30);
+		
+		rocketFire1 = new TextureRegion(textureship, 8, 71, 34, 31);
+		rocketFire2 = new TextureRegion(textureship, 66, 71, 36, 31);
+		rocketFire3 = new TextureRegion(textureship, 124, 71, 36, 31);
 		
 		rocketFire1.flip(false, true);
 		rocketFire2.flip(false, true);

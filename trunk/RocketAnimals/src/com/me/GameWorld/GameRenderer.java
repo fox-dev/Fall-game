@@ -239,15 +239,15 @@ public class GameRenderer {
 				*/
 			
 				if(!rocket.isMoving()){
-					spriteBatch.draw(rocketFireAnimation.getKeyFrame(runTime), rocket.getX(), rocket.getY() + 25, Constants.ROCKET_FIRE_WIDTH, Constants.ROCKET_FIRE_HEIGHT);
+					spriteBatch.draw(rocketFireAnimation.getKeyFrame((float) (runTime*1.5)), rocket.getX(), rocket.getY() + 25, Constants.ROCKET_FIRE_WIDTH, Constants.ROCKET_FIRE_HEIGHT);
 					spriteBatch.draw(rocketMid, rocket.getX(), rocket.getY(), rocket.getWidth(), rocket.getHeight());
 				}
 				else if (rocket.isMovingLeft()) {
-					spriteBatch.draw(rocketFireAnimation.getKeyFrame(runTime), rocket.getX(), rocket.getY() + 25, Constants.ROCKET_FIRE_WIDTH, Constants.ROCKET_FIRE_HEIGHT);
+					spriteBatch.draw(rocketFireAnimation.getKeyFrame((float) (runTime*1.5)), rocket.getX(), rocket.getY() + 25, Constants.ROCKET_FIRE_WIDTH, Constants.ROCKET_FIRE_HEIGHT);
 					spriteBatch.draw(rocketLeft, rocket.getX(), rocket.getY(), rocket.getWidth(), rocket.getHeight());
 				}
 				else if (rocket.isMovingRight()) {
-					spriteBatch.draw(rocketFireAnimation.getKeyFrame(runTime), rocket.getX(), rocket.getY() + 25, Constants.ROCKET_FIRE_WIDTH, Constants.ROCKET_FIRE_HEIGHT);
+					spriteBatch.draw(rocketFireAnimation.getKeyFrame((float) (runTime*1.5)), rocket.getX(), rocket.getY() + 25, Constants.ROCKET_FIRE_WIDTH, Constants.ROCKET_FIRE_HEIGHT);
 					spriteBatch.draw(rocketRight, rocket.getX(), rocket.getY(), rocket.getWidth(), rocket.getHeight());
 				}
 				

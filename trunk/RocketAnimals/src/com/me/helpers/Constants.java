@@ -5,7 +5,7 @@ package com.me.helpers;
 public class Constants {
 	
 	// Debug flags
-	public static final boolean DRAW_BOUNDS = true; // Draw collision detection shapes
+	public static final boolean DRAW_BOUNDS = false; // Draw collision detection shapes
 	
 	// General game constants
 	public static final int TRUE_WIDTH = 320; // Game's "true" width = 320px

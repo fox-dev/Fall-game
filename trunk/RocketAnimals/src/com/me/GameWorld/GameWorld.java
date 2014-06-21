@@ -28,6 +28,8 @@ public class GameWorld {
 	
 	private boolean inMet = false;
 	
+	private boolean sectorEnd = false;
+	
 	
 	//Zones
 	public enum Zone {
@@ -175,6 +177,10 @@ public class GameWorld {
 	
 	public Zone getSector(){
 		return currentZone;
+	}
+	
+	public boolean sectorEnding(){
+		return scroller.isSectorEnd();
 	}
 	
 	public boolean getInMet(){ return inMet; }

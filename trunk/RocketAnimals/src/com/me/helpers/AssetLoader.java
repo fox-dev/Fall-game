@@ -18,6 +18,11 @@ public class AssetLoader {
 	
 	public static Texture space;
 	
+	
+	//Temp
+	public static Texture earthEnd;
+	public static TextureRegion earth_End;
+	
 	//The rocket (temp)
 	public static Texture textureship;
 	public static TextureRegion rLeft, rMid, rRight;
@@ -60,6 +65,13 @@ public class AssetLoader {
 	public static void load() {
 		
 		hitSounds = new Array<Sound>();
+		
+		//temp
+		earthEnd = new Texture(Gdx.files.internal("data/EndEarth.png"));
+		earthEnd.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		
+		earth_End = new TextureRegion(earthEnd, 0, 0, 600, 106);
+		earth_End.flip(false, true);
 		
 		//load ship and boost texture
 		textureship = new Texture(Gdx.files.internal("data/SpriteSheetObjectsNew.png"));

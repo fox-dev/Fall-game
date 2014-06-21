@@ -23,12 +23,14 @@ public class Space extends Sector{
 		super(myList, p);
 		//bg = new Background(0, Constants.TRUE_HEIGHT - 102, Constants.TRUE_WIDTH, 102, 15);
 		bg = new Background(0, 0-525, 99, 500, 15);
+		bg_End = new Background(0, 0-30, 99, 500, 15);
 	}
 	
 	public Space(Array<AbstractObstacle> myList, Rocket p, int dodged) {
 		super(myList, p, dodged);
 		//bg = new Background(0, Constants.TRUE_HEIGHT - 102, Constants.TRUE_WIDTH, 102, 15);
 		bg = new Background(0, 0-525, 99, 500, 15);
+		bg_End = new Background(0, 0-30, 99, 500, 15);
 	}
 	
 	@Override

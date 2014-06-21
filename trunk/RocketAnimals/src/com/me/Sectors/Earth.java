@@ -51,6 +51,8 @@ public class Earth extends Sector
 		super(myList, player);
 	
 		bg = new Background(0, Constants.TRUE_HEIGHT - 102, Constants.TRUE_WIDTH, 102, 15);
+		bg_End = new Background(0, 0-200, 106, Constants.TRUE_WIDTH, 15);
+		
 	
 
 		
@@ -89,7 +91,9 @@ public class Earth extends Sector
 			
 
             if((o instanceof Alien) && doneFiring == true){
-                    o.setVelocity(0, 80);  
+                    o.setVelocity(0, 80);
+                    
+                	sectorEnding();
                     
             }
             
@@ -114,6 +118,7 @@ public class Earth extends Sector
 			{
 				
 				
+				
 				if(o instanceof JetPlane){
 					PLANE_EVENT = false;
 				}
@@ -121,7 +126,8 @@ public class Earth extends Sector
 					ALIEN_EVENT = false;
 					ALIEN_EVENT_COUNT++;
 					bulletCount = 0;
-					eventsFinished = true;
+					
+					
 					
 				}
 				if(o instanceof CargoPlane){
@@ -133,6 +139,11 @@ public class Earth extends Sector
 				iterator.remove();
 				numObstacles--;
 				dodged++;
+			}
+			
+			if(bg_End.isScrolledDown()){
+				eventsFinished = true;
+				System.out.println("Over++++++++++++++++++++++++++++++++++++++++++++++");
 			}
 			
 		}
@@ -165,7 +176,7 @@ public class Earth extends Sector
 		}
 		
 		
-		if(firing == true && bulletCount < 100){
+		if(firing == true && bulletCount < 10){
 			shootDelay -= delta;
 			if(shootDelay <= 0){
 				obstacleList.add(new Projectile(Constants.TRUE_WIDTH/2 ,0+30,16,16,xSpeed,100));
@@ -175,7 +186,7 @@ public class Earth extends Sector
 			}
 		}
 
-		if(bulletCount == 100){
+		if(bulletCount == 10){
 			doneFiring = true;
 			firing = false;	
 		}

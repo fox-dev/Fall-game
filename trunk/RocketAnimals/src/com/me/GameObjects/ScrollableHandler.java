@@ -17,6 +17,7 @@ public class ScrollableHandler
 	private Sector e;
 	
 	private Background bg; //temp
+	private Background bg_End; //temp
 	
 	private Array<AbstractObstacle> obstacleList = new Array<AbstractObstacle>();
  	private Iterator<AbstractObstacle> iterator;
@@ -48,6 +49,7 @@ public class ScrollableHandler
 			
 		//bg = new Background(0, Constants.TRUE_HEIGHT - 102, Constants.TRUE_WIDTH, 102, 15);
 		bg = e.getBackground();
+		bg_End = e.getBackgroundEnd();
 		//bg = new Background(0, 0, 99, 500, 15);
 				
 	}
@@ -78,6 +80,7 @@ public class ScrollableHandler
 	
 	public void scrollBackgroundUpdate(float delta){
 		bg.update(delta);
+		bg_End.update(delta);
 		
 	}
 	
@@ -112,6 +115,7 @@ public class ScrollableHandler
 
 	public int getDodged() { return dodged;};
 	public Background getFrontBackground(){return bg;}
+	public Background getEndBackground(){return bg_End;}
 	
 	//Set rocket
 	public void setRocket(Rocket rocket){
@@ -120,6 +124,10 @@ public class ScrollableHandler
 	
 	public Zone getSector(){
 		return currentZone;
+	}
+	
+	public boolean isSectorEnd(){
+		return e.sectorEnd();
 	}
 
 }

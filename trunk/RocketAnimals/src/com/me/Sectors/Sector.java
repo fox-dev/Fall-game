@@ -11,7 +11,11 @@ import com.me.helpers.Constants;
 
 public class Sector 
 {
+	
+	protected boolean sectorEnd = false;
+	
 	protected Background bg;
+	protected Background bg_End;
 	
 	public static final int SCROLL_SPEED = 150;
 	
@@ -42,6 +46,7 @@ public class Sector
 		playerRocket = p;
 		
 		bg = new Background(0, Constants.TRUE_HEIGHT - 102, Constants.TRUE_WIDTH, 102, 15);
+		bg_End = new Background(0, 0-200, 106, Constants.TRUE_WIDTH, 0);
 		
 		r = new Random();
 	}
@@ -52,6 +57,7 @@ public class Sector
 		playerRocket = p;
 		
 		bg = new Background(0, Constants.TRUE_HEIGHT - 102, Constants.TRUE_WIDTH, 102, 15);
+		bg_End = new Background(0, 0-200, 106, Constants.TRUE_WIDTH, 0);
 		
 		r = new Random();
 		
@@ -113,6 +119,22 @@ public class Sector
 	
 	public Background getBackground(){
 		return bg;
+	}
+	
+	public Background getBackgroundEnd(){
+		return bg_End;
+	}
+	
+	public boolean sectorEnd(){
+		return sectorEnd;
+	}
+	
+	public void sectorEnding(){
+		sectorEnd = true;
+	}
+	
+	public void sectorNew(){
+		sectorEnd = false;
 	}
 
 

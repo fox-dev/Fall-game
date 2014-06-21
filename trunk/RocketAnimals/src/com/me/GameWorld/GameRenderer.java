@@ -73,6 +73,9 @@ public class GameRenderer {
 	TextureRegion bg;
 	TextureRegion bg_Space;
 	private Background background; 
+	private Background background_End;
+	
+	TextureRegion earth_End;
 	
 	public GameRenderer(GameWorld world, int gameHeight, int midPointY) {
 		this.world = world;
@@ -116,6 +119,7 @@ public class GameRenderer {
 	
 	public void render(float delta, float runTime) {
 		background = world.getScroller().getFrontBackground();
+		background_End = world.getScroller().getEndBackground();
 		// Update camera
 		cam.update();
 		//cam.apply(Gdx.gl20);
@@ -154,6 +158,20 @@ public class GameRenderer {
 		//spriteBatch.draw(bg, 0, Constants.TRUE_HEIGHT - 102, Constants.TRUE_WIDTH, 102);
 		if(world.getSector() == Zone.Earth){
 			spriteBatch.draw(bg, background.getX(), background.getY(), Constants.TRUE_WIDTH, background.getHeight());
+			if(world.sectorEnding() == true){
+				if(r > 18){
+					r = (float) (r - 0.1);
+				}
+				if(g > 40){
+				 	g = (float) (g - 0.1);
+				}
+				if(b > 73){
+					b = (float) (b - 0.1);
+				}
+				 	
+				System.out.println("Ending-------------------------------------------------" + background_End.getY());
+				spriteBatch.draw(earth_End, background_End.getX(), background_End.getY(), Constants.TRUE_WIDTH, background.getHeight());
+			}
 		}
 		
 		if(world.getSector() == Zone.Space){
@@ -372,8 +390,11 @@ public class GameRenderer {
 		
 		gameOver = AssetLoader.gameOver;
 		
+		//temp
 		bg = AssetLoader.bg;
 		bg_Space = AssetLoader.bg_Space;
+		earth_End = AssetLoader.earth_End; 
+		
 		
 		bullets = AssetLoader.bulletRed; //different sprites added here.
 		bossPlane = AssetLoader.bossPlane;

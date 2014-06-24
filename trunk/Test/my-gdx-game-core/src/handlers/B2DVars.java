@@ -10,6 +10,7 @@ public class B2DVars {
 	public static final short BIT_GROUND = 2; //0000 0000 0000 0010
 	public static final short BIT_PLAYER = 4; // 0000 0000 0000 0100
 	public static final short BIT_BALL = 8; //0000 0000 0000 1000
+	public static final short BIT_LIGHT = 10;
 	
 	
 	

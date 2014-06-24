@@ -13,6 +13,8 @@ public class DesktopLauncher {
 		config.width = Game.V_WIDTH*Game.SCALE;
 		config.height = Game.V_HEIGHT*Game.SCALE;
 		
+		config.useGL30 = true;
+		
 		new LwjglApplication(new Game(), config);
 		
 		

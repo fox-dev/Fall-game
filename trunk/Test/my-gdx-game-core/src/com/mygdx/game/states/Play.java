@@ -16,6 +16,7 @@ import handlers.GameStateManager;
 import handlers.MyContactListener;
 import handlers.MyInput;
 import box2dLight.ConeLight;
+import box2dLight.Light;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
@@ -29,6 +30,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -41,6 +43,10 @@ import com.mygdx.main.Game;
 
 public class Play extends GameState{
 	private boolean debug = true;
+	float x = 0;
+	float y = 0;
+	long lastSprite = 0;
+	long lastSprite2 = 0;
 	
 	int lights = 0;
 	
@@ -52,7 +58,7 @@ public class Play extends GameState{
 	private Iterator<Body> iterator;
 	private Iterator<ConeLight> iterator2;
 	
-	long lastSprite = 0;
+	
 	private World world;
 	private Box2DDebugRenderer b2dr;
 	
@@ -61,6 +67,10 @@ public class Play extends GameState{
 	RayHandler handler;
 	
 	private Body playerBody;
+	
+	private Body leftWall;
+	private Body rightWall;
+	
 	private MyContactListener cl;
 	
 	public Play(GameStateManager gsm){
@@ -138,6 +148,40 @@ public class Play extends GameState{
 		
 		
 		
+		//Left wall
+		bdef = new BodyDef(); 
+		bdef.position.set(0/PPM,0+200/PPM);
+		bdef.type = BodyType.KinematicBody;
+		leftWall = world.createBody(bdef);
+		
+		shape = new PolygonShape();
+		shape.setAsBox(2/PPM, (Game.V_HEIGHT+50/2)/PPM); //half width half height, so 100, 10
+		
+		fdef = new FixtureDef();
+		fdef.shape = shape;
+		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
+		//fdef.filter.maskBits = B2DVars.BIT_BOX | B2DVars.BIT_BALL;
+		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
+		leftWall.createFixture(fdef).setUserData("LeftWall");
+
+		//Right wall
+		bdef = new BodyDef(); 
+		bdef.position.set((Game.V_WIDTH)/PPM,0+200/PPM);
+		bdef.type = BodyType.KinematicBody;
+		rightWall = world.createBody(bdef);
+		
+		shape = new PolygonShape();
+		shape.setAsBox(2/PPM, (Game.V_HEIGHT+50/2)/PPM); //half width half height, so 100, 10
+		
+		fdef = new FixtureDef();
+		fdef.shape = shape;
+		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
+		//fdef.filter.maskBits = B2DVars.BIT_BOX | B2DVars.BIT_BALL;
+		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
+		rightWall.createFixture(fdef).setUserData("RightWall");
+		
+		
+		
 		//set up box2d cam
 		b2dCam = new OrthographicCamera();
 		b2dCam.setToOrtho(false, Game.V_WIDTH / PPM, Game.V_HEIGHT / PPM);
@@ -145,6 +189,8 @@ public class Play extends GameState{
 		
 		
 		handler = new RayHandler(world);
+		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
+	
 		//ConeLight t;
 		//t = new ConeLight(handler, 10, Color.CYAN, 100/PPM, body.getPosition().x, body.getPosition().y,270,35);
 		
@@ -167,14 +213,14 @@ public class Play extends GameState{
 			//}
 		}
 		
-		if(MyInput.isDown(MyInput.BUTTON2)){
+		if(MyInput.isPressed(MyInput.BUTTON2)){
 			//System.out.println("hold x");
 			Vector2 vel = playerBody.getLinearVelocity();
 			vel.x = -1f;
 			playerBody.setLinearVelocity(vel);
 			
 		}
-		if(MyInput.isDown(MyInput.BUTTON3)){
+		if(MyInput.isPressed(MyInput.BUTTON3)){
 			//System.out.println("hold c");
 			Vector2 vel = playerBody.getLinearVelocity();
 			vel.x = 1f;
@@ -204,21 +250,26 @@ public class Play extends GameState{
 		body = world.createBody(def);
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(50/PPM, 5/PPM); //half width half height, so 100, 10
+		shape.setAsBox((Game.V_WIDTH/5)/PPM, 5/PPM); //half width half height, so 100, 10
 		
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
+		fdef.density = 0.4f;
 		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
-		//fdef.filter.maskBits = B2DVars.BIT_BOX | B2DVars.BIT_BALL;
 		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
 		body.createFixture(fdef).setUserData("Ground");
 		body.setLinearVelocity(0f,0.2f);
+		
+		
 	
-		//PointLight t = new PointLight(handler, 10, Color.CYAN, 100/PPM, body.getPosition().x, body.getPosition().y);
 		ConeLight t;
-		t = new ConeLight(handler, 10, Color.CYAN,500/PPM, body.getPosition().x, body.getPosition().y + 80/PPM, 270, 36);
-		//t.setDistance(100/PPM);
-		//t.attachToBody(body, 0, 50/PPM);
+		
+		t = new ConeLight(handler, 8, Color.GRAY,4000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);
+		//Light.setContactFilter(B2DVars.BIT_BALL, (short) 0, B2DVars.BIT_BALL);
+		
+		
+		
+		
 		
 		
 		
@@ -247,6 +298,7 @@ public class Play extends GameState{
 				s.setActive(false);
 				iterator.remove();
 				iterator2.remove();
+				handler.lightList.removeValue(s, true);
 				lights--;
 				
 			}
@@ -256,15 +308,41 @@ public class Play extends GameState{
 			
 			
 		}
+		Vector2 save = playerBody.getLinearVelocity();
+		save.x = 0;
+		leftWall.setLinearVelocity(save);
+		rightWall.setLinearVelocity(save);
+		
 		
 		long now = System.currentTimeMillis(); // or some other function to get the current time
+		long now2 = System.currentTimeMillis();
 		
 		  if (now - lastSprite > 1000) {
-			
-			  addObstacles();
-			  lights++;
-			System.out.println("Lights: " + lights);
+			  
+			  
+			x = playerBody.getPosition().y;
+
+
+			 
+			System.out.println("x: " + x);
 		    lastSprite = now;
+		  }
+		  
+		  if (now - lastSprite2 > 2000) {
+				
+			 y = playerBody.getPosition().y;
+			  
+			System.out.println("y: " + y + " " + Math.abs(x-y));
+		    lastSprite2 = now2;
+		  }
+		  
+		  if(Math.abs(x-y)/PPM > 2/PPM && (x != 0f)){
+			  addObstacles();
+			  
+			  //lastSprite2 = now2;
+			  System.out.println("Abs: " + Math.abs(x-y));
+			  x = 0f;
+			  y = 0f;
 		  }
 		  
 		handleInput();
@@ -276,7 +354,9 @@ public class Play extends GameState{
 		}
 		handler.render();
 		
-		world.step(dt, 6, 2);
+		//System.out.println("Size: " + handler.lightList.size);
+		
+		world.step(dt, 1, 1);
 		
 		
 		
@@ -286,7 +366,8 @@ public class Play extends GameState{
 	
 	public void render(){
 		//clear screens
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		/*
 		sb.setProjectionMatrix(cam.combined);

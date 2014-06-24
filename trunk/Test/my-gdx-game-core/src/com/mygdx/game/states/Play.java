@@ -258,7 +258,9 @@ public class Play extends GameState{
 		}
 		
 		long now = System.currentTimeMillis(); // or some other function to get the current time
-		  if (now - lastSprite > 2000) {
+		
+		  if (now - lastSprite > 1000) {
+			
 			  addObstacles();
 			  lights++;
 			System.out.println("Lights: " + lights);

@@ -15,6 +15,7 @@ import handlers.GameStateManager;
 
 import handlers.MyContactListener;
 import handlers.MyInput;
+import box2dLight.ConeLight;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
@@ -41,13 +42,15 @@ import com.mygdx.main.Game;
 public class Play extends GameState{
 	private boolean debug = true;
 	
+	int lights = 0;
+	
 	
 	//private BitmapFont font = new BitmapFont();
 	
 	private Array<Body> obstacleList = new Array<Body>();
-	private Array<PointLight> lightList = new Array<PointLight>();
+	private Array<ConeLight> lightList = new Array<ConeLight>();
 	private Iterator<Body> iterator;
-	private Iterator<PointLight> iterator2;
+	private Iterator<ConeLight> iterator2;
 	
 	long lastSprite = 0;
 	private World world;
@@ -142,7 +145,11 @@ public class Play extends GameState{
 		
 		
 		handler = new RayHandler(world);
-		handler.setCombinedMatrix(b2dCam.combined);
+		//ConeLight t;
+		//t = new ConeLight(handler, 10, Color.CYAN, 100/PPM, body.getPosition().x, body.getPosition().y,270,35);
+		
+		
+		
 		
 		//new PointLight(handler, 50, Color.CYAN, 500/PPM, playerBody.getPosition().x, playerBody.getPosition().y);
 		
@@ -155,9 +162,9 @@ public class Play extends GameState{
 	public void handleInput(){
 		if(MyInput.isPressed(MyInput.BUTTON1)){
 			//System.out.println("pressed z");
-			if(cl.isPlayerOnGround()){
+			//if(cl.isPlayerOnGround()){
 				playerBody.applyForceToCenter(0,200,true);
-			}
+			//}
 		}
 		
 		if(MyInput.isDown(MyInput.BUTTON2)){
@@ -192,7 +199,7 @@ public class Play extends GameState{
 	public void addObstacles(){
 		BodyDef def = new BodyDef(); 
 		def.position.set(randInt(0,300)/PPM,(cam.position.y - (Game.V_HEIGHT*2)/PPM));
-		def.type = BodyType.KinematicBody;
+		def.type = BodyType.StaticBody;
 		Body body = world.createBody(def);
 		body = world.createBody(def);
 		
@@ -207,10 +214,16 @@ public class Play extends GameState{
 		body.createFixture(fdef).setUserData("Ground");
 		body.setLinearVelocity(0f,0.2f);
 	
-		PointLight t = new PointLight(handler, 10, Color.CYAN, 100/PPM, body.getPosition().x, body.getPosition().y);
-		t.isSoft();
-		t.attachToBody(body, 0, 0);
-		//lightList.add(t);
+		//PointLight t = new PointLight(handler, 10, Color.CYAN, 100/PPM, body.getPosition().x, body.getPosition().y);
+		ConeLight t;
+		t = new ConeLight(handler, 10, Color.CYAN,500/PPM, body.getPosition().x, body.getPosition().y + 80/PPM, 270, 36);
+		//t.setDistance(100/PPM);
+		//t.attachToBody(body, 0, 50/PPM);
+		
+		
+		
+		
+		lightList.add(t);
 		obstacleList.add(body);
 		
 		
@@ -228,10 +241,13 @@ public class Play extends GameState{
 		iterator2 = lightList.iterator();
 		while(iterator.hasNext()){
 			Body o = iterator.next();
-			//PointLight s = iterator2.next();
+			ConeLight s = iterator2.next();
 			if(o.getPosition().y > b2dCam.position.y + Game.V_HEIGHT/PPM){
 				world.destroyBody(o);
+				s.setActive(false);
 				iterator.remove();
+				iterator2.remove();
+				lights--;
 				
 			}
 			
@@ -242,8 +258,10 @@ public class Play extends GameState{
 		}
 		
 		long now = System.currentTimeMillis(); // or some other function to get the current time
-		  if (now - lastSprite > 1000) {
+		  if (now - lastSprite > 2000) {
 			  addObstacles();
+			  lights++;
+			System.out.println("Lights: " + lights);
 		    lastSprite = now;
 		  }
 		  
@@ -254,7 +272,7 @@ public class Play extends GameState{
 			vel.y = -6f;
 			playerBody.setLinearVelocity(vel);
 		}
-		
+		handler.render();
 		
 		world.step(dt, 6, 2);
 		
@@ -292,14 +310,16 @@ public class Play extends GameState{
 		sb.setProjectionMatrix(hudCam.combined);
 		
 		handler.setCombinedMatrix(b2dCam.combined);
+		
+		handler.updateAndRender();
 			
 		
 		//System.out.println("x: " + cam.position.x/PPM);
 		//System.out.println("y: " + cam.position.y*100);
-		System.out.println(playerBody.getLinearVelocity().y);
+		//System.out.println(playerBody.getLinearVelocity().y);
 		
 		
-		handler.updateAndRender();
+		
 		
 		// draw box2d
 		if(debug) {
@@ -308,6 +328,8 @@ public class Play extends GameState{
 		
 	}
 	
-	public void dispose(){}
+	public void dispose(){
+		handler.dispose();
+	}
 		
 }

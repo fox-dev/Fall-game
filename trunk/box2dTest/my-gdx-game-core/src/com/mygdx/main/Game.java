@@ -1,6 +1,8 @@
 package com.mygdx.main;
 
 import handlers.GameStateManager;
+import handlers.MyInput;
+import handlers.MyInputProcessor;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -10,8 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Game extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
+	
 	
 	public static final String TITLE = "Game";
 	public static final int V_WIDTH = 320;
@@ -37,6 +38,8 @@ public class Game extends ApplicationAdapter {
 		//batch = new SpriteBatch();
 		//img = new Texture("badlogic.jpg");
 		
+		Gdx.input.setInputProcessor(new MyInputProcessor());
+		
 		sb = new SpriteBatch();
 		cam = new OrthographicCamera();
 		cam.setToOrtho(false, V_WIDTH, V_HEIGHT);
@@ -46,7 +49,7 @@ public class Game extends ApplicationAdapter {
 		gsm = new GameStateManager(this);
 	}
 
-	@Override
+	
 	public void render () {
 		//Gdx.gl.glClearColor(1, 0, 0, 1);
 		//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -59,6 +62,7 @@ public class Game extends ApplicationAdapter {
 			accum -= STEP;
 			gsm.update(STEP);
 			gsm.render();
+			MyInput.update();
 		}
 	}
 	

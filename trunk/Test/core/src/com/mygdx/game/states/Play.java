@@ -5,6 +5,8 @@ import static handlers.B2DVars.PPM;
 import java.util.Iterator;
 import java.util.Random;
 
+import gameobjects.Player;
+import handlers.AssetLoader;
 import handlers.B2DVars;
 import handlers.GameStateManager;
 
@@ -66,7 +68,10 @@ public class Play extends GameState{
 	
 	RayHandler handler;
 	
-	private Body playerBody;
+	private AssetLoader assets;
+	
+	//private Body playerBody;
+	private Player player;
 	
 	private Body leftWall;
 	private Body rightWall;
@@ -82,8 +87,6 @@ public class Play extends GameState{
 		world.setContactListener(cl);
 		
 		b2dr = new Box2DDebugRenderer();
-		
-		
 		
 		
 		//static body - don't move, unaffected by forces (ground)
@@ -111,14 +114,16 @@ public class Play extends GameState{
 		//create player
 		bdef.position.set(160/PPM, 300/PPM);
 		bdef.type = BodyType.DynamicBody;
-		playerBody = world.createBody(bdef);
+		//playerBody = world.createBody(bdef);
+		Body pBody = world.createBody(bdef);
 		
-		shape.setAsBox(5/PPM, 5/PPM);
+		shape.setAsBox(30/PPM, 30/PPM);
 		fdef.shape = shape;
 		//fdef.restitution = 1f;
 		fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
 		fdef.filter.maskBits = B2DVars.BIT_GROUND;
-		playerBody.createFixture(fdef).setUserData("Player");
+		//playerBody.createFixture(fdef).setUserData("Player");
+		pBody.createFixture(fdef).setUserData("Player");
 		
 		
 		
@@ -139,13 +144,16 @@ public class Play extends GameState{
 		
 		
 		//create foot sensor
-		shape.setAsBox(2 / PPM, 2 / PPM, new Vector2(0, -5/PPM), 0);
+		shape.setAsBox(15 / PPM, 2 / PPM, new Vector2(0, -30/PPM), 0);
 		fdef.shape = shape;
 		fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
 		fdef.filter.maskBits = B2DVars.BIT_GROUND;
 		fdef.isSensor = true;
-		playerBody.createFixture(fdef).setUserData("foot");
+		//playerBody.createFixture(fdef).setUserData("foot");
+		pBody.createFixture(fdef).setUserData("foot");
 		
+		//create player
+		player = new Player(pBody);
 		
 		
 		//Left wall
@@ -195,12 +203,7 @@ public class Play extends GameState{
 		//t = new ConeLight(handler, 10, Color.CYAN, 100/PPM, body.getPosition().x, body.getPosition().y,270,35);
 		
 		
-		
-		
 		//new PointLight(handler, 50, Color.CYAN, 500/PPM, playerBody.getPosition().x, playerBody.getPosition().y);
-		
-		
-	
 		
 	}
 		
@@ -209,30 +212,35 @@ public class Play extends GameState{
 		if(MyInput.isPressed(MyInput.BUTTON1)){
 			//System.out.println("pressed z");
 			//if(cl.isPlayerOnGround()){
-				playerBody.applyForceToCenter(0,200,true);
-			 	
-		
+				//playerBody.applyForceToCenter(0,200,true);
+				player.getBody().applyForceToCenter(0,200,true);
 	
 			//}
 		}
 		if(MyInput.isDown(MyInput.BUTTON1)){
-			Vector2 vel = playerBody.getLinearVelocity();
+			//Vector2 vel = playerBody.getLinearVelocity();
+			Vector2 vel = player.getBody().getLinearVelocity();
 		 	vel.y = -1f;
-			playerBody.setLinearVelocity(vel);
+			//playerBody.setLinearVelocity(vel);
+		 	player.getBody().setLinearVelocity(vel);
 		}
 		
 		if(MyInput.isDown(MyInput.BUTTON2)){
 			//System.out.println("hold x");
-			Vector2 vel = playerBody.getLinearVelocity();
+			//Vector2 vel = playerBody.getLinearVelocity();
+			Vector2 vel = player.getBody().getLinearVelocity();
 			vel.x = -1f;
-			playerBody.setLinearVelocity(vel);
+			//playerBody.setLinearVelocity(vel);
+			player.getBody().setLinearVelocity(vel);
 			
 		}
 		if(MyInput.isDown(MyInput.BUTTON3)){
 			//System.out.println("hold c");
-			Vector2 vel = playerBody.getLinearVelocity();
+			//Vector2 vel = playerBody.getLinearVelocity();
+			Vector2 vel = player.getBody().getLinearVelocity();
 			vel.x = 1f;
-			playerBody.setLinearVelocity(vel);
+			//playerBody.setLinearVelocity(vel);
+			player.getBody().setLinearVelocity(vel);
 			
 		}
 	}
@@ -270,30 +278,19 @@ public class Play extends GameState{
 		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
 		body.createFixture(fdef).setUserData("Ground");
 	
-		
-		
 	
 		ConeLight t;
 		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);
 		//Light.setContactFilter(B2DVars.BIT_BALL, (short) 0, B2DVars.BIT_BALL);
 		
-		
-		
-		
-		
-		
-		
+	
 		
 		lightList.add(t);
 		obstacleList.add(body);
 		
-		
-		
 		//System.out.println("Y object: " + body.getPosition().y);
 		
-		
-		
-		
+
 		
 	}
 	
@@ -322,17 +319,14 @@ public class Play extends GameState{
 		}
 		
 		
-		
-		
-		
 		long now = System.currentTimeMillis(); // or some other function to get the current time
 		long now2 = System.currentTimeMillis();
 		
 		  if (now - lastSprite > 1000) {
 			  
 			  
-			x = playerBody.getPosition().y;
-
+			//x = playerBody.getPosition().y;
+			  x = player.getBody().getPosition().y;
 
 			 
 			///System.out.println("x: " + x);
@@ -341,7 +335,7 @@ public class Play extends GameState{
 		  
 		  if (now - lastSprite2 > 2000) {
 				
-			 y = playerBody.getPosition().y;
+			 y = player.getBody().getPosition().y;
 			  
 			//System.out.println("y: " + y);
 		    lastSprite2 = now2;
@@ -357,28 +351,30 @@ public class Play extends GameState{
 		  }
 		  
 		handleInput();
-		if(Math.abs(playerBody.getLinearVelocity().y) > 10f){
+		if(Math.abs(player.getBody().getLinearVelocity().y) > 10f){
 		//playerBody.applyForceToCenter(0,200,true);
-			Vector2 vel = playerBody.getLinearVelocity();
+			Vector2 vel = player.getBody().getLinearVelocity();
 			vel.y = -10f;
-			playerBody.setLinearVelocity(vel);
+			player.getBody().setLinearVelocity(vel);
 			
 		}
-		handler.render();
-		System.out.println("Vp: " + playerBody.getLinearVelocity().y);
 		
-		leftWall.setTransform(0, playerBody.getPosition().y, 0);
-		leftWall.setLinearVelocity(playerBody.getLinearVelocity());
-		rightWall.setTransform((Game.V_WIDTH)/PPM, playerBody.getPosition().y, 0);
-		rightWall.setLinearVelocity(playerBody.getLinearVelocity());
+		
+		
+		handler.render();
+		System.out.println("Vp: " + player.getBody().getLinearVelocity().y);
+		
+		leftWall.setTransform(0, player.getBody().getPosition().y, 0);
+		leftWall.setLinearVelocity(player.getBody().getLinearVelocity());
+		rightWall.setTransform((Game.V_WIDTH)/PPM, player.getBody().getPosition().y, 0);
+		rightWall.setLinearVelocity(player.getBody().getLinearVelocity());
 		
 		
 		//System.out.println("Size: " + handler.lightList.size);
 		
 		world.step(dt, 1, 1);
 		
-		
-		
+		player.update(dt);
 
 	
 	}
@@ -395,24 +391,24 @@ public class Play extends GameState{
 		sb.end();
 		*/
 		
-		cam.position.set(playerBody.getPosition().x,
-				playerBody.getPosition().y
+		cam.position.set(player.getBody().getPosition().x,
+				player.getBody().getPosition().y
 				,
 				0);
 		cam.update();
 		
 		b2dCam.position.set(
-				playerBody.getPosition().x,playerBody.getPosition().y - 100/PPM
+				player.getBody().getPosition().x,player.getBody().getPosition().y - 100/PPM
 				,
 				0
 			);
 		b2dCam.update();
 			
 		sb.setProjectionMatrix(cam.combined);
+		player.render(sb);
 		sb.setProjectionMatrix(hudCam.combined);
 		
 		handler.setCombinedMatrix(b2dCam.combined);
-		
 		handler.updateAndRender();
 			
 		

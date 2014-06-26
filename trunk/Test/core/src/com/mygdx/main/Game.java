@@ -1,5 +1,6 @@
 package com.mygdx.main;
 
+import handlers.AssetLoader;
 import handlers.GameStateManager;
 import handlers.MyInput;
 import handlers.MyInputProcessor;
@@ -26,11 +27,7 @@ public class Game extends ApplicationAdapter {
 	private OrthographicCamera cam;
 	private OrthographicCamera hudCam;
 	
-	
-	
 	private GameStateManager gsm;
-	
-
 	
 	
 	@Override
@@ -39,6 +36,8 @@ public class Game extends ApplicationAdapter {
 		//img = new Texture("badlogic.jpg");
 		
 		Gdx.input.setInputProcessor(new MyInputProcessor());
+
+		AssetLoader.load();
 		
 		sb = new SpriteBatch();
 		cam = new OrthographicCamera();
@@ -66,7 +65,11 @@ public class Game extends ApplicationAdapter {
 		}
 	}
 	
-	public void dispose(){}
+	public void dispose()
+	{
+		super.dispose();
+		AssetLoader.dispose();
+	}
 	public void pause(){}
 	public void resume(){}
 	

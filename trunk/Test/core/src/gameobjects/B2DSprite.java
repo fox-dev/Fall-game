@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.mygdx.main.Game;
 
 public class B2DSprite {
 	
@@ -38,12 +39,18 @@ public class B2DSprite {
 		sb.draw(animation.getFrame(), 
 				body.getPosition().x * B2DVars.PPM - width / 2,
 				body.getPosition().y * B2DVars.PPM - height / 2
+	
 				);
 		sb.end();
+		
+		
+		
+	
 	}
 	
 	public Body getBody(){return body;}
 	public Vector2 getposition(){return body.getPosition();}
+
 	public float getWidth(){return width;}
 	public float getHeight(){return height;}
 

@@ -15,6 +15,8 @@ public class Player extends B2DSprite
 		
 		TextureRegion[] player = {AssetLoader.playerLeft, AssetLoader.playerMid, AssetLoader.playerRight};
 		setAnimation(player, 1/12f);
+		
+		
 	}
 
 

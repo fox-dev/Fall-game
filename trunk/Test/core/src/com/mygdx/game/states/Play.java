@@ -127,21 +127,6 @@ public class Play extends GameState{
 		
 		
 		
-		/*
-		//create ball
-		bdef.position.set(153/PPM, 220/PPM);
-		body = world.createBody(bdef);
-		
-		
-		CircleShape cshape = new CircleShape();
-		cshape.setRadius(5/PPM);
-		fdef.shape = cshape;
-		//fdef.restitution = 0.2f;
-		fdef.filter.categoryBits = B2DVars.BIT_BALL;
-		fdef.filter.maskBits = B2DVars.BIT_GROUND;
-		body.createFixture(fdef).setUserData("Ball");
-		*/
-		
 		
 		//create foot sensor
 		shape.setAsBox(15 / PPM, 2 / PPM, new Vector2(0, -30/PPM), 0);
@@ -192,7 +177,7 @@ public class Play extends GameState{
 		
 		//set up box2d cam
 		b2dCam = new OrthographicCamera();
-		b2dCam.setToOrtho(false, Game.V_WIDTH / PPM, Game.V_HEIGHT / PPM);
+		b2dCam.setToOrtho(false, Game.V_WIDTH/PPM , Game.V_HEIGHT/PPM );
 		
 		
 		
@@ -262,7 +247,7 @@ public class Play extends GameState{
 		BodyDef def = new BodyDef(); 
 		//def.position.set(randInt(0,(320-(Game.V_WIDTH/5)-3))/PPM,(cam.position.y - (Game.V_HEIGHT*2)/PPM));
 		//def.position.set(((Game.V_WIDTH/5)+3)/PPM,(cam.position.y - (Game.V_HEIGHT*2)/PPM));
-		def.position.set(randInt(((Game.V_WIDTH/5)+3),(320-(Game.V_WIDTH/5)-3))/PPM,(cam.position.y - (Game.V_HEIGHT*2)/PPM));
+		def.position.set(randInt(((Game.V_WIDTH/5)+3),(320-(Game.V_WIDTH/5)-3))/PPM,(b2dCam.position.y - (Game.V_HEIGHT*2)/PPM));
 
 		def.type = BodyType.StaticBody;
 		Body body = world.createBody(def);
@@ -296,8 +281,8 @@ public class Play extends GameState{
 	
 	public void update(float dt){
 		//System.out.println("Wally: "+ leftWall.getPosition().y);
-		//System.out.println("Playery: "+ playerBody.getPosition().y);
-		//System.out.println("Difference: " +  (leftWall.getPosition().y - playerBody.getPosition().y));
+		//System.out.println("Playery: "+ player.getposition().y);
+		//System.out.println("Difference: " +  (leftWall.getPosition().y - player.getposition().y));
 		iterator = obstacleList.iterator();
 		iterator2 = lightList.iterator();
 		while(iterator.hasNext()){
@@ -326,18 +311,18 @@ public class Play extends GameState{
 			  
 			  
 			//x = playerBody.getPosition().y;
-			  x = player.getBody().getPosition().y;
+			  x = player.getposition().y;
 
 			 
-			///System.out.println("x: " + x);
+			System.out.println("x: " + x);
 		    lastSprite = now;
 		  }
 		  
 		  if (now - lastSprite2 > 2000) {
 				
-			 y = player.getBody().getPosition().y;
+			 y = player.getposition().y;
 			  
-			//System.out.println("y: " + y);
+			System.out.println("y: " + y);
 		    lastSprite2 = now2;
 		  }
 		  
@@ -345,7 +330,7 @@ public class Play extends GameState{
 			  addObstacles();
 			  
 			  //lastSprite2 = now2;
-			 // System.out.println("Abs: " + Math.abs(x-y));
+			  System.out.println("Abs: " + Math.abs(x-y));
 			  x = 0f;
 			  y = 0f;
 		  }
@@ -362,7 +347,7 @@ public class Play extends GameState{
 		
 		
 		handler.render();
-		System.out.println("Vp: " + player.getBody().getLinearVelocity().y);
+		//System.out.println("Vp: " + player.getBody().getLinearVelocity().y);
 		
 		leftWall.setTransform(0, player.getBody().getPosition().y, 0);
 		leftWall.setLinearVelocity(player.getBody().getLinearVelocity());
@@ -391,14 +376,16 @@ public class Play extends GameState{
 		sb.end();
 		*/
 		
-		cam.position.set(player.getBody().getPosition().x,
-				player.getBody().getPosition().y
-				,
-				0);
+		cam.position.set(
+				player.getposition().x * PPM,
+				(player.getposition().y) * PPM - 100,
+				0
+			);
 		cam.update();
 		
 		b2dCam.position.set(
-				player.getBody().getPosition().x,player.getBody().getPosition().y - 100/PPM
+				player.getposition().x,player.getposition().y - 100/PPM
+
 				,
 				0
 			);
@@ -406,7 +393,8 @@ public class Play extends GameState{
 			
 		sb.setProjectionMatrix(cam.combined);
 		player.render(sb);
-		sb.setProjectionMatrix(hudCam.combined);
+		
+		
 		
 		handler.setCombinedMatrix(b2dCam.combined);
 		handler.updateAndRender();

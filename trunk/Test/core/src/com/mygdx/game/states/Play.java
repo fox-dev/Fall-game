@@ -45,10 +45,10 @@ import com.mygdx.main.Game;
 
 public class Play extends GameState{
 	private boolean debug = true;
-	float x = 0;
-	float y = 0;
+	float x = 0, y = 0, x2 = 0, y2 = 0;
 	long lastSprite = 0;
 	long lastSprite2 = 0;
+	long nextSprite = 0, nextSprite2 = 0;
 	
 	int lights = 0;
 	
@@ -240,12 +240,15 @@ public class Play extends GameState{
 		obstacleList.add(body);
 		lightList.add(t);
 		
-		//addWallPlatform();
-		
 		//System.out.println("Y object: " + body.getPosition().y);
 		
 
 		
+	}
+	
+	public void addPlatforms()
+	{
+		addWallPlatform();
 	}
 	
 	public void update(float dt){
@@ -267,25 +270,34 @@ public class Play extends GameState{
 				
 			}
 			
-			
-			
-			
 		}
 		
 		
 		long now = System.currentTimeMillis(); // or some other function to get the current time
 		long now2 = System.currentTimeMillis();
 		
-		  if (now - lastSprite > 1000) {
-			  
-			  
-			//x = playerBody.getPosition().y;
-			  x = player.getposition().y;
-
+		if(now - lastSprite >= nextSprite)
+		{
+			addObstacles();
+			lastSprite = now;
+			nextSprite = (long) nextSprite();
+		}
+		
+		if(now2 - lastSprite2 >= nextSprite2)
+		{
+			addPlatforms();
+			lastSprite2 = now2;
+			nextSprite2 = (long) nextSprite();
+		}
+		
+		 /*if (now - lastSprite > 1000) {
 			 
+			 x = player.getposition().y;
+			  
+			  
 			System.out.println("x: " + x);
 		    lastSprite = now;
-		  }
+		 }
 		  
 		  if (now - lastSprite2 > 2000) {
 				
@@ -296,13 +308,16 @@ public class Play extends GameState{
 		  }
 		  
 		  if(Math.abs(x-y)/PPM > 3/PPM && (x != 0f) && (y != 0f)){
-			  addObstacles();
+			  if(Math.random() > .5)
+				  addObstacles();
+			  if(Math.random() > .3)
+				  addPlatforms();
 			  
 			  //lastSprite2 = now2;
 			  System.out.println("Abs: " + Math.abs(x-y));
 			  x = 0f;
 			  y = 0f;
-		  }
+		  }*/
 		  
 		handleInput();
 		if(Math.abs(player.getBody().getLinearVelocity().y) > 10f){
@@ -443,14 +458,23 @@ public class Play extends GameState{
 		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
 		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
 		body.createFixture(fdef).setUserData("Wall Platform");
-				
+		
+		ConeLight t;
+		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);		
+		
 		obstacleList.add(body);
+		lightList.add(t);
 	}
 	
 	public float getWallPos()
 	{
-		if(Math.random() > .5){return leftWall.getPosition().x + (Game.V_WIDTH/8)/PPM;}
-		else{return rightWall.getPosition().x - (Game.V_WIDTH/8)/PPM;}
+		if(Math.random() > .5){return leftWall.getPosition().x + ((Game.V_WIDTH/8)/PPM) / 2;}
+		else{return rightWall.getPosition().x - ((Game.V_WIDTH/8)/PPM) / 2;}
+	}
+	
+	public float nextSprite()
+	{
+		return randInt(2000,4000);
 	}
 		
 }

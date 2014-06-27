@@ -39,13 +39,8 @@ public class B2DSprite {
 		sb.draw(animation.getFrame(), 
 				body.getPosition().x * B2DVars.PPM - width / 2,
 				body.getPosition().y * B2DVars.PPM - height / 2
-	
 				);
 		sb.end();
-		
-		
-		
-	
 	}
 	
 	public Body getBody(){return body;}

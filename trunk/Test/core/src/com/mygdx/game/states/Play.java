@@ -109,37 +109,7 @@ public class Play extends GameState{
 		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
 		body.createFixture(fdef).setUserData("Ground");
 		
-		
-		
-		//create player
-		bdef.position.set(160/PPM, 300/PPM);
-		bdef.type = BodyType.DynamicBody;
-		//playerBody = world.createBody(bdef);
-		Body pBody = world.createBody(bdef);
-		
-		shape.setAsBox(30/PPM, 30/PPM);
-		fdef.shape = shape;
-		//fdef.restitution = 1f;
-		fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
-		fdef.filter.maskBits = B2DVars.BIT_GROUND;
-		//playerBody.createFixture(fdef).setUserData("Player");
-		pBody.createFixture(fdef).setUserData("Player");
-		
-		
-		
-		
-		//create foot sensor
-		shape.setAsBox(15 / PPM, 2 / PPM, new Vector2(0, -30/PPM), 0);
-		fdef.shape = shape;
-		fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
-		fdef.filter.maskBits = B2DVars.BIT_GROUND;
-		fdef.isSensor = true;
-		//playerBody.createFixture(fdef).setUserData("foot");
-		pBody.createFixture(fdef).setUserData("foot");
-		
-		//create player
-		player = new Player(pBody);
-		
+		createPlayer();
 		
 		//Left wall
 		bdef = new BodyDef(); 
@@ -263,15 +233,14 @@ public class Play extends GameState{
 		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
 		body.createFixture(fdef).setUserData("Ground");
 	
-	
 		ConeLight t;
 		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);
 		//Light.setContactFilter(B2DVars.BIT_BALL, (short) 0, B2DVars.BIT_BALL);
 		
-	
-		
-		lightList.add(t);
 		obstacleList.add(body);
+		lightList.add(t);
+		
+		//addWallPlatform();
 		
 		//System.out.println("Y object: " + body.getPosition().y);
 		
@@ -403,9 +372,7 @@ public class Play extends GameState{
 		//System.out.println("x: " + cam.position.x/PPM);
 		//System.out.println("y: " + cam.position.y*100);
 		//System.out.println(playerBody.getLinearVelocity().y);
-		
-		
-		
+	
 		
 		// draw box2d
 		if(debug) {
@@ -416,6 +383,74 @@ public class Play extends GameState{
 	
 	public void dispose(){
 		handler.dispose();
+	}
+	
+	public void createPlayer()
+	{
+		//create player body
+		BodyDef bdef = new BodyDef();
+		bdef.position.set(160/PPM, 300/PPM);
+		bdef.type = BodyType.DynamicBody;
+		//playerBody = world.createBody(bdef);
+		Body pBody = world.createBody(bdef);
+				
+		//create box shape for player collision box
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(20/PPM, 20/PPM);
+		
+		//create fixture for player
+		FixtureDef fdef = new FixtureDef();
+		fdef.shape = shape;
+		//fdef.restitution = 1f;
+		fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
+		fdef.filter.maskBits = B2DVars.BIT_GROUND;
+		//playerBody.createFixture(fdef).setUserData("Player");
+		pBody.createFixture(fdef).setUserData("Player");
+		shape.dispose();
+				
+		//create foot sensor
+		shape = new PolygonShape();
+		shape.setAsBox(5 / PPM, 2 / PPM, new Vector2(0, -20/PPM), 0);
+		
+		//create fixture for foot
+		fdef.shape = shape;
+		fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
+		fdef.filter.maskBits = B2DVars.BIT_GROUND;
+		fdef.isSensor = true;
+		//playerBody.createFixture(fdef).setUserData("foot");
+		pBody.createFixture(fdef).setUserData("foot");
+				
+		//create player
+		player = new Player(pBody);
+		pBody.setUserData(player);
+	}
+	
+	public void addWallPlatform()
+	{
+		//adding platforms to the walls
+		BodyDef def = new BodyDef(); 
+		def.position.set(getWallPos(), (b2dCam.position.y - (Game.V_HEIGHT*2)/PPM));
+
+		def.type = BodyType.StaticBody;
+		Body body = world.createBody(def);
+				
+		PolygonShape shape2 = new PolygonShape();
+		shape2.setAsBox((Game.V_WIDTH/8)/PPM, 5/PPM); //half width half height, so 100, 10
+				
+		FixtureDef fdef = new FixtureDef();
+		fdef.shape = shape2;
+		fdef.density = 0.4f;
+		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
+		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
+		body.createFixture(fdef).setUserData("Wall Platform");
+				
+		obstacleList.add(body);
+	}
+	
+	public float getWallPos()
+	{
+		if(Math.random() > .5){return leftWall.getPosition().x + (Game.V_WIDTH/8)/PPM;}
+		else{return rightWall.getPosition().x - (Game.V_WIDTH/8)/PPM;}
 	}
 		
 }

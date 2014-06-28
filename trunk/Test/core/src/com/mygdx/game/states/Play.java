@@ -48,7 +48,7 @@ public class Play extends GameState{
 	float x = 0, y = 0, x2 = 0, y2 = 0;
 	long lastSprite = 0;
 	long lastSprite2 = 0;
-	long nextSprite = 0, nextSprite2 = 0;
+	long nextSprite = 2000, nextSprite2 = 3000;
 	
 	int lights = 0;
 	
@@ -67,8 +67,6 @@ public class Play extends GameState{
 	private OrthographicCamera b2dCam;
 	
 	RayHandler handler;
-	
-	private AssetLoader assets;
 	
 	//private Body playerBody;
 	private Player player;
@@ -246,11 +244,6 @@ public class Play extends GameState{
 		
 	}
 	
-	public void addPlatforms()
-	{
-		addWallPlatform();
-	}
-	
 	public void update(float dt){
 		//System.out.println("Wally: "+ leftWall.getPosition().y);
 		//System.out.println("Playery: "+ player.getposition().y);
@@ -280,14 +273,14 @@ public class Play extends GameState{
 		{
 			addObstacles();
 			lastSprite = now;
-			nextSprite = (long) nextSprite();
+			nextSprite = (long) randInt(2000, 4000);
 		}
 		
 		if(now2 - lastSprite2 >= nextSprite2)
 		{
 			addPlatforms();
 			lastSprite2 = now2;
-			nextSprite2 = (long) nextSprite();
+			nextSprite2 = (long) randInt(1000, 5000);
 		}
 		
 		 /*if (now - lastSprite > 1000) {
@@ -440,17 +433,60 @@ public class Play extends GameState{
 		pBody.setUserData(player);
 	}
 	
-	public void addWallPlatform()
+	public void addPlatforms()
+	{
+		if(Math.random() <= .25)
+		{
+			addLeftPlatform();
+			addRightPlatform();
+		}
+		else
+		{
+			if(Math.random() < .5)
+				addLeftPlatform();
+			else
+				addRightPlatform();
+		}
+		
+	}
+	
+	public void addLeftPlatform()
 	{
 		//adding platforms to the walls
 		BodyDef def = new BodyDef(); 
-		def.position.set(getWallPos(), (b2dCam.position.y - (Game.V_HEIGHT*2)/PPM));
+		def.position.set(leftWall.getPosition().x + ((Game.V_WIDTH/10)/PPM), (b2dCam.position.y - (Game.V_HEIGHT*2)/PPM));
 
 		def.type = BodyType.StaticBody;
 		Body body = world.createBody(def);
 				
 		PolygonShape shape2 = new PolygonShape();
-		shape2.setAsBox((Game.V_WIDTH/8)/PPM, 5/PPM); //half width half height, so 100, 10
+		shape2.setAsBox((Game.V_WIDTH/10)/PPM, 5/PPM); //half width half height, so 100, 10
+				
+		FixtureDef fdef = new FixtureDef();
+		fdef.shape = shape2;
+		fdef.density = 0.4f;
+		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
+		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
+		body.createFixture(fdef).setUserData("Wall Platform");
+		
+		ConeLight t;
+		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);		
+		
+		obstacleList.add(body);
+		lightList.add(t);
+	}
+	
+	public void addRightPlatform()
+	{
+		//adding platforms to the walls
+		BodyDef def = new BodyDef(); 
+		def.position.set(rightWall.getPosition().x - ((Game.V_WIDTH/10)/PPM), (b2dCam.position.y - (Game.V_HEIGHT*2)/PPM));
+
+		def.type = BodyType.StaticBody;
+		Body body = world.createBody(def);
+				
+		PolygonShape shape2 = new PolygonShape();
+		shape2.setAsBox((Game.V_WIDTH/10)/PPM, 5/PPM); //half width half height, so 100, 10
 				
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape2;
@@ -468,13 +504,8 @@ public class Play extends GameState{
 	
 	public float getWallPos()
 	{
-		if(Math.random() > .5){return leftWall.getPosition().x + ((Game.V_WIDTH/8)/PPM) / 2;}
-		else{return rightWall.getPosition().x - ((Game.V_WIDTH/8)/PPM) / 2;}
-	}
-	
-	public float nextSprite()
-	{
-		return randInt(2000,4000);
+		if(Math.random() > .5){return leftWall.getPosition().x + ((Game.V_WIDTH/10)/PPM);}
+		else{return rightWall.getPosition().x - ((Game.V_WIDTH/10)/PPM);}
 	}
 		
 }

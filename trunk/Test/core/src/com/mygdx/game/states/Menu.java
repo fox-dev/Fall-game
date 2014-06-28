@@ -11,7 +11,7 @@ public class Menu extends GameState
 	private Animation animation;
 	private GameButton playButton;
 	
-	private World world
+	private World world;
 	private Box2DDebugRenderer b2dr;
 	
 	public Menu()

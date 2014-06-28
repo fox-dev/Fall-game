@@ -35,19 +35,26 @@ public class MyInputProcessor extends InputAdapter{
 	
 	public boolean touchDown(int screenX, int screenY, int pointer, int button){
 		System.out.println("Down: " + screenX);
+		MyInput.x = screenX;
+		MyInput.y = screenY;
+		MyInput.down = true;
+		
 		if(screenX < (365)){
 			MyInput.setKey(MyInput.BUTTON2, true);
 		}
 		else{
 			MyInput.setKey(MyInput.BUTTON3, true);
 		}
-	
-		
+
 		return true;
 	}
 	
 	public boolean touchUp(int screenX, int screenY, int pointer, int button){
 		System.out.println("Up " + screenX);
+		MyInput.x = screenX;
+		MyInput.y = screenY;
+		MyInput.down = false;
+		
 		if(screenX < (365)){
 			MyInput.setKey(MyInput.BUTTON2, false);
 		}
@@ -57,6 +64,28 @@ public class MyInputProcessor extends InputAdapter{
 		
 		return true;
 	}
+	
+	public boolean mouseMoved(int x, int y)
+	{
+		MyInput.x = x;
+		MyInput.y = y;
+		return true;
+	}
+	
+	public boolean touchDragged(int x, int y, int pointer)
+	{
+		MyInput.x = x;
+		MyInput.y = y;
+		MyInput.down = true;
+		if(x < (365)){
+			MyInput.setKey(MyInput.BUTTON2, true);
+		}
+		else{
+			MyInput.setKey(MyInput.BUTTON3, true);
+		}
+		return true;
+	}
+	
 	
 		
 	

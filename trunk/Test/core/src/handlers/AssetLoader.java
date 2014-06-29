@@ -19,7 +19,7 @@ public class AssetLoader {
 	
 	public static void load()
 	{
-		texture = new Texture(Gdx.files.internal("data/SpriteSheetObjectsNew2.png"));
+		texture = new Texture(Gdx.files.internal("SpriteSheetObjectsNew2.png"));
 		
 		playerLeft = new TextureRegion(texture, 4, 20, 43, 47);
 		playerMid = new TextureRegion(texture, 62, 20, 44, 47);

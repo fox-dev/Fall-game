@@ -52,6 +52,8 @@ public class Play extends GameState{
 	
 	int lights = 0;
 	
+	float runTime;
+	
 	
 	//private BitmapFont font = new BitmapFont();
 	
@@ -166,7 +168,7 @@ public class Play extends GameState{
 			//System.out.println("pressed z");
 			//if(cl.isPlayerOnGround()){
 				//playerBody.applyForceToCenter(0,200,true);
-				player.getBody().applyForceToCenter(0,200,true);
+				//player.getBody().applyForceToCenter(0,200,true);
 	
 			//}
 		}
@@ -245,9 +247,12 @@ public class Play extends GameState{
 	}
 	
 	public void update(float dt){
-		//System.out.println("Wally: "+ leftWall.getPosition().y);
-		//System.out.println("Playery: "+ player.getposition().y);
-		//System.out.println("Difference: " +  (leftWall.getPosition().y - player.getposition().y));
+		runTime += dt;
+		System.out.println("Runtime: " + runTime);
+		
+		System.out.println("Wally: "+ leftWall.getPosition().y);
+		System.out.println("Playery: "+ player.getposition().y);
+		System.out.println("Difference: " +  (leftWall.getPosition().y - player.getposition().y));
 		iterator = obstacleList.iterator();
 		iterator2 = lightList.iterator();
 		while(iterator.hasNext()){
@@ -322,14 +327,35 @@ public class Play extends GameState{
 		}
 		
 		
+		Vector2 n = new Vector2(0,player.getBody().getLinearVelocity().y);
 		
+		/*
+		if((leftWall.getPosition().y - player.getposition().y) > 0){
+			leftWall.setTransform(0, player.getBody().getPosition().y, 0);
+			rightWall.setTransform((Game.V_WIDTH)/PPM, player.getBody().getPosition().y, 0);
+		}
+		*/
 		handler.render();
 		//System.out.println("Vp: " + player.getBody().getLinearVelocity().y);
 		
-		leftWall.setTransform(0, player.getBody().getPosition().y, 0);
-		leftWall.setLinearVelocity(player.getBody().getLinearVelocity());
-		rightWall.setTransform((Game.V_WIDTH)/PPM, player.getBody().getPosition().y, 0);
-		rightWall.setLinearVelocity(player.getBody().getLinearVelocity());
+		leftWall.setTransform(leftWall.getPosition().x, player.getBody().getPosition().y, 0);
+		leftWall.setLinearVelocity(n);
+		rightWall.setTransform(rightWall.getPosition().x, player.getBody().getPosition().y, 0);
+		rightWall.setLinearVelocity(n);
+		
+		
+		if(runTime > 3 && runTime < 10){
+		System.out.println("GOING---------------------------------------");
+			leftWall.setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
+			rightWall.setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));
+		}
+		
+		if(runTime > 10 && leftWall.getPosition().x >= 0 && rightWall.getPosition().x <= game.V_WIDTH/PPM ){
+			System.out.println("RESTORING---------------------------------------");
+				leftWall.setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));
+				rightWall.setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
+		}
+		
 		
 		
 		//System.out.println("Size: " + handler.lightList.size);

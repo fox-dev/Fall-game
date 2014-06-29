@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -44,6 +45,10 @@ import com.mygdx.main.Game;
 
 
 public class Play extends GameState{
+	
+	float ASPECT_RATIO = (float)Game.V_HEIGHT/(float)Game.V_WIDTH;
+	private Rectangle viewport;
+	
 	private boolean debug = true;
 	float x = 0, y = 0, x2 = 0, y2 = 0;
 	long lastSprite = 0;
@@ -372,6 +377,14 @@ public class Play extends GameState{
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		
+		
+		resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+		Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
+                (int) viewport.width, (int) viewport.height);
+		
+		
+		
 		/*
 		sb.setProjectionMatrix(cam.combined);
 		sb.begin();
@@ -430,7 +443,7 @@ public class Play extends GameState{
 				
 		//create box shape for player collision box
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(20/PPM, 20/PPM);
+		shape.setAsBox(10/PPM, 10/PPM);
 		
 		//create fixture for player
 		FixtureDef fdef = new FixtureDef();
@@ -532,6 +545,31 @@ public class Play extends GameState{
 	{
 		if(Math.random() > .5){return leftWall.getPosition().x + ((Game.V_WIDTH/10)/PPM);}
 		else{return rightWall.getPosition().x - ((Game.V_WIDTH/10)/PPM);}
+	}
+	
+	public void resize(int width, int height) {
+		float aspectRatio = (float)width / (float)height;
+		float scale = 1f;
+		Vector2 crop = new Vector2(0f, 0f);
+		
+		if(aspectRatio > ASPECT_RATIO)
+        {
+            scale = (float)height/(float)Game.V_HEIGHT;
+            crop.x = (width - Game.V_WIDTH*scale)/2f;
+        }
+        else if(aspectRatio < ASPECT_RATIO)
+        {
+            scale = (float)width/(float)Game.V_WIDTH;
+            crop.y = (height - Game.V_HEIGHT*scale)/2f;
+        }
+        else
+        {
+            scale = (float)width/(float)Game.V_WIDTH;
+        }
+
+        float w = (float)Game.V_WIDTH*scale;
+        float h = (float)Game.V_HEIGHT*scale;
+        viewport = new Rectangle(crop.x, crop.y, w, h);
 	}
 		
 }

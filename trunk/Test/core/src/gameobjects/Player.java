@@ -25,8 +25,8 @@ public class Player extends B2DSprite
 	{
 		sb.begin();
 		sb.draw(animation.getFrame(), 
-				body.getPosition().x * B2DVars.PPM - width / 2,
-				body.getPosition().y * B2DVars.PPM - height / 2, 42, 45
+				body.getPosition().x * B2DVars.PPM - 10,
+				body.getPosition().y * B2DVars.PPM - 10, 20, 20
 	
 				);
 		sb.end();

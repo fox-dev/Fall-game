@@ -1,6 +1,7 @@
 package handlers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
@@ -19,7 +20,7 @@ public class GameButton
 	private boolean clicked;
 
 	private String text; 
-	private TextureRegion[] font;
+	//private TextureRegion[] font;
 	
 	public GameButton(TextureRegion reg, float x, float y, OrthographicCamera cam)
 	{
@@ -32,8 +33,8 @@ public class GameButton
 		height = reg.getRegionHeight();
 		vec = new Vector3();
 		
-		Texture tex = AssetLoader.button;
-		font = new TextureRegion[11];
+		//Texture tex = AssetLoader.button;
+		//font = new TextureRegion[11];
 		
 	}
 	
@@ -63,7 +64,7 @@ public class GameButton
 		sb.draw(reg, x - width / 2, y - height / 2);
 		if(text != null)
 		{
-			drawString(sb, text, x, y);
+			//drawString(sb, text, x, y);
 		}
 		
 		sb.end();

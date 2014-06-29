@@ -53,7 +53,7 @@ public class Play extends GameState{
 	float x = 0, y = 0, x2 = 0, y2 = 0;
 	long lastSprite = 0;
 	long lastSprite2 = 0;
-	long nextSprite = 2000, nextSprite2 = 3000;
+	long nextSprite = 2, nextSprite2 = 3;
 	
 	int lights = 0;
 	
@@ -256,8 +256,8 @@ public class Play extends GameState{
 		System.out.println("Runtime: " + runTime);
 		
 		System.out.println("Wally: "+ leftWall.getPosition().y);
-		System.out.println("Playery: "+ player.getposition().y);
-		System.out.println("Difference: " +  (leftWall.getPosition().y - player.getposition().y));
+		System.out.println("Playery: "+ player.getPosition().y);
+		System.out.println("Difference: " +  (leftWall.getPosition().y - player.getPosition().y));
 		iterator = obstacleList.iterator();
 		iterator2 = lightList.iterator();
 		while(iterator.hasNext()){
@@ -279,23 +279,25 @@ public class Play extends GameState{
 		long now = System.currentTimeMillis(); // or some other function to get the current time
 		long now2 = System.currentTimeMillis();
 		
-		if(now - lastSprite >= nextSprite)
+		x = player.getPosition().y;
+		y = player.getPosition().y;
+		if(Math.abs(x - x2)/PPM >= nextSprite/PPM)
 		{
 			addObstacles();
-			lastSprite = now;
-			nextSprite = (long) randInt(2000, 4000);
+			x2 = x;
+			nextSprite = (long) randInt(3, 7);
 		}
 		
-		if(now2 - lastSprite2 >= nextSprite2)
+		if(Math.abs(y - y2)/PPM >= nextSprite/PPM)
 		{
 			addPlatforms();
-			lastSprite2 = now2;
-			nextSprite2 = (long) randInt(1000, 5000);
+			y2 = y;
+			nextSprite2 = (long) randInt(2, 6);
 		}
 		
 		 /*if (now - lastSprite > 1000) {
 			 
-			 x = player.getposition().y;
+			 x = player.getPosition().y;
 			  
 			  
 			System.out.println("x: " + x);
@@ -304,7 +306,7 @@ public class Play extends GameState{
 		  
 		  if (now - lastSprite2 > 2000) {
 				
-			 y = player.getposition().y;
+			 y = player.getPosition().y;
 			  
 			System.out.println("y: " + y);
 		    lastSprite2 = now2;
@@ -335,7 +337,7 @@ public class Play extends GameState{
 		Vector2 n = new Vector2(0,player.getBody().getLinearVelocity().y);
 		
 		/*
-		if((leftWall.getPosition().y - player.getposition().y) > 0){
+		if((leftWall.getPosition().y - player.getPosition().y) > 0){
 			leftWall.setTransform(0, player.getBody().getPosition().y, 0);
 			rightWall.setTransform((Game.V_WIDTH)/PPM, player.getBody().getPosition().y, 0);
 		}
@@ -393,14 +395,14 @@ public class Play extends GameState{
 		*/
 		
 		cam.position.set(
-				player.getposition().x * PPM,
-				(player.getposition().y) * PPM - 100,
+				player.getPosition().x * PPM,
+				(player.getPosition().y) * PPM - 100,
 				0
 			);
 		cam.update();
 		
 		b2dCam.position.set(
-				player.getposition().x,player.getposition().y - 100/PPM
+				player.getPosition().x,player.getPosition().y - 100/PPM
 
 				,
 				0
@@ -457,7 +459,7 @@ public class Play extends GameState{
 				
 		//create foot sensor
 		shape = new PolygonShape();
-		shape.setAsBox(5 / PPM, 2 / PPM, new Vector2(0, -20/PPM), 0);
+		shape.setAsBox(5 / PPM, 2 / PPM, new Vector2(0, -10/PPM), 0);
 		
 		//create fixture for foot
 		fdef.shape = shape;

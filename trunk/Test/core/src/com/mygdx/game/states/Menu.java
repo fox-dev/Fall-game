@@ -18,6 +18,7 @@ public class Menu extends GameState
 	public Menu(GameStateManager gsm)
 	{
 		super(gsm);
+		//Test
 	}
 
 	@Override

@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="src" path="/Fall-core"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry exported="true" kind="src" path="/Fall-core"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-android/1.2.0/2ed57a7d155e5060ea773eed21804a23342fb47/gdx-backend-android-1.2.0.jar" sourcepath="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-android/1.2.0/47559d3e104a68ddd5dc20debe33a5545eaf5398/gdx-backend-android-1.2.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.2.0/cc39fa3dbad14b247655266c10e64367418564bd/gdx-box2d-1.2.0.jar" sourcepath="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.2.0/467a25845b51beec9ea5b18e2e4e49f6bc30e28b/gdx-box2d-1.2.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.box2dlights/box2dlights/1.2/8b3baf8bd6d5fdf7052d9798977133f46a9e7a05/box2dlights-1.2.jar" sourcepath="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.box2dlights/box2dlights/1.2/50b3097b9588b328c53bc2e21fd115e89fc06265/box2dlights-1.2-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-bullet/1.2.0/48830f81987d77387707bf5328e2c19d096f83/gdx-bullet-1.2.0.jar" sourcepath="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-bullet/1.2.0/f4b71968660373a02e090be0609a811a3eda7177/gdx-bullet-1.2.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.2.0/a9a2c9513bf0dc697e20e1eee35802e024972746/gdx-freetype-1.2.0.jar" sourcepath="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.2.0/4683b1a24f5c014518cc8d6578ae543287d580f1/gdx-freetype-1.2.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers/1.2.0/30ca84734509b8981c6f5c6bcb870a4ed7460562/gdx-controllers-1.2.0.jar" sourcepath="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers/1.2.0/daf2d60f097bc37f218939be977deb5f344bc620/gdx-controllers-1.2.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers-android/1.2.0/cd1bbcf3a3e4481406724d29aaf861fbc3959ad2/gdx-controllers-android-1.2.0.jar" sourcepath="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers-android/1.2.0/908d35f7cb1c5e7cce31b66e77beb50fc79134b9/gdx-controllers-android-1.2.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.2.0/eb55d6eb1165daf6be23189767c19d811ca5eb36/gdx-1.2.0.jar" sourcepath="C:/Users/Andrew/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.2.0/b7439d76fa8ef2b56999682df928f5cf6b489d2d/gdx-1.2.0-sources.jar"/>
+	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

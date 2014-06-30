@@ -550,7 +550,13 @@ public class Play extends GameState{
 	}
 	
 	public void resize(int width, int height) {
-		float aspectRatio = (float)width / (float)height;
+		float aspectRatio;
+		if(Gdx.graphics.getHeight() < Gdx.graphics.getWidth()){
+			aspectRatio = (float)width / (float)height;
+		}
+		else{
+			aspectRatio = (float)height / (float)width;
+		}
 		float scale = 1f;
 		Vector2 crop = new Vector2(0f, 0f);
 		

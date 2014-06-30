@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>my-gdx-game-desktop</name>
+	<name>desktop</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -12,13 +12,20 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.springsource.ide.eclipse.gradle.core.nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
 	<linkedResources>
 		<link>
 			<name>assets</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/android/assets</locationURI>
+			<locationURI>copy_PARENT/android/assets</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>copy_PARENT</name>
+			<value>$%7BPARENT-1-PROJECT_LOC%7D/Test</value>
+		</variable>
+	</variableList>
 </projectDescription>

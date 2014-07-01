@@ -33,6 +33,8 @@ public class MainGame extends Game {
 	public void create () {
 		Gdx.input.setInputProcessor(new MyInputProcessor());
 		
+		
+		
 		AssetLoader.load();
 		
 		sb = new SpriteBatch();
@@ -40,7 +42,13 @@ public class MainGame extends Game {
 		cam.setToOrtho(false, V_WIDTH, V_HEIGHT);
 		
 		gsm = new GameScreenManager(this);
-		setScreen(gsm.getScreen());
+		
+		gsm.setScreen(101);
+		
+		gsm.set();
+		
+		
+
 
 	}
 

@@ -42,6 +42,9 @@ import handlers.MyInput;
 
 public class GameScreen extends AbstractScreen {
 	
+	public static final float STEP = 1 / 60f;
+	private float accum;
+	
 	float ASPECT_RATIO = (float)MainGame.V_HEIGHT/(float)MainGame.V_WIDTH;
 	private Rectangle viewport;
 	
@@ -555,8 +558,15 @@ public class GameScreen extends AbstractScreen {
 	}
 
 	@Override
-	public void render(float delta) {
-		// TODO Auto-generated method stub
+	public void render(float delta) 
+	{
+		accum += Gdx.graphics.getDeltaTime();
+		while(accum >= STEP){
+			accum -= STEP;
+			gsm.update(STEP);
+			gsm.render();
+			MyInput.update();
+		}
 		
 	}
 

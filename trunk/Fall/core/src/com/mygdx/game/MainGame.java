@@ -40,10 +40,11 @@ public class MainGame extends Game {
 		cam.setToOrtho(false, V_WIDTH, V_HEIGHT);
 		
 		gsm = new GameScreenManager(this);
+		setScreen(gsm.getScreen());
 
 	}
 
-	@Override
+	/*@Override
 	public void render () {
 		accum += Gdx.graphics.getDeltaTime();
 		while(accum >= STEP){
@@ -53,7 +54,7 @@ public class MainGame extends Game {
 			MyInput.update();
 		}
 		
-	}
+	}*/
 	
 	public void dispose()
 	{

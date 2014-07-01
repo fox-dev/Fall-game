@@ -60,6 +60,11 @@ public class GameScreenManager {
 		gameScreens.push(getScreen(screen));
 	}
 	
+	public AbstractScreen getScreen()
+	{
+		return gameScreens.peek();
+	}
+	
 	
 	
 	

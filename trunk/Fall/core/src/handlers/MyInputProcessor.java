@@ -36,13 +36,15 @@ public class MyInputProcessor extends InputAdapter{
 		MyInput.x = screenX;
 		MyInput.y = screenY;
 		MyInput.down = true;
-		
+		MyInput.setKey(MyInput.BUTTON1, true);
+		/*
 		if(screenX < (365)){
 			MyInput.setKey(MyInput.BUTTON2, true);
 		}
 		else{
 			MyInput.setKey(MyInput.BUTTON3, true);
 		}
+		*/
 
 		return true;
 	}
@@ -53,12 +55,15 @@ public class MyInputProcessor extends InputAdapter{
 		MyInput.y = screenY;
 		MyInput.down = false;
 		
+		MyInput.setKey(MyInput.BUTTON1, false);
+		/*
 		if(screenX < (365)){
 			MyInput.setKey(MyInput.BUTTON2, false);
 		}
 		else{
 			MyInput.setKey(MyInput.BUTTON3, false);
 		}
+		*/
 		
 		return true;
 	}
@@ -75,12 +80,15 @@ public class MyInputProcessor extends InputAdapter{
 		MyInput.x = x;
 		MyInput.y = y;
 		MyInput.down = true;
+		
+		/*
 		if(x < (365)){
 			MyInput.setKey(MyInput.BUTTON2, true);
 		}
 		else{
 			MyInput.setKey(MyInput.BUTTON3, true);
 		}
+		*/
 		return true;
 	}
 	

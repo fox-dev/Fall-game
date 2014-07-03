@@ -16,7 +16,7 @@ public class MyContactListener implements ContactListener {
 		Fixture fa = c.getFixtureA();
 		Fixture fb = c.getFixtureB();
 		
-		//System.out.println(fa.getUserData() + ", " + fb.getUserData());
+		System.out.println(fa.getUserData() + ", " + fb.getUserData());
 		
 		if(fa.getUserData() != null && fa.getUserData().equals("foot")){
 			playerOnGround = true;

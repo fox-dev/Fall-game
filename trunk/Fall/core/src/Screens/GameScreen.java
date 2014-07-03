@@ -17,6 +17,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -37,6 +38,10 @@ import handlers.MyContactListener;
 import handlers.MyInput;
 
 public class GameScreen extends AbstractScreen {
+	
+	BitmapFont font;
+	
+	private boolean gameOverFlag = false;
 	
 
 	float ASPECT_RATIO = (float)MainGame.V_HEIGHT/(float)MainGame.V_WIDTH;
@@ -69,14 +74,21 @@ public class GameScreen extends AbstractScreen {
 
 	private MyContactListener cl;
 	
+	float accelX = 0;
+	
 	public GameScreen(GameScreenManager gsm) {
 		super(gsm);
 		
+		gameOverFlag = false;
+		
+		font = new BitmapFont();
 		
 		world = new World(new Vector2(0, -9.81f), true);
 		
 		cl = new MyContactListener();
 		world.setContactListener(cl);
+		
+		
 		
 		b2dr = new Box2DDebugRenderer();
 		
@@ -88,68 +100,101 @@ public class GameScreen extends AbstractScreen {
 		
 		handler = new RayHandler(world);
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
+		handler.setAmbientLight(0.3f);
 		
 	}
 	
 	public void handleInput(){
-		if(MyInput.isPressed(MyInput.BUTTON1)){
-			//System.out.println("pressed z");
-			//gsm.setScreen(100);
-			//gsm.set();
-			//if(cl.isPlayerOnGround()){
+		
+		//System.out.println(accelX);
+		
+		if(!gameOverFlag){
+			if(accelX > -2 && accelX < 2 ){
+				Vector2 vel = player.getBody().getLinearVelocity();
+				vel.x = 0f;
+			
+				player.getBody().setLinearVelocity(vel);
+			}
+			else if(accelX > -2){
+				Vector2 vel = player.getBody().getLinearVelocity();
+				vel.x = -1f;
+		
+				player.getBody().setLinearVelocity(vel);
+			}
+			else if(accelX < 2){
+				Vector2 vel = player.getBody().getLinearVelocity();
+				vel.x = 1f;
+			
+				player.getBody().setLinearVelocity(vel);
+			
+			}
+		
+			if(MyInput.isPressed(MyInput.BUTTON1)){
+				//System.out.println("pressed z");
+				//gsm.setScreen(100);
+				//gsm.set();
+				//if(cl.isPlayerOnGround()){
 				//playerBody.applyForceToCenter(0,200,true);
 				//player.getBody().applyForceToCenter(0,200,true);
 	
-			//}
-			gsm.setScreen(100);
-			gsm.set();
-			player.stopping();
-		}
-		if(MyInput.isDown(MyInput.BUTTON1)){
-			//Vector2 vel = playerBody.getLinearVelocity();
+				//}
 			
-		
-			Vector2 vel = player.getBody().getLinearVelocity();
-			Gdx.gl.glClearColor(0, 0, 0, 1);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		 	vel.y = -1f;
+				player.stopping();
+			}
+			if(MyInput.isDown(MyInput.BUTTON1)){
+
+				Vector2 vel = player.getBody().getLinearVelocity();
+				Gdx.gl.glClearColor(0, 0, 0, 1);
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+				vel.y = -1f;
 		 	
-			player.getBody().setLinearVelocity(vel);
-		 	//player.getBody().setLinearVelocity(vel);
-		}
-		if(MyInput.isReleased(MyInput.BUTTON1))
-		{
-			player.falling();
-		}
-		/*
-		if(MyInput.isDown(MyInput.BUTTON2)){
-			//System.out.println("hold x");
-			//Vector2 vel = playerBody.getLinearVelocity();
-			Vector2 vel = player.getBody().getLinearVelocity();
-			vel.x = -1f;
-			//playerBody.setLinearVelocity(vel);
-			player.getBody().setLinearVelocity(vel);
+				player.getBody().setLinearVelocity(vel);
+		 	
+			}
+			if(MyInput.isReleased(MyInput.BUTTON1))
+			{
+				player.falling();
+			}
+		
+			if(MyInput.isDown(MyInput.BUTTON2)){
+				//System.out.println("hold x");
+				//Vector2 vel = playerBody.getLinearVelocity();
+				Vector2 vel = player.getBody().getLinearVelocity();
+				vel.x = -1f;
+		
+				player.getBody().setLinearVelocity(vel);
 			
-		}
-		*/
-		if(MyInput.isPressed(MyInput.BUTTON2)){
-			//System.out.println("hold x");
-			//Vector2 vel = playerBody.getLinearVelocity();
-			Vector2 vel = player.getBody().getLinearVelocity();
-			vel.x = -1f;
-			//playerBody.setLinearVelocity(vel);
-			player.getBody().setLinearVelocity(vel);
-			gsm.setScreen(100);
-			gsm.set();
+			}
+		
+			/*
+			if(MyInput.isPressed(MyInput.BUTTON2)){
+				//System.out.println("hold x");
+				//Vector2 vel = playerBody.getLinearVelocity();
+				Vector2 vel = player.getBody().getLinearVelocity();
+				vel.x = -1f;
+				//playerBody.setLinearVelocity(vel);
+				player.getBody().setLinearVelocity(vel);
+				gsm.setScreen(100);
+				gsm.set();
 			
+			}
+			 */
+			if(MyInput.isDown(MyInput.BUTTON3)){
+				//System.out.println("hold c");
+				//Vector2 vel = playerBody.getLinearVelocity();
+				Vector2 vel = player.getBody().getLinearVelocity();
+				vel.x = 1f;
+				//playerBody.setLinearVelocity(vel);
+				player.getBody().setLinearVelocity(vel);
+			
+			}
 		}
-		if(MyInput.isDown(MyInput.BUTTON3)){
-			//System.out.println("hold c");
-			//Vector2 vel = playerBody.getLinearVelocity();
-			Vector2 vel = player.getBody().getLinearVelocity();
-			vel.x = 1f;
-			//playerBody.setLinearVelocity(vel);
-			player.getBody().setLinearVelocity(vel);
+		else{
+			if(MyInput.isPressed(MyInput.BUTTON1)){
+				gsm.setScreen(100);
+				gsm.set();
+				
+			}
 			
 		}
 	}
@@ -198,10 +243,16 @@ public class GameScreen extends AbstractScreen {
 	
 	public void update(float dt){
 		runTime += dt;
+		accelX = Gdx.input.getAccelerometerX();
+		
 		handleInput();
 		
-		world.step(dt, 1, 1);
-		player.update(dt);
+		
+		
+		if(!gameOverFlag){
+			world.step(dt, 1, 1);
+			player.update(dt);
+		}
 		
 		
 		
@@ -245,14 +296,29 @@ public class GameScreen extends AbstractScreen {
 		//System.out.println(world.getBodyCount());
 		//System.out.println(handler.lightList.size);
 		
-		if(Math.abs(player.getBody().getLinearVelocity().y) > 10f){
+		if(Math.abs(player.getBody().getLinearVelocity().y) > 3f){
 			
 			Vector2 vel = player.getBody().getLinearVelocity();
-			vel.y = -10f;
+			vel.y = -3f;
 			player.getBody().setLinearVelocity(vel);
 			
 		}
 		
+		
+		if(cl.isPlayerOnGround() == true){
+			System.out.println("dead");
+			
+			sb.begin();
+			float w = font.getBounds("Game Over").width;
+			float h = font.getBounds("Game Over").height;
+			font.draw(sb, "Game Over", cam.position.x - w/2 , cam.position.y + h/2);
+			sb.end();
+			
+			//gsm.setScreen(100);
+			//gsm.set();
+			
+			
+		}
 		
 		
 		
@@ -314,15 +380,23 @@ public class GameScreen extends AbstractScreen {
 		
 		//System.out.println("Wally: "+ leftWall.getPosition().y);
 		//System.out.println("Playery: "+ player.getPosition().y);
-		System.out.println("Difference: " +  (leftWall.getPosition().y - player.getPosition().y));
+		//System.out.println("Difference: " +  (leftWall.getPosition().y - player.getPosition().y));
 		
 		
-		/*
-		sb.setProjectionMatrix(cam.combined);
-		sb.begin();
-		font.draw(sb, "play state", 100, 100);
-		sb.end();
-		*/
+		
+		
+		if(cl.isPlayerOnGround() == true){
+			System.out.println("dead");
+			gameOverFlag = true;
+			sb.begin();
+			float w = font.getBounds("Game Over").width;
+			float h = font.getBounds("Game Over").height;
+			font.draw(sb, "Game Over", cam.position.x - w/2 , cam.position.y + h/2);
+			sb.end();
+			
+			
+		}
+		
 		
 		
 		
@@ -343,7 +417,12 @@ public class GameScreen extends AbstractScreen {
 		b2dCam.update(); 
 			
 		sb.setProjectionMatrix(cam.combined);
-		player.render(sb);
+		
+		if(!gameOverFlag){
+			player.render(sb);
+		}
+			
+		
 		
 		
 		handler.setCombinedMatrix(b2dCam.combined);
@@ -616,6 +695,7 @@ public class GameScreen extends AbstractScreen {
 		handler.dispose();
 		world.dispose();
 		b2dr.dispose();
+		font.dispose();
 		
 	}
 	

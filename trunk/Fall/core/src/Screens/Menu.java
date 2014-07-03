@@ -5,6 +5,7 @@ import static helpers.B2DVars.PPM;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -22,6 +23,8 @@ public class Menu extends AbstractScreen {
 	private Box2DDebugRenderer b2dr;
 	
 	private OrthographicCamera b2dCam;
+	
+	BitmapFont font;
 
 	public Menu(GameScreenManager gsm) {
 		super(gsm);
@@ -29,6 +32,9 @@ public class Menu extends AbstractScreen {
 		world = new World(new Vector2(0, -9.81f), true);
 		
 		b2dr = new Box2DDebugRenderer();
+		
+		font = new BitmapFont();
+		
 		
 		//set up box2d cam
 				b2dCam = new OrthographicCamera();
@@ -45,10 +51,19 @@ public class Menu extends AbstractScreen {
 				0
 			);
 		cam.update();
+		
+		sb.begin();
+		float w = font.getBounds("START").width;
+		float h = font.getBounds("START").height;
+		font.draw(sb, "START", cam.position.x - w/2 , cam.position.y + h/2);
+		sb.end();
+		
+		sb.setProjectionMatrix(cam.combined);
 	}
 	
 	@Override
 	public void render(float delta) {
+		
 	
 		
 	}
@@ -102,6 +117,7 @@ public class Menu extends AbstractScreen {
 		System.out.println("Disposing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		world.dispose();
 		b2dr.dispose();
+		font.dispose();
 		//sb.dispose();
 		
 	}
@@ -120,7 +136,7 @@ public class Menu extends AbstractScreen {
 			//}
 		}
 		
-		if(MyInput.isPressed(MyInput.BUTTON2)){
+		if(MyInput.isPressed(MyInput.BUTTON1)){
 			
 			gsm.setScreen(101);
 			gsm.set();

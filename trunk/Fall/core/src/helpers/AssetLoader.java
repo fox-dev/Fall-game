@@ -24,10 +24,10 @@ public class AssetLoader {
 		player = new Texture(Gdx.files.internal("data/basejumperanimate.png"));
 		cliffWalls = new Texture(Gdx.files.internal("data/cliff-walls.png"));
 		
-		cliffJumper1 = new TextureRegion(player, 0, 0, 24 ,30);
-		cliffJumper2 = new TextureRegion(player, 26, 0, 30, 30);
-		cliffJumper3 = new TextureRegion(player, 63, 0, 30, 30);
-		cliffJumper4 = new TextureRegion(player, 98, 0, 30, 30);
+		cliffJumper1 = new TextureRegion(player, 0, 0, 30 ,30);
+		cliffJumper2 = new TextureRegion(player, 31, 0, 30, 30);
+		cliffJumper3 = new TextureRegion(player, 68, 0, 30, 30);
+		cliffJumper4 = new TextureRegion(player, 103, 0, 30, 30);
 		
 		wallLeft = new TextureRegion(cliffWalls, 0, 0,  101, 480);
 		wallRight = new TextureRegion(cliffWalls, 219, 0, 101, 480);

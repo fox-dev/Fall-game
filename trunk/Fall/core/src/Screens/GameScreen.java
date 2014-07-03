@@ -52,7 +52,7 @@ public class GameScreen extends AbstractScreen {
 	
 	int lights = 0;
 	
-	float runTime;
+	float runTime, animate;
 	
 	private DelayedRemovalArray<Body> obstacleList = new DelayedRemovalArray<Body>();
 	private DelayedRemovalArray<ConeLight> lightList = new DelayedRemovalArray<ConeLight>();
@@ -142,9 +142,6 @@ public class GameScreen extends AbstractScreen {
 		handler = new RayHandler(world);
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
 		
-		
-		
-		
 	}
 	
 	public void handleInput(){
@@ -157,6 +154,7 @@ public class GameScreen extends AbstractScreen {
 				//player.getBody().applyForceToCenter(0,200,true);
 	
 			//}
+			animate = 0;
 		}
 		if(MyInput.isDown(MyInput.BUTTON1)){
 			//Vector2 vel = playerBody.getLinearVelocity();
@@ -166,13 +164,14 @@ public class GameScreen extends AbstractScreen {
 			Gdx.gl.glClearColor(0, 0, 0, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		 	vel.y = -1f;
+		 	
 		 	player.stopping();
 			player.getBody().setLinearVelocity(vel);
 		 	//player.getBody().setLinearVelocity(vel);
 		}
-		
-		if(!MyInput.isDown(MyInput.BUTTON1))
+		if(MyInput.isReleased(MyInput.BUTTON1))
 		{
+			animate = 0;
 			player.falling();
 		}
 		
@@ -240,13 +239,13 @@ public class GameScreen extends AbstractScreen {
 	@Override
 	public void update(float dt){
 		runTime += dt;
+		animate += dt;
 		//System.out.println("Runtime: " + runTime);
 		System.out.println("GAMESCREEN");
 		
 		//System.out.println("Wally: "+ leftWall.getPosition().y);
 		//System.out.println("Playery: "+ player.getPosition().y);
 		//System.out.println("Difference: " +  (leftWall.getPosition().y - player.getPosition().y));
-		
 		
 		iterator = obstacleList.iterator();
 		iterator2 = lightList.iterator();
@@ -331,7 +330,7 @@ public class GameScreen extends AbstractScreen {
 		
 		world.step(dt, 1, 1);
 		
-		player.update(runTime);
+		player.update(animate);
 	}
 	
 	

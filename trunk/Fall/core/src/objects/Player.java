@@ -17,6 +17,8 @@ public class Player extends B2DSprite
 	private TextureRegion[] playerAnim;
 	private Animation player;
 	
+	private float runtime;
+	
 	public Player(Body body)
 	{
 		super(body);
@@ -29,6 +31,8 @@ public class Player extends B2DSprite
 		player.setPlayMode(Animation.PlayMode.REVERSED);
 		
 		currentFrame = cliffJumper1;
+		
+		runtime = 0;
 		
 		/*setAnimation(openWings, player, 1/60f);
 		setAnimation(dive, player2, 1/60f);
@@ -48,17 +52,20 @@ public class Player extends B2DSprite
 	
 	public void update(float dt)
 	{
-		currentFrame = player.getKeyFrame(dt);
+		runtime += dt;
+		currentFrame = player.getKeyFrame(runtime);
 	}
 	
 	public void falling()
 	{
+		runtime = 0;
 		player.setFrameDuration(.1f);
 		player.setPlayMode(Animation.PlayMode.REVERSED);
 	}
 	
 	public void stopping()
 	{
+		runtime = 0;
 		player.setFrameDuration(.05f);
 		player.setPlayMode(Animation.PlayMode.NORMAL);
 	}

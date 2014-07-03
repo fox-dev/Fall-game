@@ -52,7 +52,7 @@ public class GameScreen extends AbstractScreen {
 	
 	int lights = 0;
 	
-	float runTime, animate;
+	float runTime;
 	
 	private DelayedRemovalArray<Body> obstacleList = new DelayedRemovalArray<Body>();
 	private DelayedRemovalArray<ConeLight> lightList = new DelayedRemovalArray<ConeLight>();
@@ -154,7 +154,7 @@ public class GameScreen extends AbstractScreen {
 				//player.getBody().applyForceToCenter(0,200,true);
 	
 			//}
-			animate = 0;
+			player.stopping();
 		}
 		if(MyInput.isDown(MyInput.BUTTON1)){
 			//Vector2 vel = playerBody.getLinearVelocity();
@@ -165,13 +165,11 @@ public class GameScreen extends AbstractScreen {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		 	vel.y = -1f;
 		 	
-		 	player.stopping();
 			player.getBody().setLinearVelocity(vel);
 		 	//player.getBody().setLinearVelocity(vel);
 		}
 		if(MyInput.isReleased(MyInput.BUTTON1))
 		{
-			animate = 0;
 			player.falling();
 		}
 		
@@ -239,7 +237,6 @@ public class GameScreen extends AbstractScreen {
 	@Override
 	public void update(float dt){
 		runTime += dt;
-		animate += dt;
 		//System.out.println("Runtime: " + runTime);
 		System.out.println("GAMESCREEN");
 		
@@ -309,7 +306,6 @@ public class GameScreen extends AbstractScreen {
 		rightWall.setLinearVelocity(n);
 		
 		
-		
 		if(runTime > 3 && runTime < 10){
 		System.out.println("GOING---------------------------------------");
 			leftWall.setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
@@ -330,7 +326,7 @@ public class GameScreen extends AbstractScreen {
 		
 		world.step(dt, 1, 1);
 		
-		player.update(animate);
+		player.update(dt);
 	}
 	
 	

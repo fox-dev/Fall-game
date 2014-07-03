@@ -7,8 +7,9 @@ public class Animation
 	private TextureRegion[] frames; 
 	private float time; 
 	private float delay;
-	private int currentFrame;
+	private int currentFrame, numAnimations;
 	private int timesPlayed;
+	private boolean setAnim;
 	
 	public Animation(){
 		
@@ -21,6 +22,15 @@ public class Animation
 	public Animation(TextureRegion[] frames, float delay)
 	{
 		setFrames(frames, delay);
+		numAnimations = 0;
+		setAnim = false;
+	}
+	
+	public Animation(TextureRegion[] frames, float delay, int numTimes)
+	{
+		this(frames, delay);
+		setAnim = true;
+		numAnimations = numTimes;
 	}
 	
 	public void setFrames(TextureRegion[] frames, float delay)
@@ -30,6 +40,20 @@ public class Animation
 		time = 0;
 		currentFrame = 0; 
 		timesPlayed = 0;
+		numAnimations = 0;
+		setAnim = false;
+	}
+	
+	public void setFrames(TextureRegion[] frames, float delay, int numTimes)
+	{
+		this.frames = frames;
+		this.delay = delay;
+		time = 0;
+		currentFrame = 0; 
+		timesPlayed = 0;
+		numAnimations = numTimes;
+		setAnim = true;
+		
 	}
 	
 	public void update(float dt)
@@ -51,6 +75,21 @@ public class Animation
 			currentFrame = 0;
 			timesPlayed++;
 		}
+	}
+	
+	public void runOnce(float dt)
+	{
+		if(delay <= 0) return;
+		time += dt;
+		while( time >= delay)
+		{
+			time -= delay;
+			if(currentFrame < frames.length - 1)
+			{
+				currentFrame++;
+			}
+		}
+
 	}
 	
 	public TextureRegion getFrame(){return frames[currentFrame];}

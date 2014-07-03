@@ -26,7 +26,7 @@ public class GameScreenManager {
 	public GameScreenManager(MainGame game) {
 		this.game = game;
 		gameScreens = new Stack<AbstractScreen>();
-		pushScreen(menu);
+		pushScreen(playScreen);
 	}
 	
 	public MainGame game(){return game;}
@@ -66,8 +66,6 @@ public class GameScreenManager {
 			AbstractScreen g = gameScreens.pop();
 			g.dispose();
 			
-		
-		
 	}
 	
 	public void pushScreen(int screen){

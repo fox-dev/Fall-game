@@ -27,14 +27,8 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.mygdx.game.MainGame;
-
-
-
-
-
-
-
 
 import objects.Player;
 import helpers.B2DVars;
@@ -60,8 +54,8 @@ public class GameScreen extends AbstractScreen {
 	
 	float runTime;
 	
-	private Array<Body> obstacleList = new Array<Body>();
-	private Array<ConeLight> lightList = new Array<ConeLight>();
+	private DelayedRemovalArray<Body> obstacleList = new DelayedRemovalArray<Body>();
+	private DelayedRemovalArray<ConeLight> lightList = new DelayedRemovalArray<ConeLight>();
 	private Iterator<Body> iterator;
 	private Iterator<ConeLight> iterator2;
 	
@@ -156,8 +150,8 @@ public class GameScreen extends AbstractScreen {
 	public void handleInput(){
 		if(MyInput.isPressed(MyInput.BUTTON1)){
 			//System.out.println("pressed z");
-			gsm.setScreen(100);
-			gsm.set();
+			//gsm.setScreen(100);
+			//gsm.set();
 			//if(cl.isPlayerOnGround()){
 				//playerBody.applyForceToCenter(0,200,true);
 				//player.getBody().applyForceToCenter(0,200,true);
@@ -172,8 +166,14 @@ public class GameScreen extends AbstractScreen {
 			Gdx.gl.glClearColor(0, 0, 0, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		 	vel.y = -1f;
-			//playerBody.setLinearVelocity(vel);
+		 	player.stopping();
+			player.getBody().setLinearVelocity(vel);
 		 	//player.getBody().setLinearVelocity(vel);
+		}
+		
+		if(!MyInput.isDown(MyInput.BUTTON1))
+		{
+			player.falling();
 		}
 		
 		if(MyInput.isDown(MyInput.BUTTON2)){
@@ -265,11 +265,6 @@ public class GameScreen extends AbstractScreen {
 			
 		}
 		
-		
-		
-		long now = System.currentTimeMillis(); // or some other function to get the current time
-		long now2 = System.currentTimeMillis();
-		
 		x = player.getPosition().y;
 		y = player.getPosition().y;
 		
@@ -280,44 +275,12 @@ public class GameScreen extends AbstractScreen {
 			nextSprite = (long) randInt(3, 7);
 		}
 		
-		
-		
 		if(Math.abs(y - y2)/PPM >= nextSprite/PPM)
 		{
 			addPlatforms();
 			y2 = y;
 			nextSprite2 = (long) randInt(2, 6);
 		}
-		
-		
-		 /*if (now - lastSprite > 1000) {
-			 
-			 x = player.getPosition().y;
-			  
-			  
-			System.out.println("x: " + x);
-		    lastSprite = now;
-		 }
-		  
-		  if (now - lastSprite2 > 2000) {
-				
-			 y = player.getPosition().y;
-			  
-			System.out.println("y: " + y);
-		    lastSprite2 = now2;
-		  }
-		  
-		  if(Math.abs(x-y)/PPM > 3/PPM && (x != 0f) && (y != 0f)){
-			  if(Math.random() > .5)
-				  addObstacles();
-			  if(Math.random() > .3)
-				  addPlatforms();
-			  
-			  //lastSprite2 = now2;
-			  System.out.println("Abs: " + Math.abs(x-y));
-			  x = 0f;
-			  y = 0f;
-		  }*/
 		  
 		handleInput();
 		if(Math.abs(player.getBody().getLinearVelocity().y) > 10f){
@@ -368,7 +331,7 @@ public class GameScreen extends AbstractScreen {
 		
 		world.step(dt, 1, 1);
 		
-		player.update(dt);
+		player.update(runTime);
 	}
 	
 	
@@ -415,7 +378,6 @@ public class GameScreen extends AbstractScreen {
 		player.render(sb);
 		
 		
-		
 		handler.setCombinedMatrix(b2dCam.combined);
 		handler.updateAndRender();
 			
@@ -437,11 +399,15 @@ public class GameScreen extends AbstractScreen {
 		
 		handler.dispose();
 		b2dr.dispose();
+		for(Body body : obstacleList)
+		{
+			world.destroyBody(body);
+		}
 		world.dispose();
-		obstacleList = new Array<Body>();
 		
+		obstacleList = new DelayedRemovalArray<Body>();
 		
-		lightList = new Array<ConeLight>();
+		lightList = new DelayedRemovalArray<ConeLight>();
 		
 		//iterator = obstacleList.iterator();
 		//iterator2 = lightList.iterator();
@@ -452,17 +418,6 @@ public class GameScreen extends AbstractScreen {
 		//private Array<ConeLight> lightList = new Array<ConeLight>();
 		//private Iterator<Body> iterator;
 		//private Iterator<ConeLight> iterator2;
-		
-		
-		
-		
-		
-		
-
-		
-		
-		
-		
 		
 	}
 	
@@ -615,7 +570,7 @@ public class GameScreen extends AbstractScreen {
 	@Override
 	public void render(float delta) 
 	{
-		accum += Gdx.graphics.getDeltaTime();
+		accum += delta;
 		while(accum >= STEP){
 			accum -= STEP;
 			gsm.update(STEP);

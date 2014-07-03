@@ -49,13 +49,7 @@ public class Menu extends AbstractScreen {
 	
 	@Override
 	public void render(float delta) {
-		accum += Gdx.graphics.getDeltaTime();
-		while(accum >= STEP){
-			accum -= STEP;
-			gsm.update(STEP);
-			gsm.render();
-			MyInput.update();
-		}
+	
 		
 	}
 	
@@ -93,7 +87,6 @@ public class Menu extends AbstractScreen {
 
 	
 
-	@Override
 	public void update(float dt) {
 		System.out.println("MENU");
 		handleInput();
@@ -125,6 +118,12 @@ public class Menu extends AbstractScreen {
 				//player.getBody().applyForceToCenter(0,200,true);
 	
 			//}
+		}
+		
+		if(MyInput.isPressed(MyInput.BUTTON2)){
+			
+			gsm.setScreen(101);
+			gsm.set();
 		}
 	}
 		

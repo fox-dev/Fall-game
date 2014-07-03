@@ -48,17 +48,16 @@ public class MainGame extends Game {
 
 	}
 
-	/*@Override
+	@Override
 	public void render () {
-		accum += Gdx.graphics.getDeltaTime();
-		while(accum >= STEP){
-			accum -= STEP;
+	
+			
 			gsm.update(STEP);
 			gsm.render();
 			MyInput.update();
-		}
 		
-	}*/
+		
+	}
 	
 	public void dispose()
 	{

@@ -8,8 +8,6 @@ import Screens.GameScreen;
 
 import Screens.Menu;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.mygdx.game.MainGame;
 
 
@@ -22,6 +20,8 @@ public class GameScreenManager {
 	
 	public static final int playScreen = 101;
 	public static final int menu = 100;
+	GameScreen g;
+	Menu m;
 
 	public GameScreenManager(MainGame game) {
 		this.game = game;
@@ -44,12 +44,12 @@ public class GameScreenManager {
 	
 	private AbstractScreen getScreen(int screen){
 		if(screen == playScreen){
-			GameScreen g = new GameScreen(this);
+			g = new GameScreen(this);
 			//game.setScreen(g);
 			return g;
 		}
 		if(screen == menu){
-			Menu m = new Menu(this);
+			m = new Menu(this);
 			//game.setScreen(m);
 			return m;
 		}

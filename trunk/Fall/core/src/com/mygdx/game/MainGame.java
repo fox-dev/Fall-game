@@ -41,6 +41,7 @@ public class MainGame extends Game {
 		
 		gsm = new GameScreenManager(this);
 		
+		
 		gsm.set();
 		
 		

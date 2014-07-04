@@ -26,7 +26,7 @@ public class GameScreenManager {
 	public GameScreenManager(MainGame game) {
 		this.game = game;
 		gameScreens = new Stack<AbstractScreen>();
-		pushScreen(playScreen);
+		pushScreen(menu);
 	}
 	
 	public MainGame game(){return game;}

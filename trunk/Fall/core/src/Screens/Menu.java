@@ -7,8 +7,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.MainGame;
 
 import handlers.GameScreenManager;
@@ -17,8 +19,7 @@ import handlers.MyInput;
 public class Menu extends AbstractScreen {
 	
 	public static final float STEP = 1 / 60f;
-	private float accum;
-	
+		
 	private World world;
 	private Box2DDebugRenderer b2dr;
 	
@@ -46,6 +47,8 @@ public class Menu extends AbstractScreen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		world.step(1/60f, 1, 1);
+		
 		cam.position.set(
 				0,0,
 				0
@@ -59,14 +62,11 @@ public class Menu extends AbstractScreen {
 		sb.end();
 		
 		sb.setProjectionMatrix(cam.combined);
-	}
-	
-	@Override
-	public void render(float delta) {
 		
-	
 		
 	}
+	
+	
 	
 	
 
@@ -104,6 +104,7 @@ public class Menu extends AbstractScreen {
 
 	public void update(float dt) {
 		System.out.println("MENU");
+		
 		handleInput();
 		
 		
@@ -115,10 +116,21 @@ public class Menu extends AbstractScreen {
 	
 	public void dispose() {
 		System.out.println("Disposing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		
+		Array<Body> temps = new Array<Body>();
+		
+		world.getBodies(temps);
+		
+		for(Body b : temps){
+			world.destroyBody(b);
+			System.out.println(world.getBodyCount() + "-----------------------------------------------------------" + temps.size);
+		}
+		temps.clear();
+		
 		world.dispose();
 		b2dr.dispose();
 		font.dispose();
-		//sb.dispose();
+		
 		
 	}
 	
@@ -136,11 +148,13 @@ public class Menu extends AbstractScreen {
 			//}
 		}
 		
-		if(MyInput.isPressed(MyInput.BUTTON1)){
-			
-			gsm.setScreen(101);
-			gsm.set();
-		}
+		
+	}
+
+	@Override
+	public void render(float delta) {
+		// TODO Auto-generated method stub
+		
 	}
 		
 		

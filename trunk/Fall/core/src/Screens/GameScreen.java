@@ -4,9 +4,10 @@ package Screens;
 
 
 
+
+
 import static helpers.B2DVars.PPM;
 
-import java.util.Iterator;
 import java.util.Random;
 
 import box2dLight.ConeLight;
@@ -38,11 +39,11 @@ import handlers.MyContactListener;
 import handlers.MyInput;
 
 public class GameScreen extends AbstractScreen {
+	ConeLight t;
 	
 	BitmapFont font;
 	
-	private boolean gameOverFlag = false;
-	
+	private boolean gameOverFlag;
 
 	float ASPECT_RATIO = (float)MainGame.V_HEIGHT/(float)MainGame.V_WIDTH;
 	private Rectangle viewport;
@@ -101,6 +102,9 @@ public class GameScreen extends AbstractScreen {
 		handler = new RayHandler(world);
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
 		handler.setAmbientLight(0.3f);
+		
+		
+		
 		
 	}
 	
@@ -231,7 +235,7 @@ public class GameScreen extends AbstractScreen {
 	
 		ConeLight t;
 		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);
-		Light.setContactFilter(B2DVars.BIT_BALL, (short) 0, B2DVars.BIT_BALL);
+		//Light.setContactFilter(B2DVars.BIT_BALL, (short) 0, B2DVars.BIT_BALL);
 		
 		obstacleList.add(body);
 		lightList.add(t);
@@ -249,13 +253,47 @@ public class GameScreen extends AbstractScreen {
 		
 		
 		
+		
+		
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//System.out.println("Size: " + handler.lightList.size);
+		
+		
+	}
+	
+	
+	
+	public void render(){
+		//clear screens
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
 		if(!gameOverFlag){
-			world.step(dt, 1, 1);
-			player.update(dt);
+			world.step(1/60f, 1, 1);
+			player.update(1/60f);
 		}
-		
-		
-		
 		
 		Array<Body> tempBodies = new Array<Body>();
 		world.getBodies(tempBodies);
@@ -305,48 +343,6 @@ public class GameScreen extends AbstractScreen {
 		}
 		
 		
-		if(cl.isPlayerOnGround() == true){
-			System.out.println("dead");
-			
-			sb.begin();
-			float w = font.getBounds("Game Over").width;
-			float h = font.getBounds("Game Over").height;
-			font.draw(sb, "Game Over", cam.position.x - w/2 , cam.position.y + h/2);
-			sb.end();
-			
-			//gsm.setScreen(100);
-			//gsm.set();
-			
-			
-		}
-		
-		
-		
-		
-		
-	
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		//System.out.println("Size: " + handler.lightList.size);
-		
-		
-	}
-	
-	
-	
-	public void render(){
-		//clear screens
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		
 		
 		resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 		Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
@@ -393,6 +389,7 @@ public class GameScreen extends AbstractScreen {
 			float h = font.getBounds("Game Over").height;
 			font.draw(sb, "Game Over", cam.position.x - w/2 , cam.position.y + h/2);
 			sb.end();
+			
 			
 			
 		}
@@ -525,6 +522,7 @@ public class GameScreen extends AbstractScreen {
 		ConeLight t;
 		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);		
 		
+		
 		obstacleList.add(body);
 		lightList.add(t);
 	}
@@ -549,7 +547,7 @@ public class GameScreen extends AbstractScreen {
 		body.createFixture(fdef).setUserData("Wall Platform");
 		shape2.dispose();
 		
-		ConeLight t;
+		
 		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);		
 		
 		obstacleList.add(body);
@@ -557,22 +555,29 @@ public class GameScreen extends AbstractScreen {
 	}
 	
 	public void init(){
+		
+		
 		//create platform
 		BodyDef bdef = new BodyDef(); 
-		bdef.position.set(160/PPM,120/PPM);
-		bdef.type = BodyType.StaticBody;
-		Body body = world.createBody(bdef);
+		
+		//bdef.position.set(160/PPM,120/PPM);
+		//bdef.type = BodyType.StaticBody;
+		//Body body = world.createBody(bdef);
 				
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(50/PPM, 5/PPM); //half width half height, so 100, 10
+		//shape.setAsBox(50/PPM, 5/PPM); //half width half height, so 100, 10
 				
 		FixtureDef fdef = new FixtureDef();
-		fdef.shape = shape;
-		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
+		//fdef.shape = shape;
+		//fdef.filter.categoryBits = B2DVars.BIT_GROUND;
 		//fdef.filter.maskBits = B2DVars.BIT_BOX | B2DVars.BIT_BALL;
-		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
-		body.createFixture(fdef).setUserData("Ground");
+		//fdef.filter.maskBits = B2DVars.BIT_PLAYER;
+		//body.createFixture(fdef).setUserData("Ground");
 		shape.dispose();
+		
+		
+	
+		
 				
 		createPlayer();
 				
@@ -609,6 +614,9 @@ public class GameScreen extends AbstractScreen {
 		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
 		rightWall.createFixture(fdef).setUserData("RightWall");
 		shape.dispose();
+		
+		
+		
 	}
 	
 	public float getWallPos()

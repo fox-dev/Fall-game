@@ -79,7 +79,7 @@ public class MyInputProcessor extends InputAdapter{
 	{
 		MyInput.x = x;
 		MyInput.y = y;
-		MyInput.down = true;
+		//MyInput.down = true;
 		
 		/*
 		if(x < (365)){

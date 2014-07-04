@@ -14,8 +14,6 @@ public class Player extends B2DSprite
 {
 	
 	private TextureRegion cliffJumper1, cliffJumper2, cliffJumper3, cliffJumper4, currentFrame;
-	private TextureRegion[] playerAnim;
-	private Animation player;
 	
 	private float runtime;
 	
@@ -26,17 +24,13 @@ public class Player extends B2DSprite
 		load();
 		
 		TextureRegion[] temp = {cliffJumper1, cliffJumper2, cliffJumper3, cliffJumper4};
-		playerAnim = temp;
-		player = new Animation(.1f, playerAnim);
-		player.setPlayMode(Animation.PlayMode.REVERSED);
+		frames = temp;
+		animation = new Animation(.1f, frames);
+		animation.setPlayMode(Animation.PlayMode.REVERSED);
 		
-		currentFrame = cliffJumper1;
+		currentFrame = frames[0];
 		
 		runtime = 0;
-		
-		/*setAnimation(openWings, player, 1/60f);
-		setAnimation(dive, player2, 1/60f);
-		currentAnim = dive;*/
 	}
 	
 	public void render(SpriteBatch sb)
@@ -53,21 +47,21 @@ public class Player extends B2DSprite
 	public void update(float dt)
 	{
 		runtime += dt;
-		currentFrame = player.getKeyFrame(runtime);
+		currentFrame = animation.getKeyFrame(runtime);
 	}
 	
 	public void falling()
 	{
 		runtime = 0;
-		player.setFrameDuration(.1f);
-		player.setPlayMode(Animation.PlayMode.REVERSED);
+		animation.setFrameDuration(.1f);
+		animation.setPlayMode(Animation.PlayMode.REVERSED);
 	}
 	
 	public void stopping()
 	{
 		runtime = 0;
-		player.setFrameDuration(.05f);
-		player.setPlayMode(Animation.PlayMode.NORMAL);
+		animation.setFrameDuration(.05f);
+		animation.setPlayMode(Animation.PlayMode.NORMAL);
 	}
 	
 	public void load()
@@ -77,8 +71,5 @@ public class Player extends B2DSprite
 		cliffJumper3 = AssetLoader.cliffJumper3;
 		cliffJumper4 = AssetLoader.cliffJumper4;
 	}
-	
-	
-
 
 }

@@ -1,11 +1,5 @@
 package Screens;
 
-
-
-
-
-
-
 import static helpers.B2DVars.PPM;
 
 import java.util.Random;
@@ -32,7 +26,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.mygdx.game.MainGame;
 
+import objects.LeftWall;
 import objects.Player;
+import objects.RightWall;
 import helpers.B2DVars;
 import handlers.GameScreenManager;
 import handlers.MyContactListener;
@@ -70,8 +66,8 @@ public class GameScreen extends AbstractScreen {
 	//private Body playerBody;
 	private Player player;
 		
-	private Body leftWall;
-	private Body rightWall;
+	private LeftWall leftWall, lWallRepeat;
+	private RightWall rightWall, rWallRepeat;
 
 	private MyContactListener cl;
 	
@@ -250,35 +246,7 @@ public class GameScreen extends AbstractScreen {
 		accelX = Gdx.input.getAccelerometerX();
 		
 		handleInput();
-		
-		
-		
-		
-		
-	
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-	
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		//System.out.println("Size: " + handler.lightList.size);
+	    //System.out.println("Size: " + handler.lightList.size);
 		
 		
 	}
@@ -312,6 +280,19 @@ public class GameScreen extends AbstractScreen {
 				lights--;
 				
 			}
+		}
+		
+		if(rightWall.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/PPM){
+			rightWall.setPosition(rWallRepeat.getYPosition() - rightWall.getHeight()/PPM);
+		}
+		if(leftWall.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/PPM){
+			leftWall.setPosition(lWallRepeat.getYPosition() - leftWall.getHeight()/PPM);
+		}
+		if(rWallRepeat.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/PPM){
+			rWallRepeat.setPosition(rightWall.getYPosition() - rWallRepeat.getHeight()/PPM);
+		}
+		if(lWallRepeat.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/PPM){
+			lWallRepeat.setPosition(leftWall.getYPosition() - lWallRepeat.getHeight()/PPM);
 		}
 		
 		x = player.getPosition().y;
@@ -348,21 +329,21 @@ public class GameScreen extends AbstractScreen {
 		Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
                 (int) viewport.width, (int) viewport.height);
 		
-		leftWall.setTransform(leftWall.getPosition().x, player.getBody().getPosition().y, 0);
-		leftWall.setLinearVelocity( new Vector2(0,player.getBody().getLinearVelocity().y));
-		rightWall.setTransform(rightWall.getPosition().x, player.getBody().getPosition().y, 0);
-		rightWall.setLinearVelocity( new Vector2(0,player.getBody().getLinearVelocity().y));
+		leftWall.getBody().setTransform(leftWall.getPosition().x, player.getPosition().y, 0);
+		leftWall.getBody().setLinearVelocity( new Vector2(0,player.getBody().getLinearVelocity().y));
+		rightWall.getBody().setTransform(rightWall.getPosition().x, player.getPosition().y, 0);
+		rightWall.getBody().setLinearVelocity( new Vector2(0,player.getBody().getLinearVelocity().y));
 		
 		if(runTime > 3 && runTime < 10){
 			System.out.println("GOING---------------------------------------");
-			leftWall.setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
-			rightWall.setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));
+			leftWall.getBody().setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
+			rightWall.getBody().setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));
 		}
 			
 		if(runTime > 10 && leftWall.getPosition().x >= 0 && rightWall.getPosition().x <= game.V_WIDTH/PPM ){
 			System.out.println("RESTORING---------------------------------------");
-			leftWall.setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));
-			rightWall.setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
+			leftWall.getBody().setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));
+			rightWall.getBody().setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
 		}
 		
 		
@@ -394,14 +375,11 @@ public class GameScreen extends AbstractScreen {
 			
 		}
 		
-		
-		
-		
-		 cam.position.set(
+		cam.position.set(
                  player.getPosition().x * PPM,
                  (player.getPosition().y) * PPM - 100,
                  0
-         );
+        );
 		 
 		cam.update();
 		
@@ -419,7 +397,10 @@ public class GameScreen extends AbstractScreen {
 			player.render(sb);
 		}
 			
-		
+		rightWall.render(sb);
+		leftWall.render(sb);
+		rWallRepeat.render(sb);
+		lWallRepeat.render(sb);
 		
 		
 		handler.setCombinedMatrix(b2dCam.combined);
@@ -480,6 +461,53 @@ public class GameScreen extends AbstractScreen {
 		//create player
 		player = new Player(pBody);
 		pBody.setUserData(player);
+	}
+	
+	public void createWalls()
+	{
+		//Left wall
+		BodyDef bdef = new BodyDef(); 
+		bdef.position.set(0/PPM,0+200/PPM);
+		bdef.type = BodyType.KinematicBody;
+		Body lWall = world.createBody(bdef);
+				
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(2/PPM, (MainGame.V_HEIGHT+50/2)/PPM); //half width half height, so 100, 10
+				
+		FixtureDef fdef = new FixtureDef();
+		fdef.shape = shape;
+		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
+		//fdef.filter.maskBits = B2DVars.BIT_BOX | B2DVars.BIT_BALL;
+		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
+		lWall.createFixture(fdef).setUserData("LeftWall");
+		
+		leftWall = new LeftWall(lWall);
+		leftWall.setPosition(300/PPM);
+		lWallRepeat = new LeftWall(lWall);
+		lWallRepeat.setPosition(leftWall.getYPosition() - leftWall.getHeight()/PPM);
+				
+		//Right wall
+		bdef = new BodyDef(); 
+		bdef.position.set((MainGame.V_WIDTH)/PPM,0+200/PPM);
+		bdef.type = BodyType.KinematicBody;
+		Body rWall = world.createBody(bdef);
+						
+		shape.dispose();
+		shape = new PolygonShape();
+		shape.setAsBox(2/PPM, (MainGame.V_HEIGHT+50/2)/PPM); //half width half height, so 100, 10
+						
+		fdef = new FixtureDef();
+		fdef.shape = shape;
+		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
+		//fdef.filter.maskBits = B2DVars.BIT_BOX | B2DVars.BIT_BALL;
+		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
+		rWall.createFixture(fdef).setUserData("RightWall");
+		
+		rightWall = new RightWall(rWall);
+		rightWall.setPosition(300/PPM);
+		rWallRepeat = new RightWall(rWall);
+		rWallRepeat.setPosition(rightWall.getYPosition() - rightWall.getHeight()/PPM);
+		shape.dispose();
 	}
 	
 	public void addPlatforms()
@@ -575,48 +603,8 @@ public class GameScreen extends AbstractScreen {
 		//body.createFixture(fdef).setUserData("Ground");
 		shape.dispose();
 		
-		
-	
-		
-				
 		createPlayer();
-				
-		//Left wall
-		bdef = new BodyDef(); 
-		bdef.position.set(0/PPM,0+200/PPM);
-		bdef.type = BodyType.KinematicBody;
-		leftWall = world.createBody(bdef);
-				
-		shape = new PolygonShape();
-		shape.setAsBox(2/PPM, (MainGame.V_HEIGHT+50/2)/PPM); //half width half height, so 100, 10
-				
-		fdef = new FixtureDef();
-		fdef.shape = shape;
-		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
-		//fdef.filter.maskBits = B2DVars.BIT_BOX | B2DVars.BIT_BALL;
-		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
-		leftWall.createFixture(fdef).setUserData("LeftWall");
-		shape.dispose();
-				
-		//Right wall
-		bdef = new BodyDef(); 
-		bdef.position.set((MainGame.V_WIDTH)/PPM,0+200/PPM);
-		bdef.type = BodyType.KinematicBody;
-		rightWall = world.createBody(bdef);
-						
-		shape = new PolygonShape();
-		shape.setAsBox(2/PPM, (MainGame.V_HEIGHT+50/2)/PPM); //half width half height, so 100, 10
-						
-		fdef = new FixtureDef();
-		fdef.shape = shape;
-		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
-		//fdef.filter.maskBits = B2DVars.BIT_BOX | B2DVars.BIT_BALL;
-		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
-		rightWall.createFixture(fdef).setUserData("RightWall");
-		shape.dispose();
-		
-		
-		
+		createWalls();
 	}
 	
 	public float getWallPos()

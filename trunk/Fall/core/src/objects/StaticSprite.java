@@ -19,6 +19,8 @@ public class StaticSprite
 		
 	}
 	
+	public void update(){}
+	
 	public void render(SpriteBatch sb)
 	{
 		sb.begin();

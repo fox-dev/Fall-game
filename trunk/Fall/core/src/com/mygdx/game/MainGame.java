@@ -17,7 +17,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class MainGame extends Game {
 	public static final String TITLE = "Game";
 	public static final int V_WIDTH = 320;
-	public static final int V_HEIGHT = 240;
+	public static final int V_HEIGHT = 480;
 	public static final int SCALE = 2;
 	
 	public static final float STEP = 1 / 60f;
@@ -50,14 +50,12 @@ public class MainGame extends Game {
 	}
 
 	@Override
-	public void render () {
-	
+	public void render () 
+	{
 			
 			gsm.update(STEP);
 			gsm.render();
 			MyInput.update();
-		
-		
 	}
 	
 	public void dispose()

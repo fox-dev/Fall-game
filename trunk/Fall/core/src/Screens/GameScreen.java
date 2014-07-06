@@ -297,16 +297,16 @@ public class GameScreen extends AbstractScreen {
 			}
 		}
 		
-		if(rightWall.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/PPM){
+		if(rightWall.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/2/PPM){
 			rightWall.setPosition(rWallRepeat.getYPosition() - rightWall.getHeight()/PPM);
 		}
-		if(leftWall.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/PPM){
+		if(leftWall.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/2/PPM){
 			leftWall.setPosition(lWallRepeat.getYPosition() - leftWall.getHeight()/PPM);
 		}
-		if(rWallRepeat.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/PPM){
+		if(rWallRepeat.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/2/PPM){
 			rWallRepeat.setPosition(rightWall.getYPosition() - rWallRepeat.getHeight()/PPM);
 		}
-		if(lWallRepeat.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/PPM){
+		if(lWallRepeat.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/2/PPM){
 			lWallRepeat.setPosition(leftWall.getYPosition() - lWallRepeat.getHeight()/PPM);
 		}
 		
@@ -402,11 +402,9 @@ public class GameScreen extends AbstractScreen {
 		
 		for(StaticSprite ledge : ledgeList)
 		{
+			ledge.update();
 			ledge.render(sb);
 		}
-		
-		
-		
 		
 		
 		//handler.getLightMapBuffer().begin();
@@ -417,10 +415,6 @@ public class GameScreen extends AbstractScreen {
 		handler.updateAndRender();
 	
 		
-		
-		
-			
-		
 		//System.out.println("x: " + cam.position.x/PPM);
 		//System.out.println("y: " + cam.position.y*100);
 		//System.out.println(playerBody.getLinearVelocity().y);
@@ -428,7 +422,6 @@ public class GameScreen extends AbstractScreen {
 		
 		// draw box2d
 		if(debug) {
-			b2dr.render(world, b2dCam.combined);
 			b2dCam.position.set(
 	                 player.getPosition().x,player.getPosition().y - 100/PPM
 
@@ -436,9 +429,9 @@ public class GameScreen extends AbstractScreen {
 	                 0
 	         );
 			b2dCam.update(); 
+			b2dr.render(world, b2dCam.combined);
+			
 		}
-		
-		
 		
 	}
 	
@@ -553,7 +546,7 @@ public class GameScreen extends AbstractScreen {
 	{
 		//adding platforms to the walls
 		BodyDef def = new BodyDef(); 
-		def.position.set(leftWall.getPosition().x + ((MainGame.V_WIDTH/10)/PPM), (cam.position.y*PPM - (MainGame.V_HEIGHT*2)/PPM));
+		def.position.set(leftWall.getPosition().x + ((MainGame.V_WIDTH/10)/PPM), (cam.position.y/PPM - (MainGame.V_HEIGHT*2)/PPM));
 
 		def.type = BodyType.StaticBody;
 		Body body = world.createBody(def);
@@ -572,7 +565,7 @@ public class GameScreen extends AbstractScreen {
 		ConeLight t;
 		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);		
 		
-		LedgeLeft temp = new LedgeLeft(body);
+		LedgeLeft temp = new LedgeLeft(body, leftWall);
 		body.setUserData(temp);
 		ledgeList.add(temp);
 		lightList.add(t);
@@ -582,7 +575,7 @@ public class GameScreen extends AbstractScreen {
 	{
 		//adding platforms to the walls
 		BodyDef def = new BodyDef(); 
-		def.position.set(rightWall.getPosition().x - ((MainGame.V_WIDTH/10)/PPM), (cam.position.y*PPM - (MainGame.V_HEIGHT*2)/PPM));
+		def.position.set(rightWall.getPosition().x - ((MainGame.V_WIDTH/10)/PPM), (cam.position.y/PPM - (MainGame.V_HEIGHT*2)/PPM));
 
 		def.type = BodyType.StaticBody;
 		Body body = world.createBody(def);
@@ -601,7 +594,7 @@ public class GameScreen extends AbstractScreen {
 		
 		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);		
 		
-		LedgeRight temp = new LedgeRight(body);
+		LedgeRight temp = new LedgeRight(body, rightWall);
 		body.setUserData(temp);
 		ledgeList.add(temp);
 		lightList.add(t);

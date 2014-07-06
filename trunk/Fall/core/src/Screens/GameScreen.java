@@ -4,15 +4,20 @@ import static helpers.B2DVars.PPM;
 
 import java.util.Random;
 
-import box2dLight.ConeLight;
-import box2dLight.Light;
-import box2dLight.RayHandler;
+import Lights.ConeLight;
+import Lights.RayHandler;
+
+
+
+
+
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -43,6 +48,8 @@ public class GameScreen extends AbstractScreen {
 	BitmapFont font;
 	
 	private boolean gameOverFlag;
+	
+	Matrix4 debugMatrix;
 
 	float ASPECT_RATIO = (float)MainGame.V_HEIGHT/(float)MainGame.V_WIDTH;
 	private Rectangle viewport;
@@ -80,6 +87,7 @@ public class GameScreen extends AbstractScreen {
 	public GameScreen(GameScreenManager gsm) {
 		super(gsm);
 		
+		
 		gameOverFlag = false;
 		
 		font = new BitmapFont();
@@ -98,7 +106,7 @@ public class GameScreen extends AbstractScreen {
 		b2dCam = new OrthographicCamera();
 		b2dCam.setToOrtho(false, MainGame.V_WIDTH/PPM , MainGame.V_HEIGHT/PPM );
 		
-		handler = new RayHandler(world);
+		handler = new RayHandler(world, viewport);
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
 		handler.setAmbientLight(0.3f);
 		
@@ -198,6 +206,8 @@ public class GameScreen extends AbstractScreen {
 			}
 			
 		}
+		
+		
 	}
 	
 	public static int randInt(int min, int max) {
@@ -377,13 +387,7 @@ public class GameScreen extends AbstractScreen {
 		 
 		cam.update();
 		
-		b2dCam.position.set(
-                 player.getPosition().x,player.getPosition().y - 100/PPM
-
-                 ,
-                 0
-         );
-		b2dCam.update(); 
+		
 			
 		sb.setProjectionMatrix(cam.combined);
 		
@@ -402,8 +406,19 @@ public class GameScreen extends AbstractScreen {
 		}
 		
 		
+		
+		
+		
+		//handler.getLightMapBuffer().begin();
+		//handler.getLightMapBuffer().bind();
+		
+				
 		handler.setCombinedMatrix(b2dCam.combined);
 		handler.updateAndRender();
+	
+		
+		
+		
 			
 		
 		//System.out.println("x: " + cam.position.x/PPM);
@@ -414,7 +429,15 @@ public class GameScreen extends AbstractScreen {
 		// draw box2d
 		if(debug) {
 			b2dr.render(world, b2dCam.combined);
+			b2dCam.position.set(
+	                 player.getPosition().x,player.getPosition().y - 100/PPM
+
+	                 ,
+	                 0
+	         );
+			b2dCam.update(); 
 		}
+		
 		
 		
 	}
@@ -530,7 +553,7 @@ public class GameScreen extends AbstractScreen {
 	{
 		//adding platforms to the walls
 		BodyDef def = new BodyDef(); 
-		def.position.set(leftWall.getPosition().x + ((MainGame.V_WIDTH/10)/PPM), (b2dCam.position.y - (MainGame.V_HEIGHT*2)/PPM));
+		def.position.set(leftWall.getPosition().x + ((MainGame.V_WIDTH/10)/PPM), (cam.position.y*PPM - (MainGame.V_HEIGHT*2)/PPM));
 
 		def.type = BodyType.StaticBody;
 		Body body = world.createBody(def);
@@ -559,7 +582,7 @@ public class GameScreen extends AbstractScreen {
 	{
 		//adding platforms to the walls
 		BodyDef def = new BodyDef(); 
-		def.position.set(rightWall.getPosition().x - ((MainGame.V_WIDTH/10)/PPM), (b2dCam.position.y - (MainGame.V_HEIGHT*2)/PPM));
+		def.position.set(rightWall.getPosition().x - ((MainGame.V_WIDTH/10)/PPM), (cam.position.y*PPM - (MainGame.V_HEIGHT*2)/PPM));
 
 		def.type = BodyType.StaticBody;
 		Body body = world.createBody(def);
@@ -617,12 +640,9 @@ public class GameScreen extends AbstractScreen {
 	
 	public void resize(int width, int height) {
 		float aspectRatio;
-		if(Gdx.graphics.getHeight() < Gdx.graphics.getWidth()){
-			aspectRatio = (float)width / (float)height;
-		}
-		else{
-			aspectRatio = (float)height / (float)width;
-		}
+		
+		aspectRatio = (float)width / (float)height;
+		
 		float scale = 1f;
 		Vector2 crop = new Vector2(0f, 0f);
 		

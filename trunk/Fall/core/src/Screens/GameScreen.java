@@ -26,9 +26,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.mygdx.game.MainGame;
 
+import objects.LedgeLeft;
+import objects.LedgeRight;
 import objects.LeftWall;
 import objects.Player;
 import objects.RightWall;
+import objects.StaticSprite;
 import helpers.B2DVars;
 import handlers.GameScreenManager;
 import handlers.MyContactListener;
@@ -54,6 +57,7 @@ public class GameScreen extends AbstractScreen {
 	
 	float runTime;
 	
+	private DelayedRemovalArray<StaticSprite> ledgeList = new DelayedRemovalArray<StaticSprite>();
 	private DelayedRemovalArray<Body> obstacleList = new DelayedRemovalArray<Body>();
 	private DelayedRemovalArray<ConeLight> lightList = new DelayedRemovalArray<ConeLight>();
 	private World world;
@@ -86,7 +90,6 @@ public class GameScreen extends AbstractScreen {
 		world.setContactListener(cl);
 		
 		
-		
 		b2dr = new Box2DDebugRenderer();
 		
 		init();
@@ -98,9 +101,6 @@ public class GameScreen extends AbstractScreen {
 		handler = new RayHandler(world);
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
 		handler.setAmbientLight(0.3f);
-		
-		
-		
 		
 	}
 	
@@ -140,6 +140,7 @@ public class GameScreen extends AbstractScreen {
 				//}
 			
 				player.stopping();
+
 			}
 			if(MyInput.isDown(MyInput.BUTTON1)){
 
@@ -248,7 +249,6 @@ public class GameScreen extends AbstractScreen {
 		handleInput();
 	    //System.out.println("Size: " + handler.lightList.size);
 		
-		
 	}
 	
 	
@@ -267,8 +267,13 @@ public class GameScreen extends AbstractScreen {
 		world.getBodies(tempBodies);
 		for(Body b : tempBodies){
 			if(b.getPosition().y > b2dCam.position.y + MainGame.V_HEIGHT/PPM){
+				if(b.getUserData() instanceof StaticSprite)
+				{
+					ledgeList.removeValue((StaticSprite) b.getUserData(), true);
+				}
+				
 				world.destroyBody(b);
-				obstacleList.removeValue(b, true);
+				//obstacleList.removeValue(b, true);
 			}
 		}
 		
@@ -347,20 +352,12 @@ public class GameScreen extends AbstractScreen {
 		}
 		
 		
-		
-		
-		
-		
-		
 		//System.out.println("Runtime: " + runTime);
 		//System.out.println("GAMESCREEN");
 		
 		//System.out.println("Wally: "+ leftWall.getPosition().y);
 		//System.out.println("Playery: "+ player.getPosition().y);
 		//System.out.println("Difference: " +  (leftWall.getPosition().y - player.getPosition().y));
-		
-		
-		
 		
 		if(cl.isPlayerOnGround() == true){
 			System.out.println("dead");
@@ -370,9 +367,6 @@ public class GameScreen extends AbstractScreen {
 			float h = font.getBounds("Game Over").height;
 			font.draw(sb, "Game Over", cam.position.x - w/2 , cam.position.y + h/2);
 			sb.end();
-			
-			
-			
 		}
 		
 		cam.position.set(
@@ -401,6 +395,11 @@ public class GameScreen extends AbstractScreen {
 		leftWall.render(sb);
 		rWallRepeat.render(sb);
 		lWallRepeat.render(sb);
+		
+		for(StaticSprite ledge : ledgeList)
+		{
+			ledge.render(sb);
+		}
 		
 		
 		handler.setCombinedMatrix(b2dCam.combined);
@@ -550,8 +549,9 @@ public class GameScreen extends AbstractScreen {
 		ConeLight t;
 		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);		
 		
-		
-		obstacleList.add(body);
+		LedgeLeft temp = new LedgeLeft(body);
+		body.setUserData(temp);
+		ledgeList.add(temp);
 		lightList.add(t);
 	}
 	
@@ -578,7 +578,9 @@ public class GameScreen extends AbstractScreen {
 		
 		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);		
 		
-		obstacleList.add(body);
+		LedgeRight temp = new LedgeRight(body);
+		body.setUserData(temp);
+		ledgeList.add(temp);
 		lightList.add(t);
 	}
 	

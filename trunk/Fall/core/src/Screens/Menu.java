@@ -49,6 +49,7 @@ public class Menu extends AbstractScreen {
 		
 		world.step(1/60f, 1, 1);
 		
+		
 		cam.position.set(
 				0,0,
 				0
@@ -108,7 +109,7 @@ public class Menu extends AbstractScreen {
 		handleInput();
 		
 		
-		world.step(dt, 1, 1);
+		
 		
 	}
 

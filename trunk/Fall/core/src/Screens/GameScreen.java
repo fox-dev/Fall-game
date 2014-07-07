@@ -12,6 +12,7 @@ import Lights.RayHandler;
 
 
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -29,6 +30,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
+import helpers.AssetLoader;
 import com.mygdx.game.MainGame;
 
 import objects.LedgeLeft;
@@ -109,6 +111,9 @@ public class GameScreen extends AbstractScreen {
 		handler = new RayHandler(world, viewport);
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
 		handler.setAmbientLight(0.3f);
+		
+		AssetLoader.bgm.play();
+		AssetLoader.bgm.setLooping(true);
 		
 	}
 	
@@ -256,6 +261,8 @@ public class GameScreen extends AbstractScreen {
 		runTime += dt;
 		accelX = Gdx.input.getAccelerometerX();
 		
+	
+		
 		handleInput();
 	    //System.out.println("Size: " + handler.lightList.size);
 		
@@ -264,6 +271,10 @@ public class GameScreen extends AbstractScreen {
 	
 	
 	public void render(){
+		if((int)AssetLoader.bgm.getPosition() == 26){
+			AssetLoader.bgm.stop();
+			AssetLoader.bgm.play();
+		}
 		//clear screens
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

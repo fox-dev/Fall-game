@@ -10,11 +10,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class AssetLoader {
 	private HashMap<String, Texture> textures;
 	
-	public static Texture player, cliffWalls, ledgeA, ledgeB;
+	public static Texture player, cliffWalls, ledgeA, ledgeB, ledge;
 	
 	//public static TextureRegion playerLeft, playerMid, playerRight;
 	public static TextureRegion cliffJumper1, cliffJumper2, cliffJumper3, cliffJumper4, 
-								wallLeft, wallRight, ledgeLeft, ledgeRight;
+								wallLeft, wallRight, ledgeLeft, ledgeRight, ledgeMiddle;
 	
 	public static Music bgm;
 	
@@ -24,8 +24,9 @@ public class AssetLoader {
 	
 	public static void load()
 	{
-		player = new Texture(Gdx.files.internal("data/basejumperanimate.png"));
+		player = new Texture(Gdx.files.internal("data/basejumperanimateRED.png"));
 		cliffWalls = new Texture(Gdx.files.internal("data/cliff-wallsblue.png"));
+		ledge = new Texture(Gdx.files.internal("data/platform.png"));
 		ledgeA = new Texture(Gdx.files.internal("data/ledgeA.png"));
 		ledgeB = new Texture(Gdx.files.internal("data/ledgeB.png"));
 		
@@ -39,6 +40,7 @@ public class AssetLoader {
 		
 		ledgeLeft = new TextureRegion(ledgeA);
 		ledgeRight = new TextureRegion(ledgeB);
+		ledgeMiddle = new TextureRegion(ledge);
 		
 		bgm = Gdx.audio.newMusic(Gdx.files.internal("data/Fall.wav"));
 		

@@ -7,12 +7,6 @@ import java.util.Random;
 import Lights.ConeLight;
 import Lights.RayHandler;
 
-
-
-
-
-
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -30,10 +24,10 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
-import helpers.AssetLoader;
 import com.mygdx.game.MainGame;
 
 import objects.LedgeLeft;
+import objects.LedgeMiddle;
 import objects.LedgeRight;
 import objects.LeftWall;
 import objects.Player;
@@ -76,7 +70,6 @@ public class GameScreen extends AbstractScreen {
 	
 	private RayHandler handler;
 	
-	//private Body playerBody;
 	private Player player;
 		
 	private LeftWall leftWall, lWallRepeat;
@@ -111,9 +104,6 @@ public class GameScreen extends AbstractScreen {
 		handler = new RayHandler(world, viewport);
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
 		handler.setAmbientLight(0.3f);
-		
-		AssetLoader.bgm.play();
-		AssetLoader.bgm.setLooping(true);
 		
 	}
 	
@@ -180,19 +170,6 @@ public class GameScreen extends AbstractScreen {
 			
 			}
 		
-			/*
-			if(MyInput.isPressed(MyInput.BUTTON2)){
-				//System.out.println("hold x");
-				//Vector2 vel = playerBody.getLinearVelocity();
-				Vector2 vel = player.getBody().getLinearVelocity();
-				vel.x = -1f;
-				//playerBody.setLinearVelocity(vel);
-				player.getBody().setLinearVelocity(vel);
-				gsm.setScreen(100);
-				gsm.set();
-			
-			}
-			 */
 			if(MyInput.isDown(MyInput.BUTTON3)){
 				//System.out.println("hold c");
 				//Vector2 vel = playerBody.getLinearVelocity();
@@ -233,10 +210,11 @@ public class GameScreen extends AbstractScreen {
 
 		def.type = BodyType.StaticBody;
 		Body body = world.createBody(def);
-		body = world.createBody(def);
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox((MainGame.V_WIDTH/5)/PPM, 5/PPM); //half width half height, so 100, 10
+		float width = randInt(5, 8);
+		shape.setAsBox((MainGame.V_WIDTH/width)/PPM, 5/PPM); //half width half height, so 100, 10
+		width = (MainGame.V_WIDTH/width)/PPM;
 		
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
@@ -244,13 +222,18 @@ public class GameScreen extends AbstractScreen {
 		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
 		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
 		body.createFixture(fdef).setUserData("Ground");
+		
+		LedgeMiddle temp = new LedgeMiddle(body, width);
+		body.setUserData(temp);
 	
 		ConeLight t;
 		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);
 		//Light.setContactFilter(B2DVars.BIT_BALL, (short) 0, B2DVars.BIT_BALL);
 		
-		obstacleList.add(body);
+		ledgeList.add(temp);
+		//obstacleList.add(body);
 		lightList.add(t);
+		shape.dispose();
 		
 		//System.out.println("Y object: " + body.getPosition().y);
 	}
@@ -261,8 +244,6 @@ public class GameScreen extends AbstractScreen {
 		runTime += dt;
 		accelX = Gdx.input.getAccelerometerX();
 		
-	
-		
 		handleInput();
 	    //System.out.println("Size: " + handler.lightList.size);
 		
@@ -271,10 +252,6 @@ public class GameScreen extends AbstractScreen {
 	
 	
 	public void render(){
-		if((int)AssetLoader.bgm.getPosition() == 26){
-			AssetLoader.bgm.stop();
-			AssetLoader.bgm.play();
-		}
 		//clear screens
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -308,16 +285,16 @@ public class GameScreen extends AbstractScreen {
 			}
 		}
 		
-		if(rightWall.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/2/PPM){
+		if(rightWall.getYPosition() > cam.position.y/PPM + MainGame.V_HEIGHT/2/PPM){
 			rightWall.setPosition(rWallRepeat.getYPosition() - rightWall.getHeight()/PPM);
 		}
-		if(leftWall.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/2/PPM){
+		if(leftWall.getYPosition() > cam.position.y/PPM + MainGame.V_HEIGHT/2/PPM){
 			leftWall.setPosition(lWallRepeat.getYPosition() - leftWall.getHeight()/PPM);
 		}
-		if(rWallRepeat.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/2/PPM){
+		if(rWallRepeat.getYPosition() > cam.position.y/PPM + MainGame.V_HEIGHT/2/PPM){
 			rWallRepeat.setPosition(rightWall.getYPosition() - rWallRepeat.getHeight()/PPM);
 		}
-		if(lWallRepeat.getYPosition() > b2dCam.position.y + MainGame.V_HEIGHT/2/PPM){
+		if(lWallRepeat.getYPosition() > cam.position.y/PPM + MainGame.V_HEIGHT/2/PPM){
 			lWallRepeat.setPosition(leftWall.getYPosition() - lWallRepeat.getHeight()/PPM);
 		}
 		
@@ -348,8 +325,6 @@ public class GameScreen extends AbstractScreen {
 			player.getBody().setLinearVelocity(vel);
 			
 		}
-		
-		
 		
 		resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 		Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
@@ -398,8 +373,6 @@ public class GameScreen extends AbstractScreen {
 		 
 		cam.update();
 		
-		
-			
 		sb.setProjectionMatrix(cam.combined);
 		
 		if(!gameOverFlag){
@@ -434,9 +407,7 @@ public class GameScreen extends AbstractScreen {
 		// draw box2d
 		if(debug) {
 			b2dCam.position.set(
-	                 player.getPosition().x,player.getPosition().y - 100/PPM
-
-	                 ,
+	                 player.getPosition().x,player.getPosition().y - 100/PPM,
 	                 0
 	         );
 			b2dCam.update(); 
@@ -445,8 +416,6 @@ public class GameScreen extends AbstractScreen {
 		}
 		
 	}
-	
-	
 	
 	public void createPlayer()
 	{

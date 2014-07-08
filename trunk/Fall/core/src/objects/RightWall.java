@@ -29,7 +29,7 @@ public class RightWall extends Wall{
 				);
 		sb.end();
 		
-		System.out.println(width + " " + height);
+		//System.out.println(width + " " + height);
 	}
 	
 }

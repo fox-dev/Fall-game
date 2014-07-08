@@ -31,6 +31,6 @@ public class LeftWall extends Wall{
 				);
 		sb.end();
 		
-		System.out.println(width + " " + height);
+		//System.out.println(width + " " + height);
 	}
 }

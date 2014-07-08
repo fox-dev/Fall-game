@@ -33,12 +33,22 @@ import objects.LeftWall;
 import objects.Player;
 import objects.RightWall;
 import objects.StaticSprite;
+import helpers.AssetLoader;
 import helpers.B2DVars;
 import handlers.GameScreenManager;
 import handlers.MyContactListener;
 import handlers.MyInput;
 
 public class GameScreen extends AbstractScreen {
+	
+	float depth = 0;
+	
+	private long wallInterval = 0;
+	private long wallInterval2 = 0;
+	private long lastWallInterval = 0;
+	private boolean wait = false;
+	private boolean wallEvent = false;
+	
 	ConeLight t;
 	
 	BitmapFont font;
@@ -104,6 +114,9 @@ public class GameScreen extends AbstractScreen {
 		handler = new RayHandler(world, viewport);
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
 		handler.setAmbientLight(0.3f);
+		
+		AssetLoader.bgm.play();
+		AssetLoader.bgm.setLooping(true);
 		
 	}
 	
@@ -252,6 +265,10 @@ public class GameScreen extends AbstractScreen {
 	
 	
 	public void render(){
+		if((int)AssetLoader.bgm.getPosition() == 26){
+				AssetLoader.bgm.stop();
+				AssetLoader.bgm.play();
+		}
 		//clear screens
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -318,10 +335,10 @@ public class GameScreen extends AbstractScreen {
 		//System.out.println(world.getBodyCount());
 		//System.out.println(handler.lightList.size);
 		
-		if(Math.abs(player.getBody().getLinearVelocity().y) > 3f){
+		if(Math.abs(player.getBody().getLinearVelocity().y) > 4f){
 			
 			Vector2 vel = player.getBody().getLinearVelocity();
-			vel.y = -3f;
+			vel.y = -4f;
 			player.getBody().setLinearVelocity(vel);
 			
 		}
@@ -335,20 +352,14 @@ public class GameScreen extends AbstractScreen {
 		rightWall.getBody().setTransform(rightWall.getPosition().x, player.getPosition().y, 0);
 		rightWall.getBody().setLinearVelocity( new Vector2(0,player.getBody().getLinearVelocity().y));
 		
-		if(runTime > 3 && runTime < 10){
-			System.out.println("GOING---------------------------------------");
-			leftWall.getBody().setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
-			rightWall.getBody().setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));
-		}
-			
-		if(runTime > 10 && leftWall.getPosition().x >= 0 && rightWall.getPosition().x <= game.V_WIDTH/PPM ){
-			System.out.println("RESTORING---------------------------------------");
-			leftWall.getBody().setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));
-			rightWall.getBody().setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
-		}
+		wallEvent();
+		
+	
 		
 		
-		//System.out.println("Runtime: " + runTime);
+		System.out.println("Runtime: " + runTime);
+		System.out.println("MSRunTime: " + System.currentTimeMillis());
+		System.out.println("Diff: " + lastWallInterval+wallInterval);
 		//System.out.println("GAMESCREEN");
 		
 		//System.out.println("Wally: "+ leftWall.getPosition().y);
@@ -365,6 +376,8 @@ public class GameScreen extends AbstractScreen {
 			sb.end();
 		}
 		
+	
+		
 		cam.position.set(
                  player.getPosition().x * PPM,
                  (player.getPosition().y) * PPM - 100,
@@ -375,14 +388,26 @@ public class GameScreen extends AbstractScreen {
 		
 		sb.setProjectionMatrix(cam.combined);
 		
-		if(!gameOverFlag){
-			player.render(sb);
-		}
+		
+		
+		
+		
 			
 		rightWall.render(sb);
 		leftWall.render(sb);
 		rWallRepeat.render(sb);
 		lWallRepeat.render(sb);
+		
+		if(!gameOverFlag){
+			player.render(sb);
+			sb.begin();
+			depth = Math.abs(player.getPosition().y - 300/PPM);
+			float w = font.getBounds((int)depth + "m").width;
+			float h = font.getBounds((int)depth + "m").height;
+			font.setUseIntegerPositions(false);
+			font.draw(sb,String.valueOf((int)depth + "m") , cam.position.x  - game.V_WIDTH/2, cam.position.y + game.V_HEIGHT/4);
+			sb.end();
+		}
 		
 		for(StaticSprite ledge : ledgeList)
 		{
@@ -403,14 +428,14 @@ public class GameScreen extends AbstractScreen {
 		//System.out.println("y: " + cam.position.y*100);
 		//System.out.println(playerBody.getLinearVelocity().y);
 	
-		
+		b2dCam.position.set(
+                player.getPosition().x,player.getPosition().y - 100/PPM,
+                0
+        );
+		b2dCam.update(); 
 		// draw box2d
 		if(debug) {
-			b2dCam.position.set(
-	                 player.getPosition().x,player.getPosition().y - 100/PPM,
-	                 0
-	         );
-			b2dCam.update(); 
+		
 			b2dr.render(world, b2dCam.combined);
 			
 		}
@@ -611,6 +636,34 @@ public class GameScreen extends AbstractScreen {
 		else{return rightWall.getPosition().x - ((MainGame.V_WIDTH/10)/PPM);}
 	}
 	
+	public void wallEvent(){
+		long s = System.currentTimeMillis();
+		long s2 = System.currentTimeMillis();
+		
+		if(s - wallInterval > 5000){
+			
+			wallEvent = !wallEvent;
+			wallInterval = s;
+
+		}
+		
+		if(s2 - wallInterval2 > 10000){
+			wait = !wallEvent;
+			wallInterval2 = s;
+		}
+		
+		if(wallEvent && wait){
+			System.out.println("GOING---------------------------------------");
+			leftWall.getBody().setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
+			rightWall.getBody().setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));	
+		}
+		else if(leftWall.getBody().getPosition().x >= 0){
+			System.out.println("RESTORING---------------------------------------");
+			leftWall.getBody().setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));
+			rightWall.getBody().setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
+		}
+	}
+	
 	public void resize(int width, int height) {
 		float aspectRatio;
 		
@@ -638,6 +691,8 @@ public class GameScreen extends AbstractScreen {
         float h = (float)MainGame.V_HEIGHT*scale;
         viewport = new Rectangle(crop.x, crop.y, w, h);
 	}
+	
+
 
 	@Override
 	public void render(float delta) 

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -41,8 +42,6 @@ import handlers.MyInput;
 
 public class GameScreen extends AbstractScreen {
 	
-	float depth = 0;
-	
 	private long wallInterval = 0;
 	private long wallInterval2 = 0;
 	private long lastWallInterval = 0;
@@ -68,7 +67,7 @@ public class GameScreen extends AbstractScreen {
 	
 	int lights = 0;
 	
-	float runTime;
+	float runTime, depth = 0, score = 0, lastDepth = 0, lastStop = 0, multi = 1;
 	
 	private DelayedRemovalArray<StaticSprite> ledgeList = new DelayedRemovalArray<StaticSprite>();
 	private DelayedRemovalArray<Body> obstacleList = new DelayedRemovalArray<Body>();
@@ -159,7 +158,8 @@ public class GameScreen extends AbstractScreen {
 				//}
 			
 				player.stopping();
-
+				lastStop = depth;
+				multi = 1;
 			}
 			if(MyInput.isDown(MyInput.BUTTON1)){
 
@@ -169,6 +169,8 @@ public class GameScreen extends AbstractScreen {
 				vel.y = -1f;
 		 	
 				player.getBody().setLinearVelocity(vel);
+				lastStop = depth;
+				multi = 1;
 		 	
 			}
 			if(MyInput.isReleased(MyInput.BUTTON1))
@@ -200,6 +202,7 @@ public class GameScreen extends AbstractScreen {
 			if(MyInput.isPressed(MyInput.BUTTON1)){
 				gsm.setScreen(100);
 				gsm.set();
+				reset();
 				
 			}
 			
@@ -255,7 +258,6 @@ public class GameScreen extends AbstractScreen {
 	}
 	
 	
-	
 	public void update(float dt){
 		runTime += dt;
 		accelX = Gdx.input.getAccelerometerX();
@@ -264,7 +266,6 @@ public class GameScreen extends AbstractScreen {
 	    //System.out.println("Size: " + handler.lightList.size);
 		
 	}
-	
 	
 	
 	public void render(){
@@ -357,9 +358,6 @@ public class GameScreen extends AbstractScreen {
 		
 		wallEvent();
 		
-	
-		
-		
 		System.out.println("Runtime: " + runTime);
 		System.out.println("MSRunTime: " + System.currentTimeMillis());
 		System.out.println("Diff: " + lastWallInterval+wallInterval);
@@ -375,8 +373,9 @@ public class GameScreen extends AbstractScreen {
 			sb.begin();
 			float w = font.getBounds("Game Over").width;
 			float h = font.getBounds("Game Over").height;
-			font.draw(sb, "Game Over", cam.position.x - w/2 , cam.position.y + h/2);
+			font.draw(sb, "Game Over", cam.position.x - w/2 , cam.position.y + h/2 + font.getXHeight());
 			sb.end();
+			drawScore(sb, cam.position.x - w/2, cam.position.y + h/2 - font.getXHeight());
 		}
 		
 	
@@ -391,26 +390,11 @@ public class GameScreen extends AbstractScreen {
 		
 		sb.setProjectionMatrix(cam.combined);
 		
-		
-		
-		
-		
 			
 		rightWall.render(sb);
 		leftWall.render(sb);
 		rWallRepeat.render(sb);
 		lWallRepeat.render(sb);
-		
-		if(!gameOverFlag){
-			player.render(sb);
-			sb.begin();
-			depth = (float) (Math.abs(player.getPosition().y - 300/PPM)/0.3048);
-			float w = font.getBounds((int)depth + "ft").width;
-			float h = font.getBounds((int)depth + "ft").height;
-			font.setUseIntegerPositions(false);
-			font.draw(sb,String.valueOf((int)depth + "ft") , cam.position.x  - game.V_WIDTH/2, cam.position.y + game.V_HEIGHT/4);
-			sb.end();
-		}
 		
 		for(StaticSprite ledge : ledgeList)
 		{
@@ -418,6 +402,38 @@ public class GameScreen extends AbstractScreen {
 			ledge.render(sb);
 		}
 		
+		if(!gameOverFlag){
+			player.render(sb);
+			
+			System.out.println(depth + " Multi here! " + lastStop + " x" + multi);
+			if((int)Math.abs(depth - lastStop) > 40)
+				multi = 4;
+			else if((int)Math.abs(depth - lastStop) > 25)
+				multi = 3;
+			else if((int)Math.abs(depth - lastStop) > 10)
+				multi = 2;
+			
+			System.out.println(score + "I'm here!" + depth + " " + lastDepth);
+			if((int)Math.abs(depth - lastDepth) >= 1)
+			{
+				score += 1 * multi;
+				lastDepth = depth;
+				System.out.println(score + "I'm here!" + depth + " " + lastDepth);
+			}
+			
+			sb.begin();
+			depth = (float) (Math.abs(player.getPosition().y - 300/PPM)/0.3048);
+			float w = font.getBounds((int)depth + "ft").width;
+			float h = font.getBounds((int)depth + "ft").height;
+			font.setUseIntegerPositions(false);
+			font.draw(sb,String.valueOf((int)depth + "ft") , cam.position.x  - game.V_WIDTH/2, cam.position.y + game.V_HEIGHT/4);
+			sb.end();
+			float wScore = font.getBounds("Score " + (int)score).width;
+			float hScore = font.getBounds("Score " + (int)score).height;
+			drawScore(sb, cam.position.x + game.V_WIDTH/2 - wScore, cam.position.y + game.V_HEIGHT/4);
+			float wMulti = font.getBounds("Multiplier x" + (int)multi).width;
+			drawMulitplier(sb, cam.position.x + game.V_WIDTH/2 - wMulti, cam.position.y + game.V_HEIGHT/4 - hScore);
+		}
 		
 		//handler.getLightMapBuffer().begin();
 		//handler.getLightMapBuffer().bind();
@@ -701,6 +717,33 @@ public class GameScreen extends AbstractScreen {
         float w = (float)MainGame.V_WIDTH*scale;
         float h = (float)MainGame.V_HEIGHT*scale;
         viewport = new Rectangle(crop.x, crop.y, w, h);
+	}
+	
+	public void reset()
+	{
+		lastDepth = 0;
+		lastStop = 0;
+		score = 0;
+	}
+	
+	public void drawScore(SpriteBatch sb, float x, float y)
+	{
+		sb.begin();
+		float w = font.getBounds("Score " + (int)score).width;
+		float h = font.getBounds("Score " + (int)score).height;
+		font.setUseIntegerPositions(false);
+		font.draw(sb,String.valueOf("Score " + (int)score) , x, y);
+		sb.end();
+	}
+	
+	public void drawMulitplier(SpriteBatch sb, float x, float y)
+	{
+		sb.begin();
+		float w = font.getBounds("Multiplier x" + (int)multi).width;
+		float h = font.getBounds("Multiplier x" + (int)multi).height;
+		font.setUseIntegerPositions(false);
+		font.draw(sb,String.valueOf("Multiplier x" + (int)multi) , x, y);
+		sb.end();
 	}
 	
 

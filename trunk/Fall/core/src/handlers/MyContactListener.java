@@ -1,5 +1,7 @@
 package handlers;
 
+import helpers.AssetLoader;
+
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -19,10 +21,12 @@ public class MyContactListener implements ContactListener {
 		System.out.println(fa.getUserData() + ", " + fb.getUserData());
 		
 		if(fa.getUserData() != null && fa.getUserData().equals("foot")){
+			AssetLoader.hit.play();
 			playerOnGround = true;
 		}
 		
 		if(fb.getUserData() != null && fb.getUserData().equals("foot")){
+			AssetLoader.hit.play();
 			playerOnGround = true;
 		}
 	}

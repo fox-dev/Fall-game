@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -17,6 +18,10 @@ public class AssetLoader {
 								wallLeft, wallRight, ledgeLeft, ledgeRight, ledgeMiddle;
 	
 	public static Music bgm;
+	
+	public static Music caveIn;
+	
+	public static Sound hit;
 	
 	public AssetLoader(){
 		textures = new HashMap <String, Texture>();
@@ -43,6 +48,8 @@ public class AssetLoader {
 		ledgeMiddle = new TextureRegion(ledge);
 		
 		bgm = Gdx.audio.newMusic(Gdx.files.internal("data/Fall.wav"));
+		caveIn = Gdx.audio.newMusic(Gdx.files.internal("data/caveIn.mp3"));
+		hit = Gdx.audio.newSound(Gdx.files.internal("data/hit.mp3"));
 		
 		
 		
@@ -81,6 +88,8 @@ public class AssetLoader {
 	{
 		player.dispose();
 		cliffWalls.dispose();
+		caveIn.dispose();
+		hit.dispose();
 		
 		
 	}

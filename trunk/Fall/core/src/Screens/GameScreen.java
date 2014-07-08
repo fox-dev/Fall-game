@@ -115,6 +115,9 @@ public class GameScreen extends AbstractScreen {
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
 		handler.setAmbientLight(0.3f);
 		
+		
+		
+		
 		AssetLoader.bgm.play();
 		AssetLoader.bgm.setLooping(true);
 		
@@ -401,11 +404,11 @@ public class GameScreen extends AbstractScreen {
 		if(!gameOverFlag){
 			player.render(sb);
 			sb.begin();
-			depth = Math.abs(player.getPosition().y - 300/PPM);
-			float w = font.getBounds((int)depth + "m").width;
-			float h = font.getBounds((int)depth + "m").height;
+			depth = (float) (Math.abs(player.getPosition().y - 300/PPM)/0.3048);
+			float w = font.getBounds((int)depth + "ft").width;
+			float h = font.getBounds((int)depth + "ft").height;
 			font.setUseIntegerPositions(false);
-			font.draw(sb,String.valueOf((int)depth + "m") , cam.position.x  - game.V_WIDTH/2, cam.position.y + game.V_HEIGHT/4);
+			font.draw(sb,String.valueOf((int)depth + "ft") , cam.position.x  - game.V_WIDTH/2, cam.position.y + game.V_HEIGHT/4);
 			sb.end();
 		}
 		
@@ -642,8 +645,10 @@ public class GameScreen extends AbstractScreen {
 		
 		if(s - wallInterval > 5000){
 			
+			
 			wallEvent = !wallEvent;
 			wallInterval = s;
+			
 
 		}
 		
@@ -654,10 +659,16 @@ public class GameScreen extends AbstractScreen {
 		
 		if(wallEvent && wait){
 			System.out.println("GOING---------------------------------------");
+			if(!AssetLoader.caveIn.isPlaying()){
+				AssetLoader.caveIn.play();
+			}
 			leftWall.getBody().setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
 			rightWall.getBody().setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));	
 		}
 		else if(leftWall.getBody().getPosition().x >= 0){
+			//if(!AssetLoader.caveIn.isPlaying()){
+			//	AssetLoader.caveIn.play();
+			//}
 			System.out.println("RESTORING---------------------------------------");
 			leftWall.getBody().setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));
 			rightWall.getBody().setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));

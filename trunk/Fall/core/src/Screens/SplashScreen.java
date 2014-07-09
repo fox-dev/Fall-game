@@ -1,36 +1,33 @@
 package Screens;
 
+import helpers.AssetLoader;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 import aurelienribon.tweenengine.TweenManager;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.me.TweenAccessors.SpriteAccessor;
-import com.me.helpers.AssetLoader;
-import com.me.rocketanimals.RocketAnimals;
-import com.me.screens.GameScreen;
-
-public class SplashScreen implements Screen
+ class SplashScreen implements Screen
 {
 	private TweenManager manager;
 	private SpriteBatch batcher;
 	private Sprite sprite;
-	private RocketAnimals game;
+	private Game game;
 	
-	public SplashScreen(RocketAnimals game)
+	public SplashScreen(Game game)
 	{
 		this.game = game;
 	}
 	
 	public void show()
 	{
-		sprite = new Sprite(AssetLoader.logo);
+		sprite = new Sprite(AssetLoader.cliffJumper2);
 		sprite.setColor(1, 1, 1, 0);
 		
 		float width = Gdx.graphics.getWidth();
@@ -46,20 +43,20 @@ public class SplashScreen implements Screen
 	
 	private void setupTween()
 	{
-		Tween.registerAccessor(Sprite.class, new SpriteAccessor());
+		//Tween.registerAccessor(Sprite.class, new SpriteAccessor());
 		manager = new TweenManager();
 		
 		TweenCallback cb = new TweenCallback(){
 			public void onEvent(int type, BaseTween<?> source)
 			{
-				game.setScreen(new GameScreen());
+				game.setScreen(new GameScreen(null));
 			}
 		};
 		
-		Tween.to(sprite, SpriteAccessor.ALPHA, .8f).target(1)
-				.ease(TweenEquations.easeInOutQuad).repeatYoyo(1, .4f)
-				.setCallback(cb).setCallbackTriggers(TweenCallback.COMPLETE)
-				.start(manager);
+		//Tween.to(sprite, SpriteAccessor.ALPHA, .8f).target(1)
+				//.ease(TweenEquations.easeInOutQuad).repeatYoyo(1, .4f)
+				//.setCallback(cb).setCallbackTriggers(TweenCallback.COMPLETE)
+				//.start(manager);
 	}
 	
 	public void render(float delta)

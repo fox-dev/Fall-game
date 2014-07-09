@@ -23,7 +23,7 @@ public class RayHandler implements Disposable {
 	boolean shadows = true;
 	boolean blur = true;
 	
-	float ASPECT_RATIO = (float)MainGame.V_HEIGHT/(float)MainGame.V_WIDTH;
+	float ASPECT_RATIO = (float)MainGame.V_WIDTH/(float)MainGame.V_HEIGHT;
 
 	int blurNum = 1;
 	Color ambientLight = new Color();

@@ -25,6 +25,7 @@ public class MainGame extends Game {
 	
 	private SpriteBatch sb;
 	private OrthographicCamera cam;
+	private OrthographicCamera hudCam;
 	
 	private GameScreenManager gsm;
 
@@ -38,6 +39,10 @@ public class MainGame extends Game {
 		sb = new SpriteBatch();
 		cam = new OrthographicCamera();
 		cam.setToOrtho(false, V_WIDTH, V_HEIGHT);
+		
+		hudCam = new OrthographicCamera();
+		hudCam.setToOrtho(false, V_WIDTH, V_HEIGHT);
+		
 		
 		gsm = new GameScreenManager(this);
 		
@@ -70,5 +75,6 @@ public class MainGame extends Game {
 	
 	public SpriteBatch getSpriteBatch(){return sb;}
 	public OrthographicCamera getCamera(){ return cam; }
+	public OrthographicCamera getHudCam(){ return hudCam; }
 	
 }

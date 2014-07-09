@@ -16,12 +16,14 @@ public abstract class AbstractScreen implements Screen{
 	
 	protected SpriteBatch sb;
 	protected OrthographicCamera cam; //player
+	protected OrthographicCamera hudCam;
 	
 	protected AbstractScreen(GameScreenManager gsm){
 		this.gsm = gsm;
 		game = gsm.game();
 		sb = game.getSpriteBatch();
 		cam = game.getCamera();
+		hudCam = game.getHudCam();
 		
 	}
 	

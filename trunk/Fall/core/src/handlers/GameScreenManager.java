@@ -4,6 +4,7 @@ import java.util.Stack;
 
 import Screens.AbstractScreen;
 import Screens.GameScreen;
+import Screens.SplashScreen;
 
 
 import Screens.Menu;
@@ -20,13 +21,15 @@ public class GameScreenManager {
 	
 	public static final int playScreen = 101;
 	public static final int menu = 100;
+	public static final int splashScreen = 99;
 	GameScreen g;
 	Menu m;
+	SplashScreen s;
 
 	public GameScreenManager(MainGame game) {
 		this.game = game;
 		gameScreens = new Stack<AbstractScreen>();
-		pushScreen(menu);
+		pushScreen(splashScreen);
 	}
 	
 	public MainGame game(){return game;}
@@ -52,6 +55,11 @@ public class GameScreenManager {
 			m = new Menu(this);
 			//game.setScreen(m);
 			return m;
+		}
+		if(screen == splashScreen)
+		{
+			s = new SplashScreen(this);
+			return s;
 		}
 		return null;
 	}

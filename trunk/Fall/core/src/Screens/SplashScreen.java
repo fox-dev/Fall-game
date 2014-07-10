@@ -1,33 +1,30 @@
 package Screens;
 
+import handlers.GameScreenManager;
 import helpers.AssetLoader;
+import TweenAccessors.SpriteAccessor;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 import aurelienribon.tweenengine.TweenManager;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
- class SplashScreen implements Screen
+
+public class SplashScreen extends AbstractScreen
 {
 	private TweenManager manager;
 	private SpriteBatch batcher;
 	private Sprite sprite;
-	private Game game;
 	
-	public SplashScreen(Game game)
+	public SplashScreen(GameScreenManager gsm)
 	{
-		this.game = game;
-	}
-	
-	public void show()
-	{
-		sprite = new Sprite(AssetLoader.cliffJumper2);
+		super(gsm);
+		
+		sprite = new Sprite(AssetLoader.logo);
 		sprite.setColor(1, 1, 1, 0);
 		
 		float width = Gdx.graphics.getWidth();
@@ -41,22 +38,42 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 		batcher = new SpriteBatch();
 	}
 	
+	public void show()
+	{
+		
+	}
+	
 	private void setupTween()
 	{
-		//Tween.registerAccessor(Sprite.class, new SpriteAccessor());
+		Tween.registerAccessor(Sprite.class, new SpriteAccessor());
 		manager = new TweenManager();
 		
 		TweenCallback cb = new TweenCallback(){
 			public void onEvent(int type, BaseTween<?> source)
 			{
-				game.setScreen(new GameScreen(null));
+				gsm.setScreen(100);
 			}
 		};
 		
-		//Tween.to(sprite, SpriteAccessor.ALPHA, .8f).target(1)
-				//.ease(TweenEquations.easeInOutQuad).repeatYoyo(1, .4f)
-				//.setCallback(cb).setCallbackTriggers(TweenCallback.COMPLETE)
-				//.start(manager);
+		Tween.to(sprite, SpriteAccessor.ALPHA, .8f).target(1)
+				.ease(TweenEquations.easeInOutQuad).repeatYoyo(1, .4f)
+				.setCallback(cb).setCallbackTriggers(TweenCallback.COMPLETE)
+				.start(manager);
+	}
+	
+	public void update(float delta)
+	{
+		System.out.println("MENU");
+	}
+	
+	public void render()
+	{
+		manager.update(Gdx.graphics.getDeltaTime());
+		Gdx.gl.glClearColor(1,  1,  1,  1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		batcher.begin();
+		sprite.draw(batcher);
+		batcher.end();
 	}
 	
 	public void render(float delta)
@@ -95,6 +112,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 	@Override
 	public void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleInput() {
 		// TODO Auto-generated method stub
 		
 	}

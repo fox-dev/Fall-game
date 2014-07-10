@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -71,13 +70,12 @@ public class GameScreen extends AbstractScreen {
 	float runTime, depth = 0, score = 0, lastDepth = 0, lastStop = 0, multi = 1;
 	
 	private DelayedRemovalArray<StaticSprite> ledgeList = new DelayedRemovalArray<StaticSprite>();
-	private DelayedRemovalArray<Body> obstacleList = new DelayedRemovalArray<Body>();
+	//private DelayedRemovalArray<Body> obstacleList = new DelayedRemovalArray<Body>();
 	private DelayedRemovalArray<ConeLight> lightList = new DelayedRemovalArray<ConeLight>();
 	private World world;
 	private Box2DDebugRenderer b2dr;
 	
 	private OrthographicCamera b2dCam;
-	
 	
 	private RayHandler handler;
 	
@@ -111,7 +109,6 @@ public class GameScreen extends AbstractScreen {
 		//set up box2d cam
 		b2dCam = new OrthographicCamera();
 		b2dCam.setToOrtho(false, MainGame.V_WIDTH/PPM , MainGame.V_HEIGHT/PPM );
-
 		
 		handler = new RayHandler(world, viewport);
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
@@ -350,7 +347,7 @@ public class GameScreen extends AbstractScreen {
 			
 		}
 		
-		
+		resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 		Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
                 (int) viewport.width, (int) viewport.height);
 		
@@ -361,9 +358,9 @@ public class GameScreen extends AbstractScreen {
 		
 		wallEvent();
 		
-		//System.out.println("Runtime: " + runTime);
-		//System.out.println("MSRunTime: " + System.currentTimeMillis());
-		//System.out.println("Diff: " + lastWallInterval+wallInterval);
+		System.out.println("Runtime: " + runTime);
+		System.out.println("MSRunTime: " + System.currentTimeMillis());
+		System.out.println("Diff: " + lastWallInterval+wallInterval);
 		//System.out.println("GAMESCREEN");
 		
 		//System.out.println("Wally: "+ leftWall.getPosition().y);
@@ -371,7 +368,7 @@ public class GameScreen extends AbstractScreen {
 		//System.out.println("Difference: " +  (leftWall.getPosition().y - player.getPosition().y));
 		
 		if(cl.isPlayerOnGround() == true){
-			//System.out.println("dead");
+			System.out.println("dead");
 			gameOverFlag = true;
 			sb.begin();
 			float w = font.getBounds("Game Over").width;
@@ -408,17 +405,7 @@ public class GameScreen extends AbstractScreen {
 		if(!gameOverFlag){
 			player.render(sb);
 			
-		}
-		
-		
-		
-				
-		handler.setCombinedMatrix(b2dCam.combined);
-		handler.updateAndRender();
-		
-		if(!gameOverFlag){
-
-			//System.out.println(depth + " Multi here! " + lastStop + " x" + multi);
+			System.out.println(depth + " Multi here! " + lastStop + " x" + multi);
 			if((int)Math.abs(depth - lastStop) > 40)
 				multi = 4;
 			else if((int)Math.abs(depth - lastStop) > 25)
@@ -426,38 +413,34 @@ public class GameScreen extends AbstractScreen {
 			else if((int)Math.abs(depth - lastStop) > 10)
 				multi = 2;
 			
-			//System.out.println(score + "I'm here!" + depth + " " + lastDepth);
+			System.out.println(score + "I'm here!" + depth + " " + lastDepth);
 			if((int)Math.abs(depth - lastDepth) >= 1)
 			{
 				score += 1 * multi;
 				lastDepth = depth;
-				//System.out.println(score + "I'm here!" + depth + " " + lastDepth);
+				System.out.println(score + "I'm here!" + depth + " " + lastDepth);
 			}
 			
-			sb.setProjectionMatrix(hudCam.combined);
-		
-		
 			sb.begin();
 			depth = (float) (Math.abs(player.getPosition().y - 300/PPM)/0.3048);
 			float w = font.getBounds((int)depth + "ft").width;
 			float h = font.getBounds((int)depth + "ft").height;
 			font.setUseIntegerPositions(false);
-			font.draw(sb,String.valueOf((int)depth + "ft"), 0, game.V_HEIGHT);
+			font.draw(sb,String.valueOf((int)depth + "ft") , cam.position.x - game.V_WIDTH/2, cam.position.y + game.V_HEIGHT/2);
 			sb.end();
-			
-			//System.out.println("X: " + hudCam.position.x);
-			//System.out.print("Y: " + hudCam.position.y);
-			
-			
-			
 			float wScore = font.getBounds("Score " + (int)score).width;
 			float hScore = font.getBounds("Score " + (int)score).height;
-			drawScore(sb, game.V_WIDTH - wScore, game.V_HEIGHT);
+			drawScore(sb, cam.position.x + game.V_WIDTH/2 - wScore, cam.position.y + game.V_HEIGHT/2);
 			float wMulti = font.getBounds("Multiplier x" + (int)multi).width;
-			drawMulitplier(sb, game.V_WIDTH - wMulti, game.V_HEIGHT - hScore);
-			
-			sb.setProjectionMatrix(cam.combined);
+			drawMulitplier(sb, cam.position.x + game.V_WIDTH/2 - wMulti, cam.position.y + game.V_HEIGHT/2 - hScore);
 		}
+		
+		//handler.getLightMapBuffer().begin();
+		//handler.getLightMapBuffer().bind();
+		
+				
+		handler.setCombinedMatrix(b2dCam.combined);
+		handler.updateAndRender();
 	
 		
 		//System.out.println("x: " + cam.position.x/PPM);
@@ -734,11 +717,6 @@ public class GameScreen extends AbstractScreen {
         float w = (float)MainGame.V_WIDTH*scale;
         float h = (float)MainGame.V_HEIGHT*scale;
         viewport = new Rectangle(crop.x, crop.y, w, h);
-        
-        
-        
-        
-        
 	}
 	
 	public void reset()

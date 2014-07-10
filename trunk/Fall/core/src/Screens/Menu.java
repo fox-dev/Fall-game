@@ -109,8 +109,6 @@ public class Menu extends AbstractScreen {
 		handleInput();
 		
 		
-		
-		
 	}
 
 

@@ -50,7 +50,7 @@ public class AssetLoader {
 		ledgeRight = new TextureRegion(ledgeB);
 		ledgeMiddle = new TextureRegion(ledge);
 		
-		bgm = Gdx.audio.newMusic(Gdx.files.internal("data/Fall.wav"));
+		bgm = Gdx.audio.newMusic(Gdx.files.internal("data/Greg_Davis_-_01_-_slow_motion.mp3"));
 		caveIn = Gdx.audio.newMusic(Gdx.files.internal("data/caveIn.mp3"));
 		hit = Gdx.audio.newSound(Gdx.files.internal("data/hit.mp3"));
 		

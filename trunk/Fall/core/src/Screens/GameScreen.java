@@ -5,7 +5,10 @@ import static helpers.B2DVars.PPM;
 import java.util.Random;
 
 import Lights.ConeLight;
+import Lights.PointLight;
 import Lights.RayHandler;
+
+
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -46,9 +49,14 @@ public class GameScreen extends AbstractScreen {
 	private long wallInterval2 = 0;
 	private long lastWallInterval = 0;
 	private boolean wait = false;
+	boolean down = false;
 	private boolean wallEvent = false;
 	
-	ConeLight t;
+	//PointLight p;
+	
+	
+	
+	PointLight d;
 	
 	BitmapFont font;
 	
@@ -59,7 +67,7 @@ public class GameScreen extends AbstractScreen {
 	float ASPECT_RATIO = (float)MainGame.V_WIDTH/(float)MainGame.V_HEIGHT;
 	private Rectangle viewport;
 	
-	private boolean debug = true;
+	private boolean debug = false;
 	float x = 0, y = 0, x2 = 0, y2 = 0;
 	long lastSprite = 0;
 	long lastSprite2 = 0;
@@ -72,6 +80,8 @@ public class GameScreen extends AbstractScreen {
 	private DelayedRemovalArray<StaticSprite> ledgeList = new DelayedRemovalArray<StaticSprite>();
 	//private DelayedRemovalArray<Body> obstacleList = new DelayedRemovalArray<Body>();
 	private DelayedRemovalArray<ConeLight> lightList = new DelayedRemovalArray<ConeLight>();
+	private DelayedRemovalArray<PointLight> lightListP = new DelayedRemovalArray<PointLight>();
+	
 	private World world;
 	private Box2DDebugRenderer b2dr;
 	
@@ -86,10 +96,13 @@ public class GameScreen extends AbstractScreen {
 
 	private MyContactListener cl;
 	
+	int grow = 100;
 	float accelX = 0;
 	
 	public GameScreen(GameScreenManager gsm) {
 		super(gsm);
+		
+		
 		
 		
 		gameOverFlag = false;
@@ -114,11 +127,24 @@ public class GameScreen extends AbstractScreen {
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
 		handler.setAmbientLight(0.3f);
 		
+		//p = new PointLight(handler, 40, Color.LIGHT_GRAY, grow/PPM,  player.getPosition().x, player.getPosition().y);
+		
+		//p.setContactFilter(B2DVars.BIT_PLAYER, B2DVars.BIT_LIGHT, B2DVars.BIT_GROUND);
+		
+		
+		
+		
+		//p.isSoft();
+		
+	
+		
 		
 		
 		
 		AssetLoader.bgm.play();
 		AssetLoader.bgm.setLooping(true);
+		
+		
 		
 	}
 	
@@ -221,46 +247,30 @@ public class GameScreen extends AbstractScreen {
 	    return rand.nextInt((max - min) + 1) + min;
 	}
 	
-	public void addObstacles(){
-		BodyDef def = new BodyDef(); 
-		//def.position.set(randInt(0,(320-(Game.V_WIDTH/5)-3))/PPM,(cam.position.y - (Game.V_HEIGHT*2)/PPM));
-		//def.position.set(((Game.V_WIDTH/5)+3)/PPM,(cam.position.y - (Game.V_HEIGHT*2)/PPM));
-		def.position.set(randInt(((MainGame.V_WIDTH/5)+3),(320-(MainGame.V_WIDTH/5)-3))/PPM,(b2dCam.position.y - (MainGame.V_HEIGHT*2)/PPM));
-
-		def.type = BodyType.StaticBody;
-		Body body = world.createBody(def);
-		
-		PolygonShape shape = new PolygonShape();
-		float width = randInt(5, 8);
-		shape.setAsBox((MainGame.V_WIDTH/width)/PPM, 5/PPM); //half width half height, so 100, 10
-		width = (MainGame.V_WIDTH/width)/PPM;
-		
-		FixtureDef fdef = new FixtureDef();
-		fdef.shape = shape;
-		fdef.density = 0.4f;
-		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
-		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
-		body.createFixture(fdef).setUserData("Ground");
-		
-		LedgeMiddle temp = new LedgeMiddle(body, width);
-		body.setUserData(temp);
 	
-		ConeLight t;
-		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);
-		//Light.setContactFilter(B2DVars.BIT_BALL, (short) 0, B2DVars.BIT_BALL);
-		
-		ledgeList.add(temp);
-		//obstacleList.add(body);
-		lightList.add(t);
-		shape.dispose();
-		
-		//System.out.println("Y object: " + body.getPosition().y);
-	}
 	
 	
 	public void update(float dt){
 		runTime += dt;
 		accelX = Gdx.input.getAccelerometerX();
+		
+		
+		//p.setDistance(grow/PPM);
+		
+		if(grow >= 130){
+			down = true;
+		}
+		if(grow == 100){
+			down = false;
+		}
+		if(grow >= 100 && !down){
+			grow++;
+		}
+		else{
+			grow --;
+		}
+		
+		
 		
 		handleInput();
 	    //System.out.println("Size: " + handler.lightList.size);
@@ -269,10 +279,12 @@ public class GameScreen extends AbstractScreen {
 	
 	
 	public void render(){
+		/*
 		if((int)AssetLoader.bgm.getPosition() == 26){
 				AssetLoader.bgm.stop();
 				AssetLoader.bgm.play();
 		}
+		*/
 		//clear screens
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -296,6 +308,7 @@ public class GameScreen extends AbstractScreen {
 			}
 		}
 		
+		
 		for(ConeLight l : lightList){
 			if(l.getPosition().y > b2dCam.position.y + MainGame.V_HEIGHT/PPM){
 				l.setActive(false);
@@ -305,6 +318,19 @@ public class GameScreen extends AbstractScreen {
 				
 			}
 		}
+		
+		for(PointLight l : lightListP){
+			if(l.getPosition().y > b2dCam.position.y + MainGame.V_HEIGHT/PPM){
+				l.setActive(false);
+				handler.lightList.removeValue(l, true);
+				lightListP.removeValue(l, true);
+				lights--;
+				
+			}
+		}
+		
+		
+		//p.setPosition(player.getPosition().x, player.getPosition().y);
 		
 		if(rightWall.getYPosition() > cam.position.y/PPM + MainGame.V_HEIGHT/2/PPM){
 			rightWall.setPosition(rWallRepeat.getYPosition() - rightWall.getHeight()/PPM);
@@ -367,16 +393,7 @@ public class GameScreen extends AbstractScreen {
 		//System.out.println("Playery: "+ player.getPosition().y);
 		//System.out.println("Difference: " +  (leftWall.getPosition().y - player.getPosition().y));
 		
-		if(cl.isPlayerOnGround() == true){
-			System.out.println("dead");
-			gameOverFlag = true;
-			sb.begin();
-			float w = font.getBounds("Game Over").width;
-			float h = font.getBounds("Game Over").height;
-			font.draw(sb, "Game Over", cam.position.x - w/2 , cam.position.y + h/2 + font.getXHeight());
-			sb.end();
-			drawScore(sb, cam.position.x - w/2, cam.position.y + h/2 - font.getXHeight());
-		}
+		
 		
 	
 		
@@ -402,8 +419,19 @@ public class GameScreen extends AbstractScreen {
 			ledge.render(sb);
 		}
 		
+		
+		
+		
+		
 		if(!gameOverFlag){
 			player.render(sb);
+		}
+				
+		handler.setCombinedMatrix(b2dCam.combined);
+		handler.updateAndRender();
+
+		if(!gameOverFlag){
+			
 			
 			System.out.println(depth + " Multi here! " + lastStop + " x" + multi);
 			if((int)Math.abs(depth - lastStop) > 40)
@@ -435,17 +463,18 @@ public class GameScreen extends AbstractScreen {
 			drawMulitplier(sb, cam.position.x + game.V_WIDTH/2 - wMulti, cam.position.y + game.V_HEIGHT/2 - hScore);
 		}
 		
-		//handler.getLightMapBuffer().begin();
-		//handler.getLightMapBuffer().bind();
+		if(cl.isPlayerOnGround() == true){
+			System.out.println("dead");
+			gameOverFlag = true;
+			sb.begin();
+			float w = font.getBounds("Game Over").width;
+			float h = font.getBounds("Game Over").height;
+			font.draw(sb, "Game Over", cam.position.x - w/2 , cam.position.y + h/2 + font.getXHeight());
+			sb.end();
+			drawScore(sb, cam.position.x - w/2, cam.position.y + h/2 - font.getXHeight());
+		}
 		
-				
-		handler.setCombinedMatrix(b2dCam.combined);
-		handler.updateAndRender();
 	
-		
-		//System.out.println("x: " + cam.position.x/PPM);
-		//System.out.println("y: " + cam.position.y*100);
-		//System.out.println(playerBody.getLinearVelocity().y);
 	
 		b2dCam.position.set(
                 player.getPosition().x,player.getPosition().y - 100/PPM,
@@ -587,9 +616,13 @@ public class GameScreen extends AbstractScreen {
 		shape2.dispose();
 		
 		ConeLight t;
-		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);		
+		t = new ConeLight(handler, 40, Color.GRAY,800/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 20);	
 		
-		LedgeLeft temp = new LedgeLeft(body, leftWall);
+		//PointLight d;
+		//d = new PointLight(handler, 40, Color.LIGHT_GRAY, grow/PPM,  player.getPosition().x, player.getPosition().y);
+		
+		t.isSoft();
+		LedgeLeft temp = new LedgeLeft(body, leftWall, t);
 		body.setUserData(temp);
 		ledgeList.add(temp);
 		lightList.add(t);
@@ -615,13 +648,60 @@ public class GameScreen extends AbstractScreen {
 		body.createFixture(fdef).setUserData("Wall Platform");
 		shape2.dispose();
 		
+		ConeLight t;
+		t = new ConeLight(handler, 40, Color.GRAY,800/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 20);		
+		t.isSoft();
 		
-		t = new ConeLight(handler, 10, Color.GRAY,1000/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 36);		
+		//PointLight d;
+		//d = new PointLight(handler, 40, Color.LIGHT_GRAY, grow/PPM,  player.getPosition().x, player.getPosition().y);
 		
-		LedgeRight temp = new LedgeRight(body, rightWall);
+		LedgeRight temp = new LedgeRight(body, rightWall, t);
 		body.setUserData(temp);
 		ledgeList.add(temp);
 		lightList.add(t);
+	}
+	
+	public void addObstacles(){
+		BodyDef def = new BodyDef(); 
+		//def.position.set(randInt(0,(320-(Game.V_WIDTH/5)-3))/PPM,(cam.position.y - (Game.V_HEIGHT*2)/PPM));
+		//def.position.set(((Game.V_WIDTH/5)+3)/PPM,(cam.position.y - (Game.V_HEIGHT*2)/PPM));
+		def.position.set(randInt(((MainGame.V_WIDTH/5)+3),(320-(MainGame.V_WIDTH/5)-3))/PPM,(b2dCam.position.y - (MainGame.V_HEIGHT*2)/PPM));
+
+		def.type = BodyType.StaticBody;
+		Body body = world.createBody(def);
+		
+		PolygonShape shape = new PolygonShape();
+		float width = randInt(5, 8);
+		shape.setAsBox((MainGame.V_WIDTH/width)/PPM, 5/PPM); //half width half height, so 100, 10
+		width = (MainGame.V_WIDTH/width)/PPM;
+		
+		FixtureDef fdef = new FixtureDef();
+		fdef.shape = shape;
+		fdef.density = 0.4f;
+		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
+		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
+		body.createFixture(fdef).setUserData("Ground");
+		
+		
+	
+		//ConeLight t;
+		//t = new ConeLight(handler, 40, Color.GRAY,800/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 30);
+		
+		
+		PointLight d;
+		d = new PointLight(handler, 40, Color.LIGHT_GRAY, grow/PPM,  player.getPosition().x, player.getPosition().y);
+	
+		//Light.setContactFilter(B2DVars.BIT_BALL, (short) 0, B2DVars.BIT_BALL);
+		//t.isSoft();
+		
+		LedgeMiddle temp = new LedgeMiddle(body, width, d);
+		body.setUserData(temp);
+		ledgeList.add(temp);
+		//obstacleList.add(body);
+		//lightList.add(t);
+		shape.dispose();
+		
+		//System.out.println("Y object: " + body.getPosition().y);
 	}
 	
 	public void init(){
@@ -682,12 +762,17 @@ public class GameScreen extends AbstractScreen {
 			rightWall.getBody().setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));	
 		}
 		else if(leftWall.getBody().getPosition().x >= 0){
+
 			//if(!AssetLoader.caveIn.isPlaying()){
 			//	AssetLoader.caveIn.play();
 			//}
 			System.out.println("RESTORING---------------------------------------");
 			leftWall.getBody().setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));
 			rightWall.getBody().setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
+		}
+		else if(leftWall.getBody().getPosition().x <= 0){
+			
+		
 		}
 	}
 	

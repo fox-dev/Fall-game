@@ -6,6 +6,9 @@ public class B2DVars {
 	//pixel per meter ration
 	public static final float PPM = 100;
 	
+	//Camera location for player
+	public static final float CL = 170;
+	
 	//category bits, use even bits
 	public static final short BIT_GROUND = 2; //0000 0000 0000 0010
 	public static final short BIT_PLAYER = 4; // 0000 0000 0000 0100

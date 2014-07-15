@@ -1,12 +1,15 @@
 package Screens;
 
 import static helpers.B2DVars.PPM;
+import static helpers.B2DVars.CL;
 
 import java.util.Random;
 
 import Lights.ConeLight;
 import Lights.PointLight;
 import Lights.RayHandler;
+
+
 
 
 
@@ -23,6 +26,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -45,10 +49,12 @@ import handlers.MyInput;
 
 public class GameScreen extends AbstractScreen {
 	
+	private boolean debug = false;
+	
 	private long wallInterval = 0;
-	private long wallInterval2 = 0;
-	private long lastWallInterval = 0;
-	private boolean wait = false;
+	
+	int r = randInt(5000, 40000);
+
 	boolean down = false;
 	private boolean wallEvent = false;
 	
@@ -67,7 +73,7 @@ public class GameScreen extends AbstractScreen {
 	float ASPECT_RATIO = (float)MainGame.V_WIDTH/(float)MainGame.V_HEIGHT;
 	private Rectangle viewport;
 	
-	private boolean debug = false;
+	
 	float x = 0, y = 0, x2 = 0, y2 = 0;
 	long lastSprite = 0;
 	long lastSprite2 = 0;
@@ -124,7 +130,10 @@ public class GameScreen extends AbstractScreen {
 		b2dCam.setToOrtho(false, MainGame.V_WIDTH/PPM , MainGame.V_HEIGHT/PPM );
 		
 		handler = new RayHandler(world, viewport);
+		
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
+		
+		
 		handler.setAmbientLight(0.3f);
 		
 		//p = new PointLight(handler, 40, Color.LIGHT_GRAY, grow/PPM,  player.getPosition().x, player.getPosition().y);
@@ -159,29 +168,22 @@ public class GameScreen extends AbstractScreen {
 			
 				player.getBody().setLinearVelocity(vel);
 			}
-			else if(accelX > -2){
+			else if(accelX > -1.4){
 				Vector2 vel = player.getBody().getLinearVelocity();
-				vel.x = -1f;
+				vel.x = -1.3f;
 		
 				player.getBody().setLinearVelocity(vel);
 			}
-			else if(accelX < 2){
+			else if(accelX < 1.4){
 				Vector2 vel = player.getBody().getLinearVelocity();
-				vel.x = 1f;
+				vel.x = 1.3f;
 			
 				player.getBody().setLinearVelocity(vel);
 			
 			}
 		
 			if(MyInput.isPressed(MyInput.BUTTON1)){
-				//System.out.println("pressed z");
-				//gsm.setScreen(100);
-				//gsm.set();
-				//if(cl.isPlayerOnGround()){
-				//playerBody.applyForceToCenter(0,200,true);
-				//player.getBody().applyForceToCenter(0,200,true);
-	
-				//}
+				
 			
 				player.stopping();
 				lastStop = depth;
@@ -205,8 +207,7 @@ public class GameScreen extends AbstractScreen {
 			}
 		
 			if(MyInput.isDown(MyInput.BUTTON2)){
-				//System.out.println("hold x");
-				//Vector2 vel = playerBody.getLinearVelocity();
+				
 				Vector2 vel = player.getBody().getLinearVelocity();
 				vel.x = -1f;
 		
@@ -215,11 +216,11 @@ public class GameScreen extends AbstractScreen {
 			}
 		
 			if(MyInput.isDown(MyInput.BUTTON3)){
-				//System.out.println("hold c");
-				//Vector2 vel = playerBody.getLinearVelocity();
+				
+				
 				Vector2 vel = player.getBody().getLinearVelocity();
 				vel.x = 1f;
-				//playerBody.setLinearVelocity(vel);
+				
 				player.getBody().setLinearVelocity(vel);
 			
 			}
@@ -255,25 +256,13 @@ public class GameScreen extends AbstractScreen {
 		accelX = Gdx.input.getAccelerometerX();
 		
 		
-		//p.setDistance(grow/PPM);
-		
-		if(grow >= 130){
-			down = true;
-		}
-		if(grow == 100){
-			down = false;
-		}
-		if(grow >= 100 && !down){
-			grow++;
-		}
-		else{
-			grow --;
-		}
+
+		System.out.println(leftWall.getBody().getPosition().x);
 		
 		
 		
 		handleInput();
-	    //System.out.println("Size: " + handler.lightList.size);
+	  
 		
 	}
 	
@@ -365,41 +354,33 @@ public class GameScreen extends AbstractScreen {
 		//System.out.println(world.getBodyCount());
 		//System.out.println(handler.lightList.size);
 		
-		if(Math.abs(player.getBody().getLinearVelocity().y) > 4f){
-			
-			Vector2 vel = player.getBody().getLinearVelocity();
-			vel.y = -4f;
-			player.getBody().setLinearVelocity(vel);
-			
-		}
+		
 		
 		resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 		Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
                 (int) viewport.width, (int) viewport.height);
 		
-		leftWall.getBody().setTransform(leftWall.getPosition().x, player.getPosition().y, 0);
-		leftWall.getBody().setLinearVelocity( new Vector2(0,player.getBody().getLinearVelocity().y));
-		rightWall.getBody().setTransform(rightWall.getPosition().x, player.getPosition().y, 0);
-		rightWall.getBody().setLinearVelocity( new Vector2(0,player.getBody().getLinearVelocity().y));
+		//leftWall.getBody().setTransform(leftWall.getPosition().x, player.getPosition().y, 0);
+		//leftWall.getBody().setLinearVelocity( new Vector2(0,player.getBody().getLinearVelocity().y));
+		//rightWall.getBody().setTransform(rightWall.getPosition().x, player.getPosition().y, 0);
+		//rightWall.getBody().setLinearVelocity( new Vector2(0,player.getBody().getLinearVelocity().y));
 		
-		wallEvent();
+		leftWall.getBody().setLinearVelocity( new Vector2(leftWall.getBody().getLinearVelocity().x,player.getBody().getLinearVelocity().y));
+		rightWall.getBody().setLinearVelocity( new Vector2(rightWall.getBody().getLinearVelocity().x,player.getBody().getLinearVelocity().y));
 		
-		System.out.println("Runtime: " + runTime);
-		System.out.println("MSRunTime: " + System.currentTimeMillis());
-		System.out.println("Diff: " + lastWallInterval+wallInterval);
-		//System.out.println("GAMESCREEN");
 		
-		//System.out.println("Wally: "+ leftWall.getPosition().y);
-		//System.out.println("Playery: "+ player.getPosition().y);
-		//System.out.println("Difference: " +  (leftWall.getPosition().y - player.getPosition().y));
-		
+	   wallEvent();
 		
 		
 	
 		
+		
+		capVelocity();
+	
+		
 		cam.position.set(
                  player.getPosition().x * PPM,
-                 (player.getPosition().y) * PPM - 100,
+                 (player.getPosition().y) * PPM - CL,
                  0
         );
 		 
@@ -433,7 +414,7 @@ public class GameScreen extends AbstractScreen {
 		if(!gameOverFlag){
 			
 			
-			System.out.println(depth + " Multi here! " + lastStop + " x" + multi);
+			
 			if((int)Math.abs(depth - lastStop) > 40)
 				multi = 4;
 			else if((int)Math.abs(depth - lastStop) > 25)
@@ -441,12 +422,12 @@ public class GameScreen extends AbstractScreen {
 			else if((int)Math.abs(depth - lastStop) > 10)
 				multi = 2;
 			
-			System.out.println(score + "I'm here!" + depth + " " + lastDepth);
+			
 			if((int)Math.abs(depth - lastDepth) >= 1)
 			{
 				score += 1 * multi;
 				lastDepth = depth;
-				System.out.println(score + "I'm here!" + depth + " " + lastDepth);
+				
 			}
 			
 			sb.begin();
@@ -477,7 +458,7 @@ public class GameScreen extends AbstractScreen {
 	
 	
 		b2dCam.position.set(
-                player.getPosition().x,player.getPosition().y - 100/PPM,
+                player.getPosition().x,player.getPosition().y - CL/PPM,
                 0
         );
 		b2dCam.update(); 
@@ -498,6 +479,10 @@ public class GameScreen extends AbstractScreen {
 		bdef.type = BodyType.DynamicBody;
 		//playerBody = world.createBody(bdef);
 		Body pBody = world.createBody(bdef);
+		
+		MassData md = pBody.getMassData();
+        md.mass = 1;
+		pBody.setMassData(md);
 				
 		//create box shape for player collision box
 		PolygonShape shape = new PolygonShape();
@@ -515,7 +500,7 @@ public class GameScreen extends AbstractScreen {
 				
 		//create foot sensor
 		shape = new PolygonShape();
-		shape.setAsBox(5 / PPM, 2 / PPM, new Vector2(0, -10/PPM), 0);
+		shape.setAsBox(8 / PPM, 2 / PPM, new Vector2(0, -10/PPM), 0);
 		
 		//create fixture for foot
 		fdef.shape = shape;
@@ -701,7 +686,7 @@ public class GameScreen extends AbstractScreen {
 		//lightList.add(t);
 		shape.dispose();
 		
-		//System.out.println("Y object: " + body.getPosition().y);
+		
 	}
 	
 	public void init(){
@@ -736,24 +721,21 @@ public class GameScreen extends AbstractScreen {
 	}
 	
 	public void wallEvent(){
-		long s = System.currentTimeMillis();
-		long s2 = System.currentTimeMillis();
 		
-		if(s - wallInterval > 5000){
+		long s = System.currentTimeMillis();
+		
+		System.out.println(r);
+	
+		if(s - wallInterval > r){
 			
+			r = randInt(10000, 40000);
 			
 			wallEvent = !wallEvent;
 			wallInterval = s;
-			
-
 		}
-		
-		if(s2 - wallInterval2 > 10000){
-			wait = !wallEvent;
-			wallInterval2 = s;
-		}
-		
-		if(wallEvent && wait){
+		if(wallEvent){
+			wallEvent = false;
+			System.out.println(leftWall.getBody().getPosition().x);
 			System.out.println("GOING---------------------------------------");
 			if(!AssetLoader.caveIn.isPlaying()){
 				AssetLoader.caveIn.play();
@@ -761,8 +743,10 @@ public class GameScreen extends AbstractScreen {
 			leftWall.getBody().setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
 			rightWall.getBody().setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));	
 		}
-		else if(leftWall.getBody().getPosition().x >= 0){
+			
+		else if(leftWall.getBody().getPosition().x > 60/PPM){
 
+			
 			//if(!AssetLoader.caveIn.isPlaying()){
 			//	AssetLoader.caveIn.play();
 			//}
@@ -770,10 +754,13 @@ public class GameScreen extends AbstractScreen {
 			leftWall.getBody().setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));
 			rightWall.getBody().setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
 		}
-		else if(leftWall.getBody().getPosition().x <= 0){
-			
-		
+		else if(leftWall.getBody().getPosition().x <= 0/PPM){
+			System.out.println("STOPPED---------------------------------------");
+			leftWall.getBody().setLinearVelocity(new Vector2(0/PPM, player.getBody().getLinearVelocity().y));
+			rightWall.getBody().setLinearVelocity(new Vector2(0/PPM, player.getBody().getLinearVelocity().y));
 		}
+		
+		
 	}
 	
 	public void resize(int width, int height) {
@@ -831,6 +818,16 @@ public class GameScreen extends AbstractScreen {
 		sb.end();
 	}
 	
+	public void capVelocity(){
+		if(Math.abs(player.getBody().getLinearVelocity().y) > 6f){
+			
+			Vector2 vel = player.getBody().getLinearVelocity();
+			vel.y = -6f;
+			player.getBody().setLinearVelocity(vel);
+			
+		}
+	}
+	
 
 
 	@Override
@@ -842,8 +839,7 @@ public class GameScreen extends AbstractScreen {
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stubc
 	}
 
 	@Override
@@ -867,6 +863,8 @@ public class GameScreen extends AbstractScreen {
 	public void dispose(){
 		
 		Array<Body> temps = new Array<Body>();
+		
+		AssetLoader.caveIn.stop();
 		
 		world.getBodies(temps);
 		

@@ -674,7 +674,7 @@ public class GameScreen extends AbstractScreen {
 		
 		
 		PointLight d;
-		d = new PointLight(handler, 40, Color.LIGHT_GRAY, grow/PPM,  player.getPosition().x, player.getPosition().y);
+		d = new PointLight(handler, 40, Color.valueOf("A9E2FF"), grow/PPM,  player.getPosition().x, player.getPosition().y);
 	
 		//Light.setContactFilter(B2DVars.BIT_BALL, (short) 0, B2DVars.BIT_BALL);
 		//t.isSoft();

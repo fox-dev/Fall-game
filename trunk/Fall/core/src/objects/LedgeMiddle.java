@@ -57,7 +57,7 @@ public class LedgeMiddle extends StaticSprite{
 		sb.begin();
 		sb.draw(texture, 
 				body.getPosition().x * B2DVars.PPM - drawWidth,
-				body.getPosition().y * B2DVars.PPM - 33, drawWidth * 2, 40
+				body.getPosition().y * B2DVars.PPM - 33, drawWidth * 2, 60
 				
 				);
 		sb.end();

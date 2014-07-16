@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 public class LedgeMiddle extends StaticSprite{
 	private float drawWidth;
 	PointLight l;
-	int grow = 150;
+	float grow = 90;
 	boolean down = false;
 	
 	public LedgeMiddle(Body body)
@@ -38,17 +38,17 @@ public class LedgeMiddle extends StaticSprite{
 		
 		l.setDistance(grow/PPM);
 		
-		if(grow >= 200){
+		if(grow >= 120){
 			down = true;
 		}
-		if(grow <= 150){
+		if(grow <= 90){
 			down = false;
 		}
-		if(grow >= 150 && !down){
-			grow += 3;
+		if(grow >= 90 && !down){
+			grow += 0.7;
 		}
 		else{
-			grow -= 3;
+			grow -= 0.7;
 		}
 	}
 	
@@ -57,7 +57,7 @@ public class LedgeMiddle extends StaticSprite{
 		sb.begin();
 		sb.draw(texture, 
 				body.getPosition().x * B2DVars.PPM - drawWidth,
-				body.getPosition().y * B2DVars.PPM - 33, drawWidth * 2, 60
+				body.getPosition().y * B2DVars.PPM - 27, drawWidth * 2, 60
 				
 				);
 		sb.end();

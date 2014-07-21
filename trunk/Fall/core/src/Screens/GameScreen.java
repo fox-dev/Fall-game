@@ -13,12 +13,18 @@ import Lights.RayHandler;
 
 
 
+
+
+
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -49,6 +55,8 @@ import handlers.MyInput;
 
 public class GameScreen extends AbstractScreen {
 	
+	
+	
 	private boolean debug = false;
 	
 	private long wallInterval = 0;
@@ -59,6 +67,11 @@ public class GameScreen extends AbstractScreen {
 	private boolean wallEvent = false;
 	
 	//PointLight p;
+	
+	Rectangle glide;
+	private int glide_x = 100;
+	private boolean glide_CD = false;
+	private ShapeRenderer shapeRenderer;
 	
 	
 	
@@ -108,6 +121,9 @@ public class GameScreen extends AbstractScreen {
 	public GameScreen(GameScreenManager gsm) {
 		super(gsm);
 		
+		glide = new Rectangle(0, 0, 100, 100);
+		shapeRenderer = new ShapeRenderer();
+		
 		
 		
 		
@@ -134,7 +150,7 @@ public class GameScreen extends AbstractScreen {
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
 		
 		
-		handler.setAmbientLight(0.2f);
+		handler.setAmbientLight(0.3f);
 		
 		//p = new PointLight(handler, 40, Color.LIGHT_GRAY, grow/PPM,  player.getPosition().x, player.getPosition().y);
 		
@@ -181,26 +197,48 @@ public class GameScreen extends AbstractScreen {
 				player.getBody().setLinearVelocity(vel);
 			
 			}
+			
 		
-			if(MyInput.isPressed(MyInput.BUTTON1)){
+			if(MyInput.isPressed(MyInput.BUTTON1) && glide_x > 0 && glide_CD == false){
 				
 			
 				player.stopping();
 				lastStop = depth;
 				multi = 1;
+				glide_x = glide_x - 2;
+				if(glide_x <= 0){
+					MyInput.setKey(MyInput.BUTTON1, false);
+					glide_CD = true;
+				}
+				
+				
 			}
-			if(MyInput.isDown(MyInput.BUTTON1)){
+			else{
+				if(glide_CD == true && glide_x <= 100){
+					glide_x++;
+				}
+				if(glide_CD == true && glide_x >= 100){
+					glide_CD = false;
+				}
+			}
+		
+			if(MyInput.isDown(MyInput.BUTTON1) && glide_x > 0 && glide_CD == false){
 
 				Vector2 vel = player.getBody().getLinearVelocity();
 				Gdx.gl.glClearColor(0, 0, 0, 1);
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-				vel.y = -1f;
-		 	
-				player.getBody().setLinearVelocity(vel);
-				lastStop = depth;
-				multi = 1;
-		 	
+				
+					vel.y = -1f;
+					player.getBody().setLinearVelocity(vel);
+					lastStop = depth;
+					multi = 1;
+					glide_x = glide_x - 2;
+					if(glide_x <= 0){
+						MyInput.setKey(MyInput.BUTTON1, false);
+						glide_CD = true;
+					}
 			}
+		
 			if(MyInput.isReleased(MyInput.BUTTON1))
 			{
 				player.falling();
@@ -431,6 +469,9 @@ public class GameScreen extends AbstractScreen {
 			}
 			
 			sb.begin();
+			
+			
+			
 			depth = (float) (Math.abs(player.getPosition().y - 300/PPM)/0.3048);
 			float w = font.getBounds((int)depth + "ft").width;
 			float h = font.getBounds((int)depth + "ft").height;
@@ -442,6 +483,13 @@ public class GameScreen extends AbstractScreen {
 			drawScore(sb, cam.position.x + game.V_WIDTH/2 - wScore, cam.position.y + game.V_HEIGHT/2);
 			float wMulti = font.getBounds("Multiplier x" + (int)multi).width;
 			drawMulitplier(sb, cam.position.x + game.V_WIDTH/2 - wMulti, cam.position.y + game.V_HEIGHT/2 - hScore);
+			
+			
+			shapeRenderer.begin(ShapeType.Filled);
+			shapeRenderer.setColor(255 / 255.0f, 223 / 255.0f, 233 / 255.0f, 1);
+			shapeRenderer.rect(0, Gdx.graphics.getHeight() - 25, glide_x, 5);
+			shapeRenderer.end();
+			
 		}
 		
 		if(cl.isPlayerOnGround() == true){

@@ -485,10 +485,7 @@ public class GameScreen extends AbstractScreen {
 			drawMulitplier(sb, cam.position.x + game.V_WIDTH/2 - wMulti, cam.position.y + game.V_HEIGHT/2 - hScore);
 			
 			
-			shapeRenderer.begin(ShapeType.Filled);
-			shapeRenderer.setColor(255 / 255.0f, 223 / 255.0f, 233 / 255.0f, 1);
-			shapeRenderer.rect(0, Gdx.graphics.getHeight() - Gdx.graphics.getHeight()/12, glide_x, 5);
-			shapeRenderer.end();
+			
 			
 		}
 		
@@ -505,11 +502,17 @@ public class GameScreen extends AbstractScreen {
 		
 	
 	
+		
 		b2dCam.position.set(
                 player.getPosition().x,player.getPosition().y - CL/PPM,
                 0
         );
 		b2dCam.update(); 
+		shapeRenderer.setProjectionMatrix(b2dCam.combined);
+		shapeRenderer.begin(ShapeType.Filled);
+		shapeRenderer.setColor(255 / 255.0f, 223 / 255.0f, 233 / 255.0f, 1);
+		shapeRenderer.rect(b2dCam.position.x - (glide_x/2)/PPM , b2dCam.position.y + 10/PPM + CL/PPM, glide_x/PPM, 3/PPM);
+		shapeRenderer.end();
 		// draw box2d
 		if(debug) {
 		

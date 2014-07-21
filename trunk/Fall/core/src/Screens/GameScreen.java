@@ -487,7 +487,7 @@ public class GameScreen extends AbstractScreen {
 			
 			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.setColor(255 / 255.0f, 223 / 255.0f, 233 / 255.0f, 1);
-			shapeRenderer.rect(0, Gdx.graphics.getHeight() - 25, glide_x, 5);
+			shapeRenderer.rect(0, Gdx.graphics.getHeight() - Gdx.graphics.getHeight()/12, glide_x, 5);
 			shapeRenderer.end();
 			
 		}

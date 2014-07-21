@@ -508,11 +508,19 @@ public class GameScreen extends AbstractScreen {
                 0
         );
 		b2dCam.update(); 
+		
 		shapeRenderer.setProjectionMatrix(b2dCam.combined);
 		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.setColor(255 / 255.0f, 223 / 255.0f, 233 / 255.0f, 1);
+		if(!glide_CD){
+			shapeRenderer.setColor(0f/255f,250f/255f,154f/255f, 1);
+		}
+		else{
+			shapeRenderer.setColor(255f/255f,0f/255f,0f/255f, 1);
+		}
+		
 		shapeRenderer.rect(b2dCam.position.x - (glide_x/2)/PPM , b2dCam.position.y + 10/PPM + CL/PPM, glide_x/PPM, 3/PPM);
 		shapeRenderer.end();
+		
 		// draw box2d
 		if(debug) {
 		

@@ -73,8 +73,6 @@ public class GameScreen extends AbstractScreen {
 	private boolean glide_CD = false;
 	private ShapeRenderer shapeRenderer;
 	
-	
-	
 	PointLight d;
 	
 	BitmapFont font;
@@ -124,9 +122,6 @@ public class GameScreen extends AbstractScreen {
 		glide = new Rectangle(0, 0, 100, 100);
 		shapeRenderer = new ShapeRenderer();
 		
-		
-		
-		
 		gameOverFlag = false;
 		
 		font = new BitmapFont();
@@ -156,20 +151,10 @@ public class GameScreen extends AbstractScreen {
 		
 		//p.setContactFilter(B2DVars.BIT_PLAYER, B2DVars.BIT_LIGHT, B2DVars.BIT_GROUND);
 		
-		
-		
-		
 		//p.isSoft();
-		
-	
-		
-		
-		
 		
 		AssetLoader.bgm.play();
 		AssetLoader.bgm.setLooping(true);
-		
-		
 		
 	}
 	
@@ -209,6 +194,7 @@ public class GameScreen extends AbstractScreen {
 				if(glide_x <= 0){
 					MyInput.setKey(MyInput.BUTTON1, false);
 					glide_CD = true;
+					player.falling();
 				}
 				
 				
@@ -236,10 +222,11 @@ public class GameScreen extends AbstractScreen {
 					if(glide_x <= 0){
 						MyInput.setKey(MyInput.BUTTON1, false);
 						glide_CD = true;
+						player.falling();
 					}
 			}
 		
-			if(MyInput.isReleased(MyInput.BUTTON1))
+			if(MyInput.isReleased(MyInput.BUTTON1) && glide_CD == false)
 			{
 				player.falling();
 			}
@@ -293,14 +280,9 @@ public class GameScreen extends AbstractScreen {
 		runTime += dt;
 		accelX = Gdx.input.getAccelerometerX();
 		
-		
-
 		System.out.println(leftWall.getBody().getPosition().x);
 		
-		
-		
 		handleInput();
-	  
 		
 	}
 	

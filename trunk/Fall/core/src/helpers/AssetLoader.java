@@ -30,11 +30,11 @@ public class AssetLoader {
 	public static void load()
 	{
 		logoTexture = new Texture(Gdx.files.internal("data/logo.png"));
-		player = new Texture(Gdx.files.internal("data/basejumperanimateRED.png"));
+		player = new Texture(Gdx.files.internal("data/basejumperanimatewhite.png"));
 		cliffWalls = new Texture(Gdx.files.internal("data/cliff-wallsblue.png"));
 		
 		
-		ledge = new Texture(Gdx.files.internal("data/platform6.png"));
+		ledge = new Texture(Gdx.files.internal("data/platformBcrystal.png"));
 		//ledge = new Texture(Gdx.files.internal("data/platform.png"));
 		ledgeA = new Texture(Gdx.files.internal("data/ledgeA.png"));
 		ledgeB = new Texture(Gdx.files.internal("data/ledgeB.png"));

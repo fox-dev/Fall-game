@@ -69,7 +69,7 @@ public class GameScreen extends AbstractScreen {
 	//PointLight p;
 	
 	Rectangle glide;
-	private int glide_x = 100;
+	private float glide_x = 50;
 	private boolean glide_CD = false;
 	private ShapeRenderer shapeRenderer;
 	
@@ -190,7 +190,7 @@ public class GameScreen extends AbstractScreen {
 				player.stopping();
 				lastStop = depth;
 				multi = 1;
-				glide_x = glide_x - 2;
+				glide_x = glide_x - 1;
 				if(glide_x <= 0){
 					MyInput.setKey(MyInput.BUTTON1, false);
 					glide_CD = true;
@@ -200,10 +200,10 @@ public class GameScreen extends AbstractScreen {
 				
 			}
 			else{
-				if(glide_CD == true && glide_x <= 100){
-					glide_x++;
+				if(glide_CD == true && glide_x <= 50){
+					glide_x = (float) (glide_x + 0.5);
 				}
-				if(glide_CD == true && glide_x >= 100){
+				if(glide_CD == true && glide_x >= 50){
 					glide_CD = false;
 				}
 			}

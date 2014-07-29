@@ -53,8 +53,8 @@ public class AssetLoader {
 		//Background textures
 		waterFallBG = new TextureRegion(bg);
 		waterFallBG2 = new TextureRegion(bg2);
-		middleBGLeft = new TextureRegion(mbg, 0, 0, 120, 480);
-		middleBGRight = new TextureRegion(mbg, 200, 0, 120, 480);
+		middleBGLeft = new TextureRegion(mbg, 0, 0, 155, 480);
+		middleBGRight = new TextureRegion(mbg, 160, 0, 165, 480);
 		
 		
 		cliffJumper2 = new TextureRegion(player, 31, 0, 30, 30);

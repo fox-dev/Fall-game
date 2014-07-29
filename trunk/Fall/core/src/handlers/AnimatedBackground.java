@@ -38,7 +38,7 @@ public class AnimatedBackground extends Background
 	{
 		sb.begin();
 		sb.draw(bg, 
-				myCam.position.x - bg.getRegionWidth() / 2,
+				position.x, //- bg.getRegionWidth() / 2,
 				myCam.position.y - bg.getRegionHeight() / 2
 				);
 		sb.end();

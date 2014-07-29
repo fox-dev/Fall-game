@@ -10,8 +10,6 @@ import Lights.PointLight;
 import Lights.RayHandler;
 
 
-
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -46,7 +44,10 @@ import objects.StaticSprite;
 import helpers.AssetLoader;
 import helpers.B2DVars;
 import handlers.AnimatedBackground;
+import handlers.Background;
 import handlers.GameScreenManager;
+import handlers.MiddlegroundLeft;
+import handlers.MiddlegroundRight;
 import handlers.MyContactListener;
 import handlers.MyInput;
 
@@ -95,6 +96,7 @@ public class GameScreen extends AbstractScreen {
 	private DelayedRemovalArray<PointLight> lightListP = new DelayedRemovalArray<PointLight>();
 	
 	private AnimatedBackground bg;
+	private Background[] backgrounds; 
 	
 	private World world;
 	private Box2DDebugRenderer b2dr;
@@ -302,6 +304,12 @@ public class GameScreen extends AbstractScreen {
 		
 		bg.update(runTime);
 		bg.render(sb);
+		
+		for(Background temp : backgrounds)
+		{
+			temp.update(1/60f);
+			temp.render(sb);
+		}
 		
 		Array<Body> tempBodies = new Array<Body>();
 		world.getBodies(tempBodies);
@@ -742,6 +750,9 @@ public class GameScreen extends AbstractScreen {
 		
 		TextureRegion[] bgAnim = {AssetLoader.waterFallBG, AssetLoader.waterFallBG2};
 		bg = new AnimatedBackground(bgAnim, cam);
+		
+		Background[] bgs = {new MiddlegroundLeft(AssetLoader.middleBGLeft, cam), new MiddlegroundRight(AssetLoader.middleBGRight, cam)};
+		backgrounds = bgs;
 		
 		createPlayer();
 		createWalls();

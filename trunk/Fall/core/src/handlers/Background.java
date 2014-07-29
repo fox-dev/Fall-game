@@ -10,8 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Background 
 {
 	protected OrthographicCamera myCam;
-	protected Vector2 position;
-	protected Vector2 velocity;
+	protected Vector2 position, velocity;
 	protected TextureRegion bg;
 	
 	public Background(TextureRegion image, OrthographicCamera cam)

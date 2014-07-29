@@ -2,6 +2,9 @@ package helpers;
 
 public class B2DVars {
 	
+	//True Width and Height
+	public static final float TRUE_WIDTH = 320;
+	public static final float TRUE_HEIGHT = 480;
 	
 	//pixel per meter ration
 	public static final float PPM = 100;

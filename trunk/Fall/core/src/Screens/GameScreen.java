@@ -12,17 +12,13 @@ import Lights.RayHandler;
 
 
 
-
-
-
-
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
@@ -49,15 +45,14 @@ import objects.RightWall;
 import objects.StaticSprite;
 import helpers.AssetLoader;
 import helpers.B2DVars;
+import handlers.AnimatedBackground;
 import handlers.GameScreenManager;
 import handlers.MyContactListener;
 import handlers.MyInput;
 
 public class GameScreen extends AbstractScreen {
 	
-	
-	
-	private boolean debug = false;
+	private boolean debug = true;
 	
 	private long wallInterval = 0;
 	
@@ -98,6 +93,8 @@ public class GameScreen extends AbstractScreen {
 	//private DelayedRemovalArray<Body> obstacleList = new DelayedRemovalArray<Body>();
 	private DelayedRemovalArray<ConeLight> lightList = new DelayedRemovalArray<ConeLight>();
 	private DelayedRemovalArray<PointLight> lightListP = new DelayedRemovalArray<PointLight>();
+	
+	private AnimatedBackground bg;
 	
 	private World world;
 	private Box2DDebugRenderer b2dr;
@@ -303,6 +300,9 @@ public class GameScreen extends AbstractScreen {
 			player.update(1/60f);
 		}
 		
+		bg.update(runTime);
+		bg.render(sb);
+		
 		Array<Body> tempBodies = new Array<Body>();
 		world.getBodies(tempBodies);
 		for(Body b : tempBodies){
@@ -391,10 +391,6 @@ public class GameScreen extends AbstractScreen {
 		
 	   wallEvent();
 		
-		
-	
-		
-		
 		capVelocity();
 	
 		
@@ -420,10 +416,6 @@ public class GameScreen extends AbstractScreen {
 			ledge.render(sb);
 		}
 		
-		
-		
-		
-		
 		if(!gameOverFlag){
 			player.render(sb);
 		}
@@ -432,8 +424,6 @@ public class GameScreen extends AbstractScreen {
 		handler.updateAndRender();
 
 		if(!gameOverFlag){
-			
-			
 			
 			if((int)Math.abs(depth - lastStop) > 40)
 				multi = 4;
@@ -481,9 +471,6 @@ public class GameScreen extends AbstractScreen {
 			sb.end();
 			drawScore(sb, cam.position.x - w/2, cam.position.y + h/2 - font.getXHeight());
 		}
-		
-	
-	
 		
 		b2dCam.position.set(
                 player.getPosition().x,player.getPosition().y - CL/PPM,
@@ -752,6 +739,9 @@ public class GameScreen extends AbstractScreen {
 		//fdef.filter.maskBits = B2DVars.BIT_PLAYER;
 		//body.createFixture(fdef).setUserData("Ground");
 		shape.dispose();
+		
+		TextureRegion[] bgAnim = {AssetLoader.waterFallBG, AssetLoader.waterFallBG2};
+		bg = new AnimatedBackground(bgAnim, cam);
 		
 		createPlayer();
 		createWalls();

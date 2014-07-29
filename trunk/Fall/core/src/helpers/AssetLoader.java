@@ -11,7 +11,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class AssetLoader {
 	private HashMap<String, Texture> textures;
 	
-	public static Texture player, cliffWalls, ledgeA, ledgeB, ledge, logoTexture;
+	public static Texture player, cliffWalls, ledgeA, ledgeB, ledge, logoTexture, bg, bg2, mbg;
+	
+	//Background textures
+	public static TextureRegion waterFallBG, waterFallBG2, middleBGLeft, middleBGRight;
 	
 	//public static TextureRegion playerLeft, playerMid, playerRight;
 	public static TextureRegion logo, cliffJumper1, cliffJumper2, cliffJumper3, cliffJumper4, 
@@ -39,9 +42,21 @@ public class AssetLoader {
 		ledgeA = new Texture(Gdx.files.internal("data/ledgeA.png"));
 		ledgeB = new Texture(Gdx.files.internal("data/ledgeB.png"));
 		
+		bg = new Texture(Gdx.files.internal("data/waterfallbackdrop1.png"));
+		bg2 = new Texture(Gdx.files.internal("data/waterfallbackdrop2.png"));
+		mbg = new Texture(Gdx.files.internal("data/cliff-walls-midgroundNEW.png"));
+		
 		logo = new TextureRegion(logoTexture);
 		
 		cliffJumper1 = new TextureRegion(player, 0, 0, 30 ,30);
+		
+		//Background textures
+		waterFallBG = new TextureRegion(bg);
+		waterFallBG2 = new TextureRegion(bg2);
+		middleBGLeft = new TextureRegion(mbg, 0, 0, 120, 480);
+		middleBGRight = new TextureRegion(mbg, 200, 0, 120, 480);
+		
+		
 		cliffJumper2 = new TextureRegion(player, 31, 0, 30, 30);
 		cliffJumper3 = new TextureRegion(player, 68, 0, 30, 30);
 		cliffJumper4 = new TextureRegion(player, 103, 0, 30, 30);
@@ -56,9 +71,6 @@ public class AssetLoader {
 		bgm = Gdx.audio.newMusic(Gdx.files.internal("data/Greg_Davis_-_01_-_slow_motion.mp3"));
 		caveIn = Gdx.audio.newMusic(Gdx.files.internal("data/caveIn.mp3"));
 		hit = Gdx.audio.newSound(Gdx.files.internal("data/hit.mp3"));
-		
-		
-		
 		
 		/*
 		playerLeft = new TextureRegion(texture, 4, 20, 43, 47);
@@ -96,6 +108,13 @@ public class AssetLoader {
 		cliffWalls.dispose();
 		caveIn.dispose();
 		hit.dispose();
+		ledge.dispose();
+		ledgeA.dispose();
+		ledgeB.dispose();
+		logoTexture.dispose();
+		bg.dispose();
+		bg2.dispose();
+		mbg.dispose();
 		
 		
 	}

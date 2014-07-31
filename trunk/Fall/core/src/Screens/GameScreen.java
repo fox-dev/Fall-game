@@ -10,6 +10,7 @@ import Lights.PointLight;
 import Lights.RayHandler;
 
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -25,6 +26,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -53,7 +55,7 @@ import handlers.MyInput;
 
 public class GameScreen extends AbstractScreen {
 	
-	private boolean debug = true;
+	private boolean debug = false;
 	
 	private long wallInterval = 0;
 	
@@ -99,6 +101,7 @@ public class GameScreen extends AbstractScreen {
 	private Background[] backgrounds; 
 	
 	private World world;
+	
 	private Box2DDebugRenderer b2dr;
 	
 	private OrthographicCamera b2dCam;
@@ -138,11 +141,12 @@ public class GameScreen extends AbstractScreen {
 		//set up box2d cam
 		b2dCam = new OrthographicCamera();
 		b2dCam.setToOrtho(false, MainGame.V_WIDTH/PPM , MainGame.V_HEIGHT/PPM );
-		
+		box2dLight.RayHandler.useDiffuseLight(true);
 		handler = new RayHandler(world, viewport);
 		
-		handler.setAmbientLight(0.0f, 0.0f, 0.0f,1.0f);
-		
+		handler.setAmbientLight(0.0f, 0.0f, 0.0f,0.1f);
+	
+		handler.setShadows(true);
 		
 		handler.setAmbientLight(0.3f);
 		
@@ -170,13 +174,13 @@ public class GameScreen extends AbstractScreen {
 			}
 			else if(accelX > -1.4){
 				Vector2 vel = player.getBody().getLinearVelocity();
-				vel.x = -1.3f;
+				vel.x = -2.3f;
 		
 				player.getBody().setLinearVelocity(vel);
 			}
 			else if(accelX < 1.4){
 				Vector2 vel = player.getBody().getLinearVelocity();
-				vel.x = 1.3f;
+				vel.x = 2.3f;
 			
 				player.getBody().setLinearVelocity(vel);
 			
@@ -189,7 +193,7 @@ public class GameScreen extends AbstractScreen {
 				player.stopping();
 				lastStop = depth;
 				multi = 1;
-				glide_x = glide_x - 1;
+				glide_x = glide_x - 2;
 				if(glide_x <= 0){
 					MyInput.setKey(MyInput.BUTTON1, false);
 					glide_CD = true;
@@ -199,6 +203,9 @@ public class GameScreen extends AbstractScreen {
 				
 			}
 			else{
+				if(glide_x <= 50){
+					glide_x = (float) (glide_x + 0.2);
+				}
 				if(glide_CD == true && glide_x <= 50){
 					glide_x = (float) (glide_x + 0.5);
 				}
@@ -217,7 +224,7 @@ public class GameScreen extends AbstractScreen {
 					player.getBody().setLinearVelocity(vel);
 					lastStop = depth;
 					multi = 1;
-					glide_x = glide_x - 2;
+					glide_x = glide_x - 1;
 					if(glide_x <= 0){
 						MyInput.setKey(MyInput.BUTTON1, false);
 						glide_CD = true;
@@ -233,7 +240,7 @@ public class GameScreen extends AbstractScreen {
 			if(MyInput.isDown(MyInput.BUTTON2)){
 				
 				Vector2 vel = player.getBody().getLinearVelocity();
-				vel.x = -1f;
+				vel.x = -2.3f;
 		
 				player.getBody().setLinearVelocity(vel);
 			
@@ -243,7 +250,7 @@ public class GameScreen extends AbstractScreen {
 				
 				
 				Vector2 vel = player.getBody().getLinearVelocity();
-				vel.x = 1f;
+				vel.x = 2.3f;
 				
 				player.getBody().setLinearVelocity(vel);
 			
@@ -302,7 +309,7 @@ public class GameScreen extends AbstractScreen {
 			player.update(1/60f);
 		}
 		
-		bg.update(runTime);
+		
 		bg.render(sb);
 		
 		for(Background temp : backgrounds)
@@ -367,13 +374,17 @@ public class GameScreen extends AbstractScreen {
 		
 		if(Math.abs(x - x2)/PPM >= nextSprite/PPM)
 		{
+			if(leftWall.getBody().getPosition().x < 55/PPM){
 			addObstacles();
+			}
+			
 			x2 = x;
 			nextSprite = (long) randInt(3, 7);
 		}
 		
 		if(Math.abs(y - y2)/PPM >= nextSprite/PPM)
 		{
+			
 			addPlatforms();
 			y2 = y;
 			nextSprite2 = (long) randInt(2, 6);
@@ -428,8 +439,11 @@ public class GameScreen extends AbstractScreen {
 			player.render(sb);
 		}
 				
+		
 		handler.setCombinedMatrix(b2dCam.combined);
 		handler.updateAndRender();
+		
+		
 
 		if(!gameOverFlag){
 			
@@ -504,6 +518,7 @@ public class GameScreen extends AbstractScreen {
 			b2dr.render(world, b2dCam.combined);
 			
 		}
+		bg.update(runTime);
 		
 	}
 	
@@ -513,12 +528,14 @@ public class GameScreen extends AbstractScreen {
 		BodyDef bdef = new BodyDef();
 		bdef.position.set(160/PPM, 300/PPM);
 		bdef.type = BodyType.DynamicBody;
-		//playerBody = world.createBody(bdef);
+		
+		
 		Body pBody = world.createBody(bdef);
 		
 		MassData md = pBody.getMassData();
         md.mass = 1;
 		pBody.setMassData(md);
+		
 				
 		//create box shape for player collision box
 		PolygonShape shape = new PolygonShape();
@@ -528,9 +545,10 @@ public class GameScreen extends AbstractScreen {
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
 		//fdef.restitution = 1f;
+		fdef.friction = 0f;
 		fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
 		fdef.filter.maskBits = B2DVars.BIT_GROUND;
-		//playerBody.createFixture(fdef).setUserData("Player");
+		
 		pBody.createFixture(fdef).setUserData("Player");
 		shape.dispose();
 				
@@ -543,7 +561,7 @@ public class GameScreen extends AbstractScreen {
 		fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
 		fdef.filter.maskBits = B2DVars.BIT_GROUND;
 		fdef.isSensor = true;
-		//playerBody.createFixture(fdef).setUserData("foot");
+	
 		pBody.createFixture(fdef).setUserData("foot");
 		shape.dispose();
 				
@@ -642,7 +660,12 @@ public class GameScreen extends AbstractScreen {
 		//PointLight d;
 		//d = new PointLight(handler, 40, Color.LIGHT_GRAY, grow/PPM,  player.getPosition().x, player.getPosition().y);
 		
-		t.isSoft();
+		t.setSoft(true);
+		
+		
+		
+	
+		
 		LedgeLeft temp = new LedgeLeft(body, leftWall, t);
 		body.setUserData(temp);
 		ledgeList.add(temp);
@@ -671,7 +694,12 @@ public class GameScreen extends AbstractScreen {
 		
 		ConeLight t;
 		t = new ConeLight(handler, 40, Color.GRAY,800/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 20);		
-		t.isSoft();
+		t.setSoft(true);
+		
+		
+		
+		
+		
 		
 		//PointLight d;
 		//d = new PointLight(handler, 40, Color.LIGHT_GRAY, grow/PPM,  player.getPosition().x, player.getPosition().y);
@@ -711,6 +739,7 @@ public class GameScreen extends AbstractScreen {
 		
 		PointLight d;
 		d = new PointLight(handler, 40, Color.valueOf("A9E2FF"), grow/PPM,  player.getPosition().x, player.getPosition().y);
+		
 	
 		d.setXray(true);
 		d.setSoft(true);

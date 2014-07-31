@@ -37,7 +37,7 @@ public class AssetLoader {
 		cliffWalls = new Texture(Gdx.files.internal("data/cliff-wallsblue.png"));
 		
 		
-		ledge = new Texture(Gdx.files.internal("data/platformBcrystal.png"));
+		ledge = new Texture(Gdx.files.internal("data/platformB5.png"));
 		//ledge = new Texture(Gdx.files.internal("data/platform.png"));
 		ledgeA = new Texture(Gdx.files.internal("data/ledgeA.png"));
 		ledgeB = new Texture(Gdx.files.internal("data/ledgeB.png"));

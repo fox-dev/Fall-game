@@ -18,6 +18,7 @@ public class B2DVars {
 	public static final short BIT_BALL = 8; //0000 0000 0000 1000
 	public static final short BIT_LIGHT = 10;
 	
+	public static final short IGNORED = 0x001;
 	
 	
 }

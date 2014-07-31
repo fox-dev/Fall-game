@@ -33,7 +33,7 @@ public class Background
 				myCam.position.x - bg.getRegionWidth() / 2,
 				myCam.position.y - bg.getRegionHeight() / 2
 				);
-		sb.end();
+		//sb.end();
 	}
 	
 	public void setPosition(float x, float y)

@@ -5,9 +5,13 @@ import static helpers.B2DVars.CL;
 
 import java.util.Random;
 
+import BackgroundHandlers.ParallaxBackground;
+import BackgroundHandlers.ParallaxLayer;
 import Lights.ConeLight;
 import Lights.PointLight;
 import Lights.RayHandler;
+
+
 
 
 
@@ -102,6 +106,13 @@ public class GameScreen extends AbstractScreen {
 	private AnimatedBackground bg;
 	private Background[] backgrounds; 
 	
+	private ParallaxLayer l1;
+	private ParallaxBackground b;
+	
+	
+	
+	
+	
 	private World world;
 	
 	private Box2DDebugRenderer b2dr;
@@ -122,6 +133,8 @@ public class GameScreen extends AbstractScreen {
 	
 	public GameScreen(GameScreenManager gsm) {
 		super(gsm);
+		
+	
 		
 		glide = new Rectangle(0, 0, 100, 100);
 		shapeRenderer = new ShapeRenderer();
@@ -246,6 +259,7 @@ public class GameScreen extends AbstractScreen {
 		
 				player.getBody().setLinearVelocity(vel);
 			
+			
 			}
 		
 			if(MyInput.isDown(MyInput.BUTTON3)){
@@ -256,7 +270,9 @@ public class GameScreen extends AbstractScreen {
 				
 				player.getBody().setLinearVelocity(vel);
 			
+			
 			}
+			
 		}
 		else{
 			if(MyInput.isPressed(MyInput.BUTTON1)){
@@ -313,6 +329,10 @@ public class GameScreen extends AbstractScreen {
 		
 		
 		bg.render(sb);
+		
+		
+		
+		b.render(1/60f);
 		
 		for(Background temp : backgrounds)
 		{
@@ -522,6 +542,8 @@ public class GameScreen extends AbstractScreen {
 		}
 		bg.update(runTime);
 		
+	
+		
 	}
 	
 	public void createPlayer()
@@ -659,6 +681,8 @@ public class GameScreen extends AbstractScreen {
 		ConeLight t;
 		t = new ConeLight(handler, 40, Color.GRAY,800/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 20);	
 		
+		
+		
 		//PointLight d;
 		//d = new PointLight(handler, 40, Color.LIGHT_GRAY, grow/PPM,  player.getPosition().x, player.getPosition().y);
 		
@@ -755,6 +779,9 @@ public class GameScreen extends AbstractScreen {
 	
 	public void init(){
 		
+		l1 = new ParallaxLayer(AssetLoader.waterFallBG, new Vector2(0f, 0f), new Vector2(0f,0));
+		
+		b = new ParallaxBackground(new ParallaxLayer[]{l1}, 320, 480,new Vector2(0,0), cam);
 		
 		//create platform
 		BodyDef bdef = new BodyDef(); 
@@ -781,6 +808,8 @@ public class GameScreen extends AbstractScreen {
 		backgrounds = bgs;
 		
 		createPlayer();
+		
+		b.setPlayer(player);
 		createWalls();
 	}
 	

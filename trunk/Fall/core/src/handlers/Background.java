@@ -1,6 +1,7 @@
 package handlers;
 
 import helpers.B2DVars;
+import BackgroundHandlers.ParallaxBackground;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,11 +16,14 @@ public class Background
 	
 	public Background(TextureRegion image, OrthographicCamera cam)
 	{
+		
 		bg = image;
 		myCam = cam;
 		position = new Vector2(myCam.position.x, myCam.position.y);
 		velocity = new Vector2(0, 0);
 	}
+	
+	
 	
 	public void update (float dt)
 	{
@@ -33,7 +37,7 @@ public class Background
 				myCam.position.x - bg.getRegionWidth() / 2,
 				myCam.position.y - bg.getRegionHeight() / 2
 				);
-		//sb.end();
+		sb.end();
 	}
 	
 	public void setPosition(float x, float y)

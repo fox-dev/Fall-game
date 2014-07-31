@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 class LightMap {
+	
 	private ShaderProgram shadowShader;
 	FrameBuffer frameBuffer;
 	private Mesh lightMapMesh;

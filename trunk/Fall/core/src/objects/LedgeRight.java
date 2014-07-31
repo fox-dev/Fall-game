@@ -13,18 +13,18 @@ import com.mygdx.game.MainGame;
 public class LedgeRight extends StaticSprite
 {
 private Wall myWall;
-private ConeLight l;
+private Lamp lamp;
 
 boolean down = false;
 
 int grow = 100;
 	
-	public LedgeRight(Body body, Wall wall, ConeLight l)
+	public LedgeRight(Body body, Wall wall, Lamp l)
 	{
 		super(body);
 		load();
 		myWall = wall;
-		this.l = l;
+		this.lamp = l;
 		
 		width = texture.getRegionWidth();
 		height = texture.getRegionHeight();
@@ -34,7 +34,7 @@ int grow = 100;
 	{
 		float tempY = getPosition().y;
 		body.setTransform(myWall.getPosition().x - ((MainGame.V_WIDTH/10)/B2DVars.PPM), tempY, 0);
-		l.setPosition(body.getPosition().x, body.getPosition().y + 120/B2DVars.PPM);
+		lamp.getLight().setPosition(body.getPosition().x, body.getPosition().y + 120/B2DVars.PPM);
 		
 		
 		/*
@@ -66,6 +66,7 @@ int grow = 100;
 	
 				);
 		sb.end();
+		lamp.render(sb);
 	}
 	
 	public void load()

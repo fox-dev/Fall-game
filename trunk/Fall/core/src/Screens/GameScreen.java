@@ -11,6 +11,7 @@ import Lights.RayHandler;
 
 
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -36,6 +37,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.mygdx.game.MainGame;
 
+import objects.Lamp;
 import objects.LedgeLeft;
 import objects.LedgeMiddle;
 import objects.LedgeRight;
@@ -662,11 +664,9 @@ public class GameScreen extends AbstractScreen {
 		
 		t.setSoft(true);
 		
+		Lamp lamp = new Lamp(t);
 		
-		
-	
-		
-		LedgeLeft temp = new LedgeLeft(body, leftWall, t);
+		LedgeLeft temp = new LedgeLeft(body, leftWall, lamp);
 		body.setUserData(temp);
 		ledgeList.add(temp);
 		lightList.add(t);
@@ -696,15 +696,12 @@ public class GameScreen extends AbstractScreen {
 		t = new ConeLight(handler, 40, Color.GRAY,800/PPM, body.getPosition().x, body.getPosition().y + 120/PPM, 270, 20);		
 		t.setSoft(true);
 		
-		
-		
-		
-		
+		Lamp lamp = new Lamp(t);
 		
 		//PointLight d;
 		//d = new PointLight(handler, 40, Color.LIGHT_GRAY, grow/PPM,  player.getPosition().x, player.getPosition().y);
 		
-		LedgeRight temp = new LedgeRight(body, rightWall, t);
+		LedgeRight temp = new LedgeRight(body, rightWall, lamp);
 		body.setUserData(temp);
 		ledgeList.add(temp);
 		lightList.add(t);

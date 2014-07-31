@@ -11,14 +11,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class AssetLoader {
 	private HashMap<String, Texture> textures;
 	
-	public static Texture player, cliffWalls, ledgeA, ledgeB, ledge, logoTexture, bg, bg2, mbg;
+	public static Texture player, cliffWalls, ledgeA, ledgeB, ledge, logoTexture, bg, bg2, mbg, lampTexture;
 	
 	//Background textures
 	public static TextureRegion waterFallBG, waterFallBG2, middleBGLeft, middleBGRight;
 	
 	//public static TextureRegion playerLeft, playerMid, playerRight;
 	public static TextureRegion logo, cliffJumper1, cliffJumper2, cliffJumper3, cliffJumper4, 
-								wallLeft, wallRight, ledgeLeft, ledgeRight, ledgeMiddle;
+								wallLeft, wallRight, ledgeLeft, ledgeRight, ledgeMiddle, lamp;
 	
 	public static Music bgm;
 	
@@ -41,6 +41,8 @@ public class AssetLoader {
 		//ledge = new Texture(Gdx.files.internal("data/platform.png"));
 		ledgeA = new Texture(Gdx.files.internal("data/ledgeA.png"));
 		ledgeB = new Texture(Gdx.files.internal("data/ledgeB.png"));
+		
+		lampTexture = new Texture(Gdx.files.internal("data/lamp2.png"));
 		
 		bg = new Texture(Gdx.files.internal("data/waterfallbackdrop1.png"));
 		bg2 = new Texture(Gdx.files.internal("data/waterfallbackdrop2.png"));
@@ -67,6 +69,8 @@ public class AssetLoader {
 		ledgeLeft = new TextureRegion(ledgeA);
 		ledgeRight = new TextureRegion(ledgeB);
 		ledgeMiddle = new TextureRegion(ledge);
+		
+		lamp = new TextureRegion(lampTexture);
 		
 		bgm = Gdx.audio.newMusic(Gdx.files.internal("data/Greg_Davis_-_01_-_slow_motion.mp3"));
 		caveIn = Gdx.audio.newMusic(Gdx.files.internal("data/caveIn.mp3"));
@@ -111,6 +115,7 @@ public class AssetLoader {
 		ledge.dispose();
 		ledgeA.dispose();
 		ledgeB.dispose();
+		lampTexture.dispose();
 		logoTexture.dispose();
 		bg.dispose();
 		bg2.dispose();

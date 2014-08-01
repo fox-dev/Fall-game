@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 class LightMap {
 	
@@ -27,10 +26,25 @@ class LightMap {
 
 	boolean lightMapDrawingDisabled;
 	
+	public void binding(){
+		frameBuffer.bind();
+	}
 	
+	public void unbinding(){
+		frameBuffer.unbind();
+	}
+	
+	public void ending(){
+		frameBuffer.end();
+	}
+	
+	public void setFrameBuffer(FrameBuffer b){
+		frameBuffer = b;
+	}
 
 	public void render() {
 
+		System.out.println(" ++++++++++++++++++++ " + frameBuffer.getWidth());
 		boolean needed = rayHandler.lightRenderedLastFrame > 0;
 		// this way lot less binding
 		if (needed && rayHandler.blur)
@@ -38,7 +52,9 @@ class LightMap {
 
 		if (lightMapDrawingDisabled)
 			return;
+		
 		frameBuffer.getColorBufferTexture().bind(0);
+		
 
 		// at last lights are rendered over scene
 		if (rayHandler.shadows) {
@@ -130,7 +146,26 @@ class LightMap {
 		withoutShadowShader = WithoutShadowShader.createShadowShader();
 
 		blurShader = Gaussian.createBlurShader(fboWidth, fboHeight);
+		
 
+	}
+	
+	public LightMap(RayHandler rayHandler, FrameBuffer b){
+		this.rayHandler = rayHandler;
+		
+		this.frameBuffer = b;
+		
+		pingPongBuffer = new FrameBuffer(Format.RGBA8888, frameBuffer.getWidth(),
+				frameBuffer.getHeight(), false);
+
+		lightMapMesh = createLightMapMesh();
+
+		shadowShader = ShadowShader.createShadowShader();
+		diffuseShader = DiffuseShader.createShadowShader();
+
+		withoutShadowShader = WithoutShadowShader.createShadowShader();
+
+		blurShader = Gaussian.createBlurShader(frameBuffer.getWidth(), frameBuffer.getHeight());
 	}
 
 	void dispose() {
@@ -178,6 +213,8 @@ class LightMap {
 		return tmpMesh;
 
 	}
+	
+	
 
 	static public final int VERT_SIZE = 16;
 	static public final int X1 = 0;

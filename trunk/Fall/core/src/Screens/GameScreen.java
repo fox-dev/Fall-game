@@ -16,13 +16,17 @@ import Lights.RayHandler;
 
 
 
+
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
@@ -62,6 +66,9 @@ import handlers.MyInput;
 public class GameScreen extends AbstractScreen {
 	
 	private boolean debug = false;
+	
+	FrameBuffer frameBuffer;
+	FrameBuffer frameBuffer2;
 	
 	private long wallInterval = 0;
 	
@@ -134,7 +141,9 @@ public class GameScreen extends AbstractScreen {
 	public GameScreen(GameScreenManager gsm) {
 		super(gsm);
 		
-	
+	   
+		frameBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4, false);
+		frameBuffer2 = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4, false);
 		
 		glide = new Rectangle(0, 0, 100, 100);
 		shapeRenderer = new ShapeRenderer();
@@ -157,13 +166,15 @@ public class GameScreen extends AbstractScreen {
 		b2dCam = new OrthographicCamera();
 		b2dCam.setToOrtho(false, MainGame.V_WIDTH/PPM , MainGame.V_HEIGHT/PPM );
 		box2dLight.RayHandler.useDiffuseLight(true);
-		handler = new RayHandler(world, viewport);
+		handler = new RayHandler(world, viewport, frameBuffer);
 		
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,0.1f);
 	
 		handler.setShadows(true);
 		
 		handler.setAmbientLight(0.3f);
+		
+		
 		
 		//p = new PointLight(handler, 40, Color.LIGHT_GRAY, grow/PPM,  player.getPosition().x, player.getPosition().y);
 		
@@ -258,6 +269,8 @@ public class GameScreen extends AbstractScreen {
 				vel.x = -2.3f;
 		
 				player.getBody().setLinearVelocity(vel);
+				
+			
 			
 			
 			}
@@ -328,11 +341,14 @@ public class GameScreen extends AbstractScreen {
 		}
 		
 		
+		
+		frameBuffer2.getColorBufferTexture().bind(0);
+		handler.setFrameBuffer(frameBuffer2);
 		bg.render(sb);
 		
 		
 		
-		b.render(1/60f);
+		//b.render(1/60f);
 		
 		for(Background temp : backgrounds)
 		{
@@ -461,9 +477,14 @@ public class GameScreen extends AbstractScreen {
 			player.render(sb);
 		}
 				
+		frameBuffer2.end();
+		handler.setFrameBuffer(frameBuffer);
 		
+		handler.setBlurNum(0);
 		handler.setCombinedMatrix(b2dCam.combined);
 		handler.updateAndRender();
+		
+		
 		
 		
 
@@ -779,9 +800,9 @@ public class GameScreen extends AbstractScreen {
 	
 	public void init(){
 		
-		l1 = new ParallaxLayer(AssetLoader.waterFallBG, new Vector2(0f, 0f), new Vector2(0f,0));
+		l1 = new ParallaxLayer(AssetLoader.waterFallBG, new Vector2(0f, 0.1f), new Vector2(0f,0));
 		
-		b = new ParallaxBackground(new ParallaxLayer[]{l1}, 320, 480,new Vector2(0,0), cam);
+		b = new ParallaxBackground(new ParallaxLayer[]{l1}, 320, 480,new Vector2(0,1f));
 		
 		//create platform
 		BodyDef bdef = new BodyDef(); 

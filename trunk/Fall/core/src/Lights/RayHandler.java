@@ -94,6 +94,21 @@ public class RayHandler implements Disposable {
 		this.viewport = viewport;
 		
 	}
+	
+	public RayHandler(World world, Rectangle viewport, FrameBuffer b){
+		this(world, Gdx.graphics.getWidth() / 4, Gdx.graphics
+				.getHeight() / 4, b);
+		
+		this.viewport = viewport;
+		
+	}
+	
+	public RayHandler(World world, int fboWidth, int fboHeigth, FrameBuffer b) {
+		this.world = world;
+
+		lightMap = new LightMap(this, b);
+		lightShader = LightShader.createLightShader();
+	}
 
 	/**
 	 * Construct handler that manages everything related to updating and
@@ -560,6 +575,22 @@ public class RayHandler implements Disposable {
         float w = (float)MainGame.V_WIDTH*scale;
         float h = (float)MainGame.V_HEIGHT*scale;
         viewport = new Rectangle(crop.x, crop.y, w, h);
+	}
+	
+	public void binding(){
+		lightMap.binding();
+	}
+	
+	public void unbinding(){
+		lightMap.unbinding();
+	}
+	
+	public void ending(){
+		lightMap.ending();
+	}
+	
+	public void setFrameBuffer(FrameBuffer b){
+		lightMap.setFrameBuffer(b);
 	}
 
 }

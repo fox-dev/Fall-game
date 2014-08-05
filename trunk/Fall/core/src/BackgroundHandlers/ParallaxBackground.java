@@ -40,18 +40,9 @@ public class ParallaxBackground {
 	   this.player = p;
    }
    
-   public void setCam(){
-	   this.camera.position.set( player.getPosition().x * PPM,
-	              (player.getPosition().y) * PPM - CL,
-	              0);
-   }
-   
    public void render(float delta){
       this.camera.position.add(speed.x*delta,speed.y*delta, 0);
     
-      if(player != null){
-    	  setCam();
-      }
       for(ParallaxLayer layer:layers){
          batch.setProjectionMatrix(camera.projection);
          batch.begin();

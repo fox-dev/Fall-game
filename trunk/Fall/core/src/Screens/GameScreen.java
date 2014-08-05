@@ -18,6 +18,8 @@ import Lights.RayHandler;
 
 
 
+
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -53,13 +55,13 @@ import objects.LeftWall;
 import objects.Player;
 import objects.RightWall;
 import objects.StaticSprite;
+import objects.Wall;
 import helpers.AssetLoader;
 import helpers.B2DVars;
 import handlers.AnimatedBackground;
 import handlers.Background;
 import handlers.GameScreenManager;
-import handlers.MiddlegroundLeft;
-import handlers.MiddlegroundRight;
+import handlers.Middleground;
 import handlers.MyContactListener;
 import handlers.MyInput;
 
@@ -110,14 +112,11 @@ public class GameScreen extends AbstractScreen {
 	private DelayedRemovalArray<ConeLight> lightList = new DelayedRemovalArray<ConeLight>();
 	private DelayedRemovalArray<PointLight> lightListP = new DelayedRemovalArray<PointLight>();
 	
-	private AnimatedBackground bg;
-	private Background[] backgrounds; 
+	private Background[] backgrounds;
+	private Middleground middleBgLeft, mLRepeat,  middleBgRight, mRRepeat;
 	
-	private ParallaxLayer l1;
-	private ParallaxBackground b;
-	
-	
-	
+	//private ParallaxLayer l1;
+	//private ParallaxBackground b;
 	
 	
 	private World world;
@@ -132,7 +131,8 @@ public class GameScreen extends AbstractScreen {
 		
 	private LeftWall leftWall, lWallRepeat;
 	private RightWall rightWall, rWallRepeat;
-
+	private Wall[] foreground;
+	
 	private MyContactListener cl;
 	
 	int grow = 49;
@@ -214,7 +214,6 @@ public class GameScreen extends AbstractScreen {
 			
 		
 			if(MyInput.isPressed(MyInput.BUTTON1) && glide_x > 0 && glide_CD == false){
-				
 			
 				player.stopping();
 				lastStop = depth;
@@ -222,7 +221,7 @@ public class GameScreen extends AbstractScreen {
 				glide_x = glide_x - 2;
 				if(glide_x <= 0){
 					MyInput.setKey(MyInput.BUTTON1, false);
-					glide_CD = true;
+					glide_CD = false;
 					player.falling();
 				}
 				
@@ -253,7 +252,7 @@ public class GameScreen extends AbstractScreen {
 					glide_x = glide_x - 1;
 					if(glide_x <= 0){
 						MyInput.setKey(MyInput.BUTTON1, false);
-						glide_CD = true;
+						glide_CD = false;
 						player.falling();
 					}
 			}
@@ -269,9 +268,6 @@ public class GameScreen extends AbstractScreen {
 				vel.x = -2.3f;
 		
 				player.getBody().setLinearVelocity(vel);
-				
-			
-			
 			
 			}
 		
@@ -340,19 +336,33 @@ public class GameScreen extends AbstractScreen {
 			player.update(1/60f);
 		}
 		
+		//b.render(1/60f);
 		
 		
 		frameBuffer2.getColorBufferTexture().bind(0);
 		handler.setFrameBuffer(frameBuffer2);
-		bg.render(sb);
-		
-		
 		
 		//b.render(1/60f);
+
+		if(middleBgRight.getYPosition() > B2DVars.TRUE_HEIGHT){
+			middleBgRight.setYPosition(mRRepeat.getYPosition() - mRRepeat.getHeight());
+		}
+		if(middleBgLeft.getYPosition() >  B2DVars.TRUE_HEIGHT){
+			middleBgLeft.setYPosition(mLRepeat.getYPosition() - mLRepeat.getHeight());
+		}
+		if(mRRepeat.getYPosition() > B2DVars.TRUE_HEIGHT){
+			mRRepeat.setYPosition(middleBgRight.getYPosition() - middleBgRight.getHeight());
+		}
+		if(mLRepeat.getYPosition() > B2DVars.TRUE_HEIGHT){
+			mLRepeat.setYPosition(middleBgLeft.getYPosition() - middleBgLeft.getHeight());
+		}
 		
 		for(Background temp : backgrounds)
 		{
-			temp.update(1/60f);
+			if(temp instanceof AnimatedBackground)
+				temp.update(runTime);
+			else
+				temp.update(1/60f);
 			temp.render(sb);
 		}
 		
@@ -405,6 +415,11 @@ public class GameScreen extends AbstractScreen {
 		}
 		if(lWallRepeat.getYPosition() > cam.position.y/PPM + MainGame.V_HEIGHT/2/PPM){
 			lWallRepeat.setPosition(leftWall.getYPosition() - lWallRepeat.getHeight()/PPM);
+		}
+		
+		for(Wall temp : foreground)
+		{
+			temp.render(sb);
 		}
 		
 		x = player.getPosition().y;
@@ -461,11 +476,10 @@ public class GameScreen extends AbstractScreen {
 		
 		sb.setProjectionMatrix(cam.combined);
 		
-			
-		rightWall.render(sb);
+		/*rightWall.render(sb);
 		leftWall.render(sb);
 		rWallRepeat.render(sb);
-		lWallRepeat.render(sb);
+		lWallRepeat.render(sb);*/
 		
 		for(StaticSprite ledge : ledgeList)
 		{
@@ -483,10 +497,6 @@ public class GameScreen extends AbstractScreen {
 		handler.setBlurNum(0);
 		handler.setCombinedMatrix(b2dCam.combined);
 		handler.updateAndRender();
-		
-		
-		
-		
 
 		if(!gameOverFlag){
 			
@@ -561,9 +571,6 @@ public class GameScreen extends AbstractScreen {
 			b2dr.render(world, b2dCam.combined);
 			
 		}
-		bg.update(runTime);
-		
-	
 		
 	}
 	
@@ -634,7 +641,7 @@ public class GameScreen extends AbstractScreen {
 		lWall.createFixture(fdef).setUserData("LeftWall");
 		
 		leftWall = new LeftWall(lWall);
-		leftWall.setPosition(300/PPM);
+		leftWall.setPosition(cam.position.y - B2DVars.TRUE_WIDTH/2/PPM);
 		lWallRepeat = new LeftWall(lWall);
 		lWallRepeat.setPosition(leftWall.getYPosition() - leftWall.getHeight()/PPM);
 				
@@ -656,10 +663,13 @@ public class GameScreen extends AbstractScreen {
 		rWall.createFixture(fdef).setUserData("RightWall");
 		
 		rightWall = new RightWall(rWall);
-		rightWall.setPosition(300/PPM);
+		rightWall.setPosition(cam.position.y - B2DVars.TRUE_WIDTH/2/PPM);
 		rWallRepeat = new RightWall(rWall);
 		rWallRepeat.setPosition(rightWall.getYPosition() - rightWall.getHeight()/PPM);
 		shape.dispose();
+		
+		Wall[] temp = {rightWall, rWallRepeat, leftWall, lWallRepeat};
+		foreground = temp;
 	}
 	
 	public void addPlatforms()
@@ -800,9 +810,10 @@ public class GameScreen extends AbstractScreen {
 	
 	public void init(){
 		
-		l1 = new ParallaxLayer(AssetLoader.waterFallBG, new Vector2(0f, 0.1f), new Vector2(0f,0));
-		
-		b = new ParallaxBackground(new ParallaxLayer[]{l1}, 320, 480,new Vector2(0,1f));
+
+		//l1 = new ParallaxLayer(AssetLoader.waterFallBG, new Vector2(0f, 0f), new Vector2(0f,0));
+
+		//b = new ParallaxBackground(new ParallaxLayer[]{l1}, 320, 480,new Vector2(0,0), cam);
 		
 		//create platform
 		BodyDef bdef = new BodyDef(); 
@@ -822,15 +833,21 @@ public class GameScreen extends AbstractScreen {
 		//body.createFixture(fdef).setUserData("Ground");
 		shape.dispose();
 		
-		TextureRegion[] bgAnim = {AssetLoader.waterFallBG, AssetLoader.waterFallBG2};
-		bg = new AnimatedBackground(bgAnim, cam);
+		createPlayer();
+		//b.setPlayer(player);
 		
-		Background[] bgs = {new MiddlegroundLeft(AssetLoader.middleBGLeft, cam), new MiddlegroundRight(AssetLoader.middleBGRight, cam)};
+		TextureRegion[] bgAnim = {AssetLoader.waterFallBG, AssetLoader.waterFallBG2};
+		AnimatedBackground bg = new AnimatedBackground(bgAnim, cam);
+		
+		middleBgLeft = new Middleground(AssetLoader.middleBGLeft, cam, player, 0, 0, 1f);
+		mLRepeat = new Middleground(AssetLoader.middleBGLeft, cam, player, 0, middleBgLeft.getYPosition() - middleBgLeft.getHeight(), 1f);
+		
+		middleBgRight = new Middleground(AssetLoader.middleBGRight, cam, player, B2DVars.TRUE_WIDTH, 0, 1f);
+		mRRepeat = new Middleground(AssetLoader.middleBGRight, cam, player, B2DVars.TRUE_WIDTH, middleBgRight.getYPosition() - middleBgRight.getHeight(), 1f);
+		
+		Background[] bgs = {middleBgLeft, mLRepeat, middleBgRight, mRRepeat, bg};
 		backgrounds = bgs;
 		
-		createPlayer();
-		
-		b.setPlayer(player);
 		createWalls();
 	}
 	

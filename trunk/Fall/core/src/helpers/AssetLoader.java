@@ -12,6 +12,7 @@ public class AssetLoader {
 	private HashMap<String, Texture> textures;
 	
 	public static Texture player, cliffWalls, ledgeA, ledgeB, ledge, logoTexture, bg, bg2, mbg, lampTexture;
+	public static Texture middlePurple;
 	
 	//Background textures
 	public static TextureRegion waterFallBG, waterFallBG2, middleBGLeft, middleBGRight;
@@ -19,6 +20,8 @@ public class AssetLoader {
 	//public static TextureRegion playerLeft, playerMid, playerRight;
 	public static TextureRegion logo, cliffJumper1, cliffJumper2, cliffJumper3, cliffJumper4, 
 								wallLeft, wallRight, ledgeLeft, ledgeRight, ledgeMiddle, lamp;
+	
+	public static TextureRegion midPurp;
 	
 	public static Music bgm;
 	
@@ -41,6 +44,8 @@ public class AssetLoader {
 		//ledge = new Texture(Gdx.files.internal("data/platform.png"));
 		ledgeA = new Texture(Gdx.files.internal("data/ledgeA.png"));
 		ledgeB = new Texture(Gdx.files.internal("data/ledgeB.png"));
+		
+		middlePurple = new Texture(Gdx.files.internal("data/platformB8.png"));
 		
 		lampTexture = new Texture(Gdx.files.internal("data/lamp2.png"));
 		
@@ -69,6 +74,8 @@ public class AssetLoader {
 		ledgeLeft = new TextureRegion(ledgeA);
 		ledgeRight = new TextureRegion(ledgeB);
 		ledgeMiddle = new TextureRegion(ledge);
+		
+		midPurp = new TextureRegion(middlePurple);
 		
 		lamp = new TextureRegion(lampTexture);
 		

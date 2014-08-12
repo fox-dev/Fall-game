@@ -126,8 +126,10 @@ public class GameScreen extends AbstractScreen {
 	private OrthographicCamera b2dCam;
 	
 	private RayHandler handler;
+	private RayHandler pHandler;
 	
 	private Player player;
+	ConeLight td;
 		
 	private LeftWall leftWall, lWallRepeat;
 	private RightWall rightWall, rWallRepeat;
@@ -137,6 +139,8 @@ public class GameScreen extends AbstractScreen {
 	
 	int grow = 49;
 	float accelX = 0;
+	
+	
 	
 	public GameScreen(GameScreenManager gsm) {
 		super(gsm);
@@ -169,6 +173,8 @@ public class GameScreen extends AbstractScreen {
 		handler = new RayHandler(world, viewport, frameBuffer);
 		
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,0.1f);
+		
+		
 	
 		handler.setShadows(true);
 		
@@ -176,11 +182,9 @@ public class GameScreen extends AbstractScreen {
 		
 		
 		
-		//p = new PointLight(handler, 40, Color.LIGHT_GRAY, grow/PPM,  player.getPosition().x, player.getPosition().y);
+		td = new ConeLight(handler, 40, Color.GRAY,100/PPM, player.getPosition().x, player.getPosition().y + 120/PPM, 270, 15);	
 		
-		//p.setContactFilter(B2DVars.BIT_PLAYER, B2DVars.BIT_LIGHT, B2DVars.BIT_GROUND);
 		
-		//p.isSoft();
 		
 		AssetLoader.bgm.play();
 		AssetLoader.bgm.setLooping(true);
@@ -252,7 +256,7 @@ public class GameScreen extends AbstractScreen {
 					glide_x = glide_x - 1;
 					if(glide_x <= 0){
 						MyInput.setKey(MyInput.BUTTON1, false);
-						glide_CD = false;
+						glide_CD = true;
 						player.falling();
 					}
 			}
@@ -336,13 +340,9 @@ public class GameScreen extends AbstractScreen {
 			player.update(1/60f);
 		}
 		
-		//b.render(1/60f);
-		
-		
-		frameBuffer2.getColorBufferTexture().bind(0);
-		handler.setFrameBuffer(frameBuffer2);
-		
-		//b.render(1/60f);
+
+		td.setPosition(player.getPosition().x, player.getPosition().y + 3/PPM);
+	
 
 		if(middleBgRight.getYPosition() > B2DVars.TRUE_HEIGHT){
 			middleBgRight.setYPosition(mRRepeat.getYPosition() - mRRepeat.getHeight());
@@ -425,9 +425,10 @@ public class GameScreen extends AbstractScreen {
 		x = player.getPosition().y;
 		y = player.getPosition().y;
 		
+		System.out.println(leftWall.getBody().getPosition().x * PPM);
 		if(Math.abs(x - x2)/PPM >= nextSprite/PPM)
 		{
-			if(leftWall.getBody().getPosition().x < 55/PPM){
+			if(leftWall.getBody().getPosition().x < 40/PPM){
 			addObstacles();
 			}
 			
@@ -448,20 +449,17 @@ public class GameScreen extends AbstractScreen {
 		
 		
 		
+		/*
 		resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 		Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
                 (int) viewport.width, (int) viewport.height);
-		
-		//leftWall.getBody().setTransform(leftWall.getPosition().x, player.getPosition().y, 0);
-		//leftWall.getBody().setLinearVelocity( new Vector2(0,player.getBody().getLinearVelocity().y));
-		//rightWall.getBody().setTransform(rightWall.getPosition().x, player.getPosition().y, 0);
-		//rightWall.getBody().setLinearVelocity( new Vector2(0,player.getBody().getLinearVelocity().y));
+		*/
 		
 		leftWall.getBody().setLinearVelocity( new Vector2(leftWall.getBody().getLinearVelocity().x,player.getBody().getLinearVelocity().y));
 		rightWall.getBody().setLinearVelocity( new Vector2(rightWall.getBody().getLinearVelocity().x,player.getBody().getLinearVelocity().y));
 		
 		
-	   wallEvent();
+		wallEvent();
 		
 		capVelocity();
 	
@@ -476,10 +474,6 @@ public class GameScreen extends AbstractScreen {
 		
 		sb.setProjectionMatrix(cam.combined);
 		
-		/*rightWall.render(sb);
-		leftWall.render(sb);
-		rWallRepeat.render(sb);
-		lWallRepeat.render(sb);*/
 		
 		for(StaticSprite ledge : ledgeList)
 		{
@@ -489,10 +483,10 @@ public class GameScreen extends AbstractScreen {
 		
 		if(!gameOverFlag){
 			player.render(sb);
+		
 		}
 				
-		frameBuffer2.end();
-		handler.setFrameBuffer(frameBuffer);
+	
 		
 		handler.setBlurNum(0);
 		handler.setCombinedMatrix(b2dCam.combined);
@@ -517,8 +511,6 @@ public class GameScreen extends AbstractScreen {
 			
 			sb.begin();
 			
-			
-			
 			depth = (float) (Math.abs(player.getPosition().y - 300/PPM)/0.3048);
 			float w = font.getBounds((int)depth + "ft").width;
 			float h = font.getBounds((int)depth + "ft").height;
@@ -531,9 +523,6 @@ public class GameScreen extends AbstractScreen {
 			float wMulti = font.getBounds("Multiplier x" + (int)multi).width;
 			drawMulitplier(sb, cam.position.x + game.V_WIDTH/2 - wMulti, cam.position.y + game.V_HEIGHT/2 - hScore);
 			
-			
-			
-			
 		}
 		
 		if(cl.isPlayerOnGround() == true){
@@ -545,6 +534,7 @@ public class GameScreen extends AbstractScreen {
 			font.draw(sb, "Game Over", cam.position.x - w/2 , cam.position.y + h/2 + font.getXHeight());
 			sb.end();
 			drawScore(sb, cam.position.x - w/2, cam.position.y + h/2 - font.getXHeight());
+			td.setActive(false);
 		}
 		
 		b2dCam.position.set(
@@ -572,6 +562,8 @@ public class GameScreen extends AbstractScreen {
 			
 		}
 		
+	
+		
 	}
 	
 	public void createPlayer()
@@ -591,7 +583,7 @@ public class GameScreen extends AbstractScreen {
 				
 		//create box shape for player collision box
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(10/PPM, 10/PPM);
+		shape.setAsBox((float) (7.5/PPM), 10/PPM);
 		
 		//create fixture for player
 		FixtureDef fdef = new FixtureDef();
@@ -606,7 +598,7 @@ public class GameScreen extends AbstractScreen {
 				
 		//create foot sensor
 		shape = new PolygonShape();
-		shape.setAsBox(8 / PPM, 2 / PPM, new Vector2(0, -10/PPM), 0);
+		shape.setAsBox((float) (5.5 / PPM), 2 / PPM, new Vector2(0, -10/PPM), 0);
 		
 		//create fixture for foot
 		fdef.shape = shape;

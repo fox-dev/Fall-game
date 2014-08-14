@@ -11,17 +11,21 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class AssetLoader {
 	private HashMap<String, Texture> textures;
 	
-	public static Texture player, cliffWalls, ledgeA, ledgeB, ledge, logoTexture, bg, bg2, mbg, lampTexture;
-	public static Texture middlePurple;
+	public static Texture player, cliffWalls, ledgeA, ledgeB, logoTexture, bg, bg2, mbg, lampTexture;
+	
+	//middle ledge textures
+	public static Texture ledgeO, ledgeP, ledgeBL, ledgeR, ledgeOR, ledgePI, ledgeG, ledgeLB;
 	
 	//Background textures
 	public static TextureRegion waterFallBG, waterFallBG2, middleBGLeft, middleBGRight;
 	
 	//public static TextureRegion playerLeft, playerMid, playerRight;
 	public static TextureRegion logo, cliffJumper1, cliffJumper2, cliffJumper3, cliffJumper4, 
-								wallLeft, wallRight, ledgeLeft, ledgeRight, ledgeMiddle, lamp;
+								wallLeft, wallRight, ledgeLeft, ledgeRight, lamp;
 	
-	public static TextureRegion midPurp;
+	//middle ledege textures
+	public static TextureRegion ledgePurple, ledgeOrange, ledgeBlue, ledgeGreen, ledgeRed, ledgeOrangeRed, ledgePink,
+								ledgeLightBlue;
 	
 	public static Music bgm;
 	
@@ -39,18 +43,25 @@ public class AssetLoader {
 		player = new Texture(Gdx.files.internal("data/basejumperanimatewhite.png"));
 		cliffWalls = new Texture(Gdx.files.internal("data/cliff-wallsblue.png"));
 		
-		
-		ledge = new Texture(Gdx.files.internal("data/platformB5.png"));
-		//ledge = new Texture(Gdx.files.internal("data/platform.png"));
+		//Middle Ledge Sprites
+		ledgeOR = new Texture(Gdx.files.internal("data/platformB2.png"));
+		ledgePI = new Texture(Gdx.files.internal("data/platformB3.png"));
+		ledgeG = new Texture(Gdx.files.internal("data/platformB4.png"));
+		ledgeLB = new Texture(Gdx.files.internal("data/platformB6.png"));
+		ledgeR = new Texture(Gdx.files.internal("data/platformB7.png"));
+		ledgeO = new Texture(Gdx.files.internal("data/platformBcrystal.png"));
+		ledgeP = new Texture(Gdx.files.internal("data/platformB8.png"));
+		ledgeBL = new Texture(Gdx.files.internal("data/platformB5.png"));
+	
 		ledgeA = new Texture(Gdx.files.internal("data/ledgeA.png"));
 		ledgeB = new Texture(Gdx.files.internal("data/ledgeB.png"));
 		
-		middlePurple = new Texture(Gdx.files.internal("data/platformB8.png"));
+		ledgeP = new Texture(Gdx.files.internal("data/platformB8.png"));
 		
 		lampTexture = new Texture(Gdx.files.internal("data/lamp2.png"));
 		
-		bg = new Texture(Gdx.files.internal("data/waterfallbackdrop1.png"));
-		bg2 = new Texture(Gdx.files.internal("data/waterfallbackdrop2.png"));
+		bg = new Texture(Gdx.files.internal("data/waterfallbackdropA1.png"));
+		bg2 = new Texture(Gdx.files.internal("data/waterfallbackdropA2.png"));
 		mbg = new Texture(Gdx.files.internal("data/cliff-walls-midgroundNEW.png"));
 		
 		logo = new TextureRegion(logoTexture);
@@ -63,6 +74,16 @@ public class AssetLoader {
 		middleBGLeft = new TextureRegion(mbg, 0, 0, 155, 480);
 		middleBGRight = new TextureRegion(mbg, 160, 0, 165, 480);
 		
+		//Midde ledge textures
+		ledgePurple = new TextureRegion(ledgeP);
+		ledgeOrange = new TextureRegion(ledgeO);
+		ledgeBlue = new TextureRegion(ledgeBL);
+		ledgeGreen = new TextureRegion(ledgeG);
+		ledgeRed = new TextureRegion(ledgeR);
+		ledgeOrangeRed = new TextureRegion(ledgeOR);
+		ledgePink = new TextureRegion(ledgePI);
+		ledgeLightBlue = new TextureRegion(ledgeLB);
+		
 		
 		cliffJumper2 = new TextureRegion(player, 31, 0, 30, 30);
 		cliffJumper3 = new TextureRegion(player, 68, 0, 30, 30);
@@ -73,9 +94,6 @@ public class AssetLoader {
 		
 		ledgeLeft = new TextureRegion(ledgeA);
 		ledgeRight = new TextureRegion(ledgeB);
-		ledgeMiddle = new TextureRegion(ledge);
-		
-		midPurp = new TextureRegion(middlePurple);
 		
 		lamp = new TextureRegion(lampTexture);
 		
@@ -119,7 +137,14 @@ public class AssetLoader {
 		cliffWalls.dispose();
 		caveIn.dispose();
 		hit.dispose();
-		ledge.dispose();
+		ledgeO.dispose();
+		ledgeP.dispose();
+		ledgeBL.dispose();
+		ledgeR.dispose();
+		ledgeOR.dispose();
+		ledgePI.dispose();
+		ledgeG.dispose();
+		ledgeLB.dispose();
 		ledgeA.dispose();
 		ledgeB.dispose();
 		lampTexture.dispose();

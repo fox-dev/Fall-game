@@ -13,7 +13,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 public class AnimatedBackground extends Background
 {
 	protected Animation animation;
-	protected float width, height;
 	protected TextureRegion[] frames;
 	
 	public AnimatedBackground(TextureRegion[] images, OrthographicCamera cam)
@@ -22,6 +21,15 @@ public class AnimatedBackground extends Background
 		frames = images;
 		animation = new Animation(.1f, frames);
 		animation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+		width = 320;
+		height = 480;
+	}
+	
+	public AnimatedBackground(TextureRegion[] images, OrthographicCamera cam, float width, float height)
+	{
+		this(images, cam);
+		this.width = width;
+		this.height = height;
 	}
 	
 	public void setAnimation(TextureRegion[] reg, float delay)
@@ -38,9 +46,9 @@ public class AnimatedBackground extends Background
 	{
 		sb.begin();
 		sb.draw(bg, 
-				x + 80, //- bg.getRegionWidth() / 2,
-				myCam.position.y - bg.getRegionHeight() / 4,
-				160, 240
+				x, //- bg.getRegionWidth() / 2,
+				myCam.position.y - height / 2,
+				width, height
 				);
 		sb.end();
 	}
@@ -48,7 +56,5 @@ public class AnimatedBackground extends Background
 	public void load(){
 		
 	}
-
-	public float getWidth(){return width;}
-	public float getHeight(){return height;}
+	
 }

@@ -10,6 +10,7 @@ import Lights.PointLight;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 
 public class LedgeMiddle extends StaticSprite{
@@ -58,7 +59,7 @@ public class LedgeMiddle extends StaticSprite{
 	{
 		sb.begin();
 		
-		if(texture == AssetLoader.midPurp){
+		if(texture == AssetLoader.ledgePurple){
 			l.setColor(Color.valueOf("FCD7FB"));
 		}
 		sb.draw(texture, 
@@ -72,13 +73,12 @@ public class LedgeMiddle extends StaticSprite{
 	
 	public void load()
 	{
-		int r = randInt(1,10);
-		if(r <= 5){
-			texture = AssetLoader.ledgeMiddle;
-		}
-		else{
-			texture = AssetLoader.midPurp;
-		}
+		TextureRegion[] textures = {AssetLoader.ledgeBlue, AssetLoader.ledgeGreen, AssetLoader.ledgePurple, AssetLoader.ledgeOrange,
+									AssetLoader.ledgePink, AssetLoader.ledgeLightBlue, AssetLoader.ledgeOrangeRed, AssetLoader.ledgeRed};
+		
+		int r = randInt(0,7);
+		
+		texture = textures[r];
 			
 		
 	}

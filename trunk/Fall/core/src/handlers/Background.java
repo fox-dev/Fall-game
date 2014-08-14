@@ -63,6 +63,8 @@ public class Background
 		this.y = y;
 	}
 	
+	public void setWidth(float width){this.width = width;}
+	public void setHeight(float height){this.height = height;}
 	public void setSpeed(float s){speed = s;}
 	public float getXPosition(){return x;}
 	public float getYPosition(){return y;}

@@ -20,6 +20,12 @@ import Lights.RayHandler;
 
 
 
+import TweenAccessors.Value;
+import TweenAccessors.ValueAccessor;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenEquations;
+import aurelienribon.tweenengine.TweenManager;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -67,10 +73,19 @@ import handlers.MyInput;
 
 public class GameScreen extends AbstractScreen {
 	
+	
+	SpriteBatch sb2;
+	
 	private boolean debug = false;
 	
-	FrameBuffer frameBuffer;
-	FrameBuffer frameBuffer2;
+	private float fadeIn = 0f;
+	private float gameOverRunTime = 0f;
+	
+	private Color transitionColor;
+	
+	private TweenManager manager;
+	private Value alpha = new Value();
+	
 	
 	private long wallInterval = 0;
 	
@@ -130,6 +145,8 @@ public class GameScreen extends AbstractScreen {
 	
 	private Player player;
 	ConeLight td;
+	
+	ConeLight bd;
 		
 	private LeftWall leftWall, lWallRepeat;
 	private RightWall rightWall, rWallRepeat;
@@ -145,9 +162,8 @@ public class GameScreen extends AbstractScreen {
 	public GameScreen(GameScreenManager gsm) {
 		super(gsm);
 		
-	   
-		frameBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4, false);
-		frameBuffer2 = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4, false);
+		transitionColor = new Color();
+		prepareTransition(255, 255, 255, .5f);
 		
 		glide = new Rectangle(0, 0, 100, 100);
 		shapeRenderer = new ShapeRenderer();
@@ -170,7 +186,8 @@ public class GameScreen extends AbstractScreen {
 		b2dCam = new OrthographicCamera();
 		b2dCam.setToOrtho(false, MainGame.V_WIDTH/PPM , MainGame.V_HEIGHT/PPM );
 		box2dLight.RayHandler.useDiffuseLight(true);
-		handler = new RayHandler(world, viewport, frameBuffer);
+		handler = new RayHandler(world, viewport);
+		pHandler = new RayHandler(world, viewport);
 		
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f,0.1f);
 		
@@ -179,12 +196,15 @@ public class GameScreen extends AbstractScreen {
 		handler.setShadows(true);
 		
 		handler.setAmbientLight(0.3f);
+		pHandler.setAmbientLight(1f);
 		
 		
 		
 		td = new ConeLight(handler, 40, Color.GRAY,100/PPM, player.getPosition().x, player.getPosition().y + 120/PPM, 270, 15);	
 		
+		bd = new ConeLight(pHandler, 40, Color.GRAY,100/PPM, backgrounds[0].getXPosition()/PPM, backgrounds[4].getYPosition()/PPM, 270, 50);	
 		
+		sb2 = new SpriteBatch();
 		
 		AssetLoader.bgm.play();
 		AssetLoader.bgm.setLooping(true);
@@ -339,9 +359,12 @@ public class GameScreen extends AbstractScreen {
 			world.step(1/60f, 1, 1);
 			player.update(1/60f);
 		}
+		bd.setPosition(backgrounds[4].getXPosition() + 200/PPM, cam.position.y/PPM + CL/PPM);
 		
 
 		td.setPosition(player.getPosition().x, player.getPosition().y + 3/PPM);
+		
+		
 	
 
 		if(middleBgRight.getYPosition() > B2DVars.TRUE_HEIGHT){
@@ -365,6 +388,7 @@ public class GameScreen extends AbstractScreen {
 				temp.update(1/60f);
 			temp.render(sb);
 		}
+		pHandler.updateAndRender();
 		
 		Array<Body> tempBodies = new Array<Body>();
 		world.getBodies(tempBodies);
@@ -474,6 +498,8 @@ public class GameScreen extends AbstractScreen {
 		
 		sb.setProjectionMatrix(cam.combined);
 		
+		sb2.setProjectionMatrix(cam.combined);
+		
 		
 		for(StaticSprite ledge : ledgeList)
 		{
@@ -483,7 +509,6 @@ public class GameScreen extends AbstractScreen {
 		
 		if(!gameOverFlag){
 			player.render(sb);
-		
 		}
 				
 	
@@ -494,66 +519,30 @@ public class GameScreen extends AbstractScreen {
 
 		if(!gameOverFlag){
 			
-			if((int)Math.abs(depth - lastStop) > 40)
-				multi = 4;
-			else if((int)Math.abs(depth - lastStop) > 25)
-				multi = 3;
-			else if((int)Math.abs(depth - lastStop) > 10)
-				multi = 2;
-			
-			
-			if((int)Math.abs(depth - lastDepth) >= 1)
-			{
-				score += 1 * multi;
-				lastDepth = depth;
-				
-			}
-			
-			sb.begin();
-			
-			depth = (float) (Math.abs(player.getPosition().y - 300/PPM)/0.3048);
-			float w = font.getBounds((int)depth + "ft").width;
-			float h = font.getBounds((int)depth + "ft").height;
-			font.setUseIntegerPositions(false);
-			font.draw(sb,String.valueOf((int)depth + "ft") , cam.position.x - game.V_WIDTH/2, cam.position.y + game.V_HEIGHT/2);
-			sb.end();
-			float wScore = font.getBounds("Score " + (int)score).width;
-			float hScore = font.getBounds("Score " + (int)score).height;
-			drawScore(sb, cam.position.x + game.V_WIDTH/2 - wScore, cam.position.y + game.V_HEIGHT/2);
-			float wMulti = font.getBounds("Multiplier x" + (int)multi).width;
-			drawMulitplier(sb, cam.position.x + game.V_WIDTH/2 - wMulti, cam.position.y + game.V_HEIGHT/2 - hScore);
-			
+			drawScoreHud();
 		}
 		
 		if(cl.isPlayerOnGround() == true){
 			System.out.println("dead");
 			gameOverFlag = true;
-			sb.begin();
-			float w = font.getBounds("Game Over").width;
-			float h = font.getBounds("Game Over").height;
-			font.draw(sb, "Game Over", cam.position.x - w/2 , cam.position.y + h/2 + font.getXHeight());
-			sb.end();
-			drawScore(sb, cam.position.x - w/2, cam.position.y + h/2 - font.getXHeight());
-			td.setActive(false);
+			
+			
 		}
 		
+		if(gameOverFlag){
+			gameOverRunTime+= 1/60f;
+			
+			gameOver();
+			
+			
+		}
 		b2dCam.position.set(
                 player.getPosition().x,player.getPosition().y - CL/PPM,
                 0
         );
 		b2dCam.update(); 
 		
-		shapeRenderer.setProjectionMatrix(b2dCam.combined);
-		shapeRenderer.begin(ShapeType.Filled);
-		if(!glide_CD){
-			shapeRenderer.setColor(0f/255f,250f/255f,154f/255f, 1);
-		}
-		else{
-			shapeRenderer.setColor(255f/255f,0f/255f,0f/255f, 1);
-		}
-		
-		shapeRenderer.rect(b2dCam.position.x - (glide_x/2)/PPM , b2dCam.position.y + 10/PPM + CL/PPM, glide_x/PPM, 3/PPM);
-		shapeRenderer.end();
+	
 		
 		// draw box2d
 		if(debug) {
@@ -563,6 +552,7 @@ public class GameScreen extends AbstractScreen {
 		}
 		
 	
+		
 		
 	}
 	
@@ -957,6 +947,76 @@ public class GameScreen extends AbstractScreen {
 		}
 	}
 	
+	public void drawScoreHud(){
+		if((int)Math.abs(depth - lastStop) > 40)
+			multi = 4;
+		else if((int)Math.abs(depth - lastStop) > 25)
+			multi = 3;
+		else if((int)Math.abs(depth - lastStop) > 10)
+			multi = 2;
+		
+		
+		if((int)Math.abs(depth - lastDepth) >= 1)
+		{
+			score += 1 * multi;
+			lastDepth = depth;
+			
+		}
+		
+		sb.begin();
+		
+		depth = (float) (Math.abs(player.getPosition().y - 300/PPM)/0.3048);
+		float w = font.getBounds((int)depth + "ft").width;
+		float h = font.getBounds((int)depth + "ft").height;
+		font.setUseIntegerPositions(false);
+		font.draw(sb,String.valueOf((int)depth + "ft") , cam.position.x - game.V_WIDTH/2, cam.position.y + game.V_HEIGHT/2);
+		sb.end();
+		float wScore = font.getBounds("Score " + (int)score).width;
+		float hScore = font.getBounds("Score " + (int)score).height;
+		drawScore(sb, cam.position.x + game.V_WIDTH/2 - wScore, cam.position.y + game.V_HEIGHT/2);
+		float wMulti = font.getBounds("Multiplier x" + (int)multi).width;
+		drawMulitplier(sb, cam.position.x + game.V_WIDTH/2 - wMulti, cam.position.y + game.V_HEIGHT/2 - hScore);
+		
+		shapeRenderer.setProjectionMatrix(b2dCam.combined);
+		shapeRenderer.begin(ShapeType.Filled);
+		if(!glide_CD){
+			shapeRenderer.setColor(0f/255f,250f/255f,154f/255f, 1);
+		}
+		else{
+			shapeRenderer.setColor(255f/255f,0f/255f,0f/255f, 1);
+		}
+		
+		shapeRenderer.rect(b2dCam.position.x - (glide_x/2)/PPM , b2dCam.position.y + 10/PPM + CL/PPM, glide_x/PPM, 3/PPM);
+		shapeRenderer.end();
+		
+	}
+	
+	public void gameOver(){
+		
+		td.setActive(false);
+		drawTransition(1/60f);
+		
+		if(gameOverRunTime >= 0.5f){
+			sb2.begin();
+			
+			font.setColor(1f, 1f, 1f, fadeIn);
+		
+			if(fadeIn <= 1f){
+				fadeIn = fadeIn + 0.01f;
+				if(fadeIn >= 1f){
+					fadeIn = 1f;
+				}
+			}	
+			
+			float w = font.getBounds("Game Over").width;
+			float h = font.getBounds("Game Over").height;
+			font.draw(sb2, "Game Over", cam.position.x - w/2 , cam.position.y + h/2 + font.getXHeight());
+			sb2.end();
+			drawScore(sb, cam.position.x - w/2, cam.position.y + h/2 - font.getXHeight());
+		}
+		
+	}
+	
 
 
 	@Override
@@ -1009,10 +1069,34 @@ public class GameScreen extends AbstractScreen {
 		b2dr.dispose();
 		font.dispose();
 		
+		sb2.dispose();
+		
 	}
 	
 
+	public void prepareTransition(int r, int g, int b, float duration) {
+		transitionColor.set(r / 255.0f, g / 255.0f, b / 255.0f, 1);
+		alpha.setValue(1);
+		Tween.registerAccessor(Value.class, new ValueAccessor());
+		manager = new TweenManager();
+		Tween.to(alpha, -1, duration).target(0)
+				.ease(TweenEquations.easeOutQuad).start(manager);
+	}
+	
+	private void drawTransition(float delta) {
+		if (alpha.getValue() > 0) {
+			manager.update(delta);
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+			shapeRenderer.begin(ShapeType.Filled);
+			shapeRenderer.setColor(transitionColor.r, transitionColor.g,
+					transitionColor.b, alpha.getValue());
+			shapeRenderer.rect(cam.position.x/PPM - (Gdx.graphics.getWidth()/2)/PPM, cam.position.y/PPM - 2*CL/PPM, 100, 100);
+			shapeRenderer.end();
+			Gdx.gl.glDisable(GL20.GL_BLEND);
 
+		}
+	}
 	
 
 

@@ -44,6 +44,17 @@ public class Player extends B2DSprite
 		sb.end();
 	}
 	
+	public void renderSample(SpriteBatch sb)
+	{
+		sb.begin();
+		sb.draw(currentFrame, 
+				body.getPosition().x * B2DVars.PPM - 24,
+				body.getPosition().y * B2DVars.PPM - 24, 48, 48
+	
+				);
+		sb.end();
+	}
+	
 	public void update(float dt)
 	{
 		runtime += dt;
@@ -70,6 +81,25 @@ public class Player extends B2DSprite
 		cliffJumper2 = AssetLoader.cliffJumper2;
 		cliffJumper3 = AssetLoader.cliffJumper3;
 		cliffJumper4 = AssetLoader.cliffJumper4;
+	}
+	
+	public void stoppingA()
+	{
+		
+		animation.setFrameDuration(.05f);
+		animation.setPlayMode(Animation.PlayMode.NORMAL);
+	}
+	
+	public void fallingA()
+	{
+		
+		animation.setFrameDuration(.1f);
+		animation.setPlayMode(Animation.PlayMode.REVERSED);
+		
+	}
+	
+	public float getRT(){
+		return runtime;
 	}
 
 }

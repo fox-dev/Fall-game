@@ -66,6 +66,10 @@ public class Menu extends AbstractScreen {
 	
 	BitmapFont font;
 	
+	private float fadeIn = 0f;
+	private boolean fadeOut = false;
+	
+	
 	//BGSTUFF
 	private Background[] backgrounds;
 	private Middleground middleBgLeft, mLRepeat,  middleBgRight, mRRepeat;
@@ -139,7 +143,7 @@ public class Menu extends AbstractScreen {
 		
 		
 		world.step(1/60f, 1, 1);
-		player.update(1/60f);
+		player.updateA(1/60f);
 		td.setPosition(player.getPosition().x, player.getPosition().y + 3/PPM);
 		
 		//player.renderSample(sb);
@@ -287,6 +291,7 @@ public class Menu extends AbstractScreen {
 		if(b == true){
 			
 		     player.stoppingA();
+		     player.setGliding();
 		     Vector2 vel = player.getBody().getLinearVelocity();
 			 vel.y = -1f;
 			 player.getBody().setLinearVelocity(vel);
@@ -297,7 +302,9 @@ public class Menu extends AbstractScreen {
 		else{
 		
 		
+			
 		     player.fallingA();
+		     player.setFalling();
 		    
 		     
 		}
@@ -323,6 +330,26 @@ public class Menu extends AbstractScreen {
 		
 		
 		capVelocity();
+		
+		font.setColor(1f, 1f, 1f, fadeIn);
+		
+		if(fadeIn < 1f && fadeOut == false){
+			fadeIn+=0.01f;
+			if(fadeIn >= 1f){
+				fadeIn = 1f;
+				fadeOut = true;
+			}
+			
+		}
+		if(fadeOut){
+			fadeIn-=0.01f;
+			if(fadeIn <= 0f){
+			fadeIn = 0.01f;
+				fadeOut = false;
+			}
+		}
+		
+		
 		
 		sb.begin();
 		float w = font.getBounds("START").width;

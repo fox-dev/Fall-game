@@ -18,6 +18,7 @@ public class Player extends B2DSprite
 	private float runtime;
 	
 	private boolean glide;
+	private boolean falling;
 	
 	public Player(Body body)
 	{
@@ -59,13 +60,43 @@ public class Player extends B2DSprite
 	
 	public void update(float dt)
 	{
+	
 		runtime += dt;
+		
+		currentFrame = animation.getKeyFrame(runtime);
+	}
+	
+	public void updateA(float dt){
+		System.out.println("RT : " + runtime);
+		if(glide){
+			runtime += dt;
+			System.out.println("FFFFFFFFFFFFFF");
+			
+		}
+		
+		if(currentFrame == frames[3] && !glide){
+			runtime = 0;
+			
+		}
+		
+		if(falling){
+			runtime += dt;
+			System.out.println("TTTTTTTTTTTTT");
+		}
+		
+		if(currentFrame == frames[0] && !falling){
+			runtime = 0;
+			
+			
+			
+		}
+		
 		currentFrame = animation.getKeyFrame(runtime);
 	}
 	
 	public void falling()
 	{
-		glide = false;
+		
 		runtime = 0;
 		animation.setFrameDuration(.1f);
 		animation.setPlayMode(Animation.PlayMode.REVERSED);
@@ -73,7 +104,7 @@ public class Player extends B2DSprite
 	
 	public void stopping()
 	{
-		glide = true;
+		
 		runtime = 0;
 		animation.setFrameDuration(.05f);
 		animation.setPlayMode(Animation.PlayMode.NORMAL);
@@ -90,12 +121,14 @@ public class Player extends B2DSprite
 	public void stoppingA()
 	{
 		
+		
 		animation.setFrameDuration(.05f);
 		animation.setPlayMode(Animation.PlayMode.NORMAL);
 	}
 	
 	public void fallingA()
 	{
+		
 		
 		animation.setFrameDuration(.1f);
 		animation.setPlayMode(Animation.PlayMode.REVERSED);
@@ -108,6 +141,16 @@ public class Player extends B2DSprite
 	
 	public boolean gliding(){
 		return glide;
+	}
+	
+	public void setGliding(){
+		glide = true;
+		falling = false;
+	}
+	
+	public void setFalling(){
+		falling = true;
+		glide = false;
 	}
 
 }

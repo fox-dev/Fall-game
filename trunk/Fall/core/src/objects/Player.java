@@ -13,12 +13,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 public class Player extends B2DSprite
 {
 	
-	private TextureRegion cliffJumper1, cliffJumper2, cliffJumper3, cliffJumper4, currentFrame;
-	
-	private float runtime;
-	
-	private boolean glide;
-	private boolean falling;
+	private TextureRegion cliffJumper1, cliffJumper2, cliffJumper3, cliffJumper4;
 	
 	public Player(Body body)
 	{
@@ -66,34 +61,6 @@ public class Player extends B2DSprite
 		currentFrame = animation.getKeyFrame(runtime);
 	}
 	
-	public void updateA(float dt){
-		System.out.println("RT : " + runtime);
-		if(glide){
-			runtime += dt;
-			System.out.println("FFFFFFFFFFFFFF");
-			
-		}
-		
-		if(currentFrame == frames[3] && !glide){
-			runtime = 0;
-			
-		}
-		
-		if(falling){
-			runtime += dt;
-			System.out.println("TTTTTTTTTTTTT");
-		}
-		
-		if(currentFrame == frames[0] && !falling){
-			runtime = 0;
-			
-			
-			
-		}
-		
-		currentFrame = animation.getKeyFrame(runtime);
-	}
-	
 	public void falling()
 	{
 		
@@ -120,37 +87,22 @@ public class Player extends B2DSprite
 	
 	public void stoppingA()
 	{
-		
-		
 		animation.setFrameDuration(.05f);
 		animation.setPlayMode(Animation.PlayMode.NORMAL);
 	}
 	
 	public void fallingA()
 	{
-		
-		
 		animation.setFrameDuration(.1f);
 		animation.setPlayMode(Animation.PlayMode.REVERSED);
-		
 	}
 	
 	public float getRT(){
 		return runtime;
 	}
 	
-	public boolean gliding(){
-		return glide;
-	}
-	
-	public void setGliding(){
-		glide = true;
-		falling = false;
-	}
-	
-	public void setFalling(){
-		falling = true;
-		glide = false;
+	public void setRT(float rt){
+		runtime = rt;
 	}
 
 }

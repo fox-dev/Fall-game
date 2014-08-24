@@ -54,6 +54,8 @@ public class Menu extends AbstractScreen {
 	Boolean b = false;
 	Boolean c =  false;
 	
+	public boolean state, lastState;
+	
 	float ASPECT_RATIO = (float)MainGame.V_WIDTH/(float)MainGame.V_HEIGHT;
 	private Rectangle viewport;
 		
@@ -143,7 +145,7 @@ public class Menu extends AbstractScreen {
 		
 		
 		world.step(1/60f, 1, 1);
-		player.updateA(1/60f);
+		player.update(1/60f);
 		td.setPosition(player.getPosition().x, player.getPosition().y + 3/PPM);
 		
 		//player.renderSample(sb);
@@ -269,12 +271,9 @@ public class Menu extends AbstractScreen {
 			ledge.render(sb);
 		}
 		
-		
 		System.out.println(runTime);
-		System.out.println(player.gliding());
 		
-		
-		if((int)runTime % 2 == 0 ){
+		if((int)runTime % 4 == 0 ){
 			b = true;
 		}
 		else{
@@ -290,22 +289,27 @@ public class Menu extends AbstractScreen {
 		///FIX THIS///
 		if(b == true){
 			
-		     player.stoppingA();
-		     player.setGliding();
-		     Vector2 vel = player.getBody().getLinearVelocity();
+			state = true;
+			if(justSwitchA())
+		     {
+		    	 player.setRT(0f);
+		     }
+			 player.stoppingA();
+		     /*Vector2 vel = player.getBody().getLinearVelocity();
 			 vel.y = -1f;
-			 player.getBody().setLinearVelocity(vel);
+			 player.getBody().setLinearVelocity(vel);*/
+			 player.getBody().setLinearDamping(4f);
 		     
-		     
-		    
 		}
 		else{
-		
-		
-			
-		     player.fallingA();
-		     player.setFalling();
-		    
+			state = false;
+			if(justSwitchB())
+			{
+				player.setRT(0f);
+			}
+		     
+			 player.fallingA();
+			 player.getBody().setLinearDamping(0f);
 		     
 		}
 		//////////////
@@ -411,7 +415,7 @@ public class Menu extends AbstractScreen {
 	public void update(float dt) {
 		runTime += dt;
 		System.out.println("MENU");
-		
+		lastState = state;
 		handleInput();
 		
 		
@@ -792,6 +796,10 @@ public class Menu extends AbstractScreen {
 	    // so add 1 to make it inclusive
 	    return rand.nextInt((max - min) + 1) + min;
 	}
+	
+	public boolean isStateA() { return state; }
+	public boolean justSwitchA() { return state && !lastState; }
+	public boolean justSwitchB() { return !state && lastState; }
 		
 		
 	

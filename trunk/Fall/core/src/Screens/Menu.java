@@ -273,6 +273,9 @@ public class Menu extends AbstractScreen {
 		if((int)runTime % 2 == 0 ){
 			b = true;
 		}
+		else{
+			b = false;
+		}
 		
 		if((int)runTime % 4 == 0 ){
 			c = true;
@@ -282,27 +285,25 @@ public class Menu extends AbstractScreen {
 		
 		///FIX THIS///
 		if(b == true){
-			 b = false;
-		     player.stopping();
+			
+		     player.stoppingA();
+		     Vector2 vel = player.getBody().getLinearVelocity();
+			 vel.y = -1f;
+			 player.getBody().setLinearVelocity(vel);
 		     
 		     
 		    
 		}
+		else{
 		
-		if(c == true){
-			 c = false;
-		     player.falling();
+		
+		     player.fallingA();
 		    
 		     
 		}
 		//////////////
 		
-		if(player.gliding()){
-			  Vector2 vel = player.getBody().getLinearVelocity();
-				 vel.y = -1f;
-				 player.getBody().setLinearVelocity(vel);
-				 
-		}
+		
 		
 		
 		

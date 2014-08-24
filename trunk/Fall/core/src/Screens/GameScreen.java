@@ -162,6 +162,12 @@ public class GameScreen extends AbstractScreen {
 	public GameScreen(GameScreenManager gsm) {
 		super(gsm);
 		
+		cam.position.set(
+				0,0,
+				0
+			);
+		cam.update();
+		
 		transitionColor = new Color();
 		prepareTransition(255, 255, 255, .5f);
 		

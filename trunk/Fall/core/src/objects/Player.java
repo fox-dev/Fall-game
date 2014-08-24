@@ -17,6 +17,8 @@ public class Player extends B2DSprite
 	
 	private float runtime;
 	
+	private boolean glide;
+	
 	public Player(Body body)
 	{
 		super(body);
@@ -63,6 +65,7 @@ public class Player extends B2DSprite
 	
 	public void falling()
 	{
+		glide = false;
 		runtime = 0;
 		animation.setFrameDuration(.1f);
 		animation.setPlayMode(Animation.PlayMode.REVERSED);
@@ -70,6 +73,7 @@ public class Player extends B2DSprite
 	
 	public void stopping()
 	{
+		glide = true;
 		runtime = 0;
 		animation.setFrameDuration(.05f);
 		animation.setPlayMode(Animation.PlayMode.NORMAL);
@@ -100,6 +104,10 @@ public class Player extends B2DSprite
 	
 	public float getRT(){
 		return runtime;
+	}
+	
+	public boolean gliding(){
+		return glide;
 	}
 
 }

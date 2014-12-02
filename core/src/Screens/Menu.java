@@ -73,6 +73,8 @@ public class Menu extends AbstractScreen {
 	public static final float STEP = 1 / 60f;
 	public float runTime = 0f;
 
+	
+	//For player to periodically slow down on menu screen.
 	Boolean b = false;
 	Boolean c = false;
 

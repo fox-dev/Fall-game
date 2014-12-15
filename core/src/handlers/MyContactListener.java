@@ -21,6 +21,15 @@ public class MyContactListener implements ContactListener {
 		
 		System.out.println(fa.getUserData() + ", " + fb.getUserData());
 		
+		if(fa.getUserData() != null && fa.getUserData().equals("footLeft") && fb.getUserData() != null && fb.getUserData().equals("Ground") || fb.getUserData().equals("Wall Platform") ){
+			doubleCheck = true;
+		}
+		
+		if(fa.getUserData() != null && fa.getUserData().equals("footRight") && fb.getUserData() != null && fb.getUserData().equals("Ground") || fb.getUserData().equals("Wall Platform")){
+			doubleCheck = true;
+		}
+		
+
 		if(fa.getUserData() != null && fa.getUserData().equals("footLeft") && fb.getUserData() != null && fb.getUserData().equals("Ground")){
 			doubleCheck = true;
 		}

@@ -31,7 +31,8 @@ public class MainGame extends Game {
 	
 	
 
-	//test commit
+	//test
+	int testvar = 0;
 	
 	@Override
 	public void create () {

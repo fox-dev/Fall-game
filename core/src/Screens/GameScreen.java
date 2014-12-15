@@ -143,6 +143,7 @@ public class GameScreen extends AbstractScreen {
 	
 	private Background[] backgrounds;
 	private Middleground middleBgLeft, mLRepeat,  middleBgRight, mRRepeat;
+	private Middleground[] middlegrounds;
 	
 	//private ParallaxLayer l1;
 	//private ParallaxBackground b;
@@ -157,7 +158,7 @@ public class GameScreen extends AbstractScreen {
 	private RayHandler handler;
 	
 	private Player player;
-	//ConeLight td;
+	ConeLight td;
 		
 	private LeftWall leftWall, lWallRepeat;
 	private RightWall rightWall, rWallRepeat;
@@ -167,6 +168,9 @@ public class GameScreen extends AbstractScreen {
 	
 	int grow = 49;
 	float accelX = 0;
+	
+	//Common vars
+	float gravity = -9.81f;
 	
 	
 	
@@ -191,7 +195,7 @@ public class GameScreen extends AbstractScreen {
 		
 		font = new BitmapFont();
 		
-		world = new World(new Vector2(0, -9.81f), true);
+		world = new World(new Vector2(0, gravity), true);
 		
 		cl = new MyContactListener();
 		world.setContactListener(cl);
@@ -217,7 +221,7 @@ public class GameScreen extends AbstractScreen {
 	
 
 		
-		//td = new ConeLight(handler, 40, Color.GRAY,100/PPM, player.getPosition().x, player.getPosition().y + 120/PPM, 270, 15);	
+		td = new ConeLight(handler, 40, Color.GRAY,100/PPM, player.getPosition().x, player.getPosition().y + 120/PPM, 270, 15);	
 		
 				
 		sb2 = new SpriteBatch();
@@ -380,7 +384,7 @@ public class GameScreen extends AbstractScreen {
 					player.getBody().setLinearVelocity(vel);
 					lastStop = depth;
 					multi = 1;
-					glide_x = glide_x - 1;
+					glide_x = glide_x - 0.5f;
 					if(glide_x <= 0){
 						MyInput.setKey(MyInput.BUTTON1, false);
 						glide_CD = true;
@@ -446,7 +450,7 @@ public class GameScreen extends AbstractScreen {
 		runTime += dt;
 		accelX = Gdx.input.getAccelerometerX();
 		
-		System.out.println(leftWall.getBody().getPosition().x);
+		//System.out.println(leftWall.getBody().getPosition().x);
 		
 		handleInput();
 		
@@ -471,7 +475,7 @@ public class GameScreen extends AbstractScreen {
 		
 		
 
-		//td.setPosition(player.getPosition().x, player.getPosition().y + 3/PPM);
+		td.setPosition(player.getPosition().x, player.getPosition().y + 3/PPM);
 		
 		
 	
@@ -495,6 +499,14 @@ public class GameScreen extends AbstractScreen {
 				temp.update(runTime);
 			else
 				temp.update(1/60f);
+			temp.render(sb);
+		}
+		
+		for(Middleground temp : middlegrounds)
+		{
+			if(temp instanceof Middleground)
+				temp.update(1/60f);
+			
 			temp.render(sb);
 		}
 		
@@ -558,7 +570,7 @@ public class GameScreen extends AbstractScreen {
 		x = player.getPosition().y;
 		y = player.getPosition().y;
 		
-		System.out.println(leftWall.getBody().getPosition().x * PPM);
+		//System.out.println(leftWall.getBody().getPosition().x * PPM);
 		if(Math.abs(x - x2)/PPM >= nextSprite/PPM)
 		{
 			if(leftWall.getBody().getPosition().x < 40/PPM){
@@ -631,7 +643,7 @@ public class GameScreen extends AbstractScreen {
 			drawScoreHud();
 		}
 		
-		if(cl.isPlayerOnGround() == true){
+		if(cl.isPlayerOnGround() == true && cl.isDoubleCheck()){
 			gameOverFlag = true;
 			
 			
@@ -682,6 +694,7 @@ public class GameScreen extends AbstractScreen {
 		//create box shape for player collision box
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox((float) (7.5/PPM), 10/PPM);
+		//shape.setAsBox((float) (7.5/PPM), 10/PPM);
 		
 		//create fixture for player
 		FixtureDef fdef = new FixtureDef();
@@ -690,6 +703,8 @@ public class GameScreen extends AbstractScreen {
 		fdef.friction = 0f;
 		fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
 		fdef.filter.maskBits = B2DVars.BIT_GROUND;
+		//fdef.filter.categoryBits = B2DVars.BIT_BALL;
+		//fdef.filter.maskBits = B2DVars.BIT_GROUND;
 		
 		pBody.createFixture(fdef).setUserData("Player");
 		shape.dispose();
@@ -706,6 +721,32 @@ public class GameScreen extends AbstractScreen {
 	
 		pBody.createFixture(fdef).setUserData("foot");
 		shape.dispose();
+		
+		//create footCheck sensor to allow player to not hit side of platforms
+		shape = new PolygonShape();
+		shape.setAsBox((float) (3 / PPM), 2 / PPM, new Vector2((float) -7.5/PPM, -10/PPM), 0);
+		//create fixture for foot
+		fdef.shape = shape;
+		fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
+		fdef.filter.maskBits = B2DVars.BIT_GROUND;
+		fdef.isSensor = true;
+		pBody.createFixture(fdef).setUserData("footLeft");
+		shape.dispose();
+		
+		//create footCheck sensor to allow player to not hit side of platforms
+		shape = new PolygonShape();
+		shape.setAsBox((float) (3 / PPM), 2 / PPM, new Vector2((float) 7.5/PPM, -10/PPM), 0);
+		//create fixture for foot
+		fdef.shape = shape;
+		fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
+		fdef.filter.maskBits = B2DVars.BIT_GROUND;
+		fdef.isSensor = true;
+		pBody.createFixture(fdef).setUserData("footRight");
+		shape.dispose();
+		
+		
+		
+		
 				
 		//create player
 		player = new Player(pBody);
@@ -935,9 +976,10 @@ public class GameScreen extends AbstractScreen {
 		middleBgRight = new Middleground(AssetLoader.middleBGRight, cam, player, B2DVars.TRUE_WIDTH, 0, 1f);
 		mRRepeat = new Middleground(AssetLoader.middleBGRight, cam, player, B2DVars.TRUE_WIDTH, middleBgRight.getYPosition() - middleBgRight.getHeight(), 1f);
 		
-		Background[] bgs = {middleBgLeft, mLRepeat, middleBgRight, mRRepeat, bg};
+		Background[] bgs = {bg};
 		backgrounds = bgs;
-		
+		Middleground[] mgs = {middleBgLeft, mLRepeat, middleBgRight, mRRepeat};
+		middlegrounds = mgs;
 		createWalls();
 	}
 	
@@ -951,7 +993,7 @@ public class GameScreen extends AbstractScreen {
 		
 		long s = System.currentTimeMillis();
 		
-		System.out.println(r);
+		//System.out.println(r);
 	
 		if(s - wallInterval > r){
 			
@@ -962,8 +1004,8 @@ public class GameScreen extends AbstractScreen {
 		}
 		if(wallEvent){
 			wallEvent = false;
-			System.out.println(leftWall.getBody().getPosition().x);
-			System.out.println("GOING---------------------------------------");
+			//System.out.println(leftWall.getBody().getPosition().x);
+			//System.out.println("GOING---------------------------------------");
 			if(!AssetLoader.caveIn.isPlaying()){
 				AssetLoader.caveIn.play();
 			}
@@ -977,12 +1019,12 @@ public class GameScreen extends AbstractScreen {
 			//if(!AssetLoader.caveIn.isPlaying()){
 			//	AssetLoader.caveIn.play();
 			//}
-			System.out.println("RESTORING---------------------------------------");
+			//System.out.println("RESTORING---------------------------------------");
 			leftWall.getBody().setLinearVelocity(new Vector2(-10/PPM, player.getBody().getLinearVelocity().y));
 			rightWall.getBody().setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
 		}
 		else if(leftWall.getBody().getPosition().x <= 0/PPM){
-			System.out.println("STOPPED---------------------------------------");
+			//System.out.println("STOPPED---------------------------------------");
 			leftWall.getBody().setLinearVelocity(new Vector2(0/PPM, player.getBody().getLinearVelocity().y));
 			rightWall.getBody().setLinearVelocity(new Vector2(0/PPM, player.getBody().getLinearVelocity().y));
 		}

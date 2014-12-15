@@ -30,9 +30,7 @@ public class MainGame extends Game {
 	private GameScreenManager gsm;
 	
 	
-
-	//test
-	int testvar = 0;
+	//Orphen was here
 	
 	@Override
 	public void create () {

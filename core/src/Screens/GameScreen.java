@@ -495,11 +495,16 @@ public class GameScreen extends AbstractScreen {
 		
 		for(Background temp : backgrounds)
 		{
-			if(temp instanceof AnimatedBackground)
+			if(temp instanceof AnimatedBackground){
+				
 				temp.update(runTime);
+				temp.setSpeed(0.002f);
+			}
 			else
 				temp.update(1/60f);
 			temp.render(sb);
+			
+			
 		}
 		
 		for(Middleground temp : middlegrounds)
@@ -968,7 +973,7 @@ public class GameScreen extends AbstractScreen {
 		//b.setPlayer(player);
 		
 		TextureRegion[] bgAnim = {AssetLoader.waterFallBG, AssetLoader.waterFallBG2};
-		AnimatedBackground bg = new AnimatedBackground(bgAnim, cam);
+		AnimatedBackground bg = new AnimatedBackground(bgAnim, cam, player);
 		
 		middleBgLeft = new Middleground(AssetLoader.middleBGLeft, cam, player, 0, 0, 1f);
 		mLRepeat = new Middleground(AssetLoader.middleBGLeft, cam, player, 0, middleBgLeft.getYPosition() - middleBgLeft.getHeight(), 1f);

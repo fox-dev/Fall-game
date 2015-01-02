@@ -284,6 +284,7 @@ public class Menu extends AbstractScreen {
 			if (temp instanceof AnimatedBackground){
 				temp.update(runTime);
 			}
+			
 		
 			temp.render(sb);
 		}
@@ -380,7 +381,7 @@ public class Menu extends AbstractScreen {
 
 		leftWall.getBody().setLinearVelocity(
 				new Vector2(leftWall.getBody().getLinearVelocity().x, player
-						.getBody().getLinearVelocity().y));
+					.getBody().getLinearVelocity().y));
 		rightWall.getBody().setLinearVelocity(
 				new Vector2(rightWall.getBody().getLinearVelocity().x, player
 						.getBody().getLinearVelocity().y));
@@ -650,7 +651,7 @@ public class Menu extends AbstractScreen {
 
 		TextureRegion[] bgAnim = { AssetLoader.waterFallBG,
 				AssetLoader.waterFallBG2 };
-		AnimatedBackground bg = new AnimatedBackground(bgAnim, cam);
+		AnimatedBackground bg = new AnimatedBackground(bgAnim, cam, player);
 
 		middleBgLeft = new Middleground(AssetLoader.middleBGLeft, cam, player,
 				0, 0, 1f);

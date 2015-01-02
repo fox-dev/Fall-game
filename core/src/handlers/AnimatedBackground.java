@@ -1,6 +1,11 @@
 package handlers;
 
+import objects.Player;
 import helpers.B2DVars;
+
+
+
+
 
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -14,20 +19,22 @@ public class AnimatedBackground extends Background
 {
 	protected Animation animation;
 	protected TextureRegion[] frames;
+	protected Player player;
 	
-	public AnimatedBackground(TextureRegion[] images, OrthographicCamera cam)
+	public AnimatedBackground(TextureRegion[] images, OrthographicCamera cam, Player player)
 	{
 		super(images[0], cam);
 		frames = images;
 		animation = new Animation(.1f, frames);
 		animation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+		this.player = player;
 		width = 320;
 		height = 480;
 	}
 	
-	public AnimatedBackground(TextureRegion[] images, OrthographicCamera cam, float width, float height)
+	public AnimatedBackground(TextureRegion[] images, OrthographicCamera cam, float width, float height, Player player)
 	{
-		this(images, cam);
+		this(images, cam, player);
 		this.width = width;
 		this.height = height;
 	}
@@ -40,14 +47,20 @@ public class AnimatedBackground extends Background
 	public void update (float dt)
 	{
 		bg = animation.getKeyFrame(dt);
+		y += speed * dt * Math.abs(player.getBody().getLinearVelocity().y);
+		
+
+		System.out.println("kdjgkjfdkgjdfg   " + y);
 	}
 	
 	public void render(SpriteBatch sb)
 	{
+	
+
 		sb.begin();
 		sb.draw(bg, 
 				x, //- bg.getRegionWidth() / 2,
-				myCam.position.y - height / 2,
+				myCam.position.y - height / 2 + y,
 				width, height
 				);
 		sb.end();

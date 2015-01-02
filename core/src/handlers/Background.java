@@ -41,6 +41,7 @@ public class Background
 	public void update (float dt)
 	{
 		y += speed * dt;
+		
 	}
 	
 	public void render(SpriteBatch sb)

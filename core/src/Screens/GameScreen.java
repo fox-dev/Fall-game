@@ -83,46 +83,56 @@ public class GameScreen extends AbstractScreen {
 		Stage stage;
 		TextButton retryButton;
 		TextButton menuButton;
-    //
+    	//
 		
 
 	SpriteBatch sb2;
 	
-	
+	//debug variable for toggling on/off for rendering box2d objects
 	private boolean debug = false;
 	
+	
+	//Fade in for gameOver text, may not need anymore - needs cleanup
 	private float fadeIn = 0f;
+	//gameOverRunTime used for fading GameOver screen - check, needs cleanup
 	private float gameOverRunTime = 0f;
 	
+	//variable for screenFlash color when player hits a platform
 	private Color transitionColor;
 	
+	//initalize tweenManager for gameOver/gameOver menu effects
 	private TweenManager manager, menuManager;
 	private Value alpha = new Value(), menuVal = new Value();
 	Texture menu = AssetLoader.menu;
 	
-	
+	//wallInterval variable for setting time interval of wallEvent, always occurs at start of game with = 0.
 	private long wallInterval = 0;
-	
+	//r variable for randomly assigning new intervals for wallEvent
 	int r = randInt(5000, 40000);
-
+	
+	//down may not be used, needs cleanup
 	boolean down = false;
+	
+	//boolean for setup of wallEvent
 	private boolean wallEvent = false;
 	
 	
-	
+	//initalize rectangle for default gameOver screen, change assets in the future.
 	Rectangle glide;
 	private float glide_x = 50;
 	private boolean glide_CD = false;
 	private ShapeRenderer shapeRenderer;
 	
+	//???Player light
 	PointLight d;
 	
+	//Generic bitmap font for text
 	BitmapFont font;
 	
+	//gameOverFlag for setting game to gameOver state/play state.
 	private boolean gameOverFlag;
-	
-	Matrix4 debugMatrix;
 
+	//setup initial aspect ratio for game
 	float ASPECT_RATIO = (float)MainGame.V_WIDTH/(float)MainGame.V_HEIGHT;
 	private Rectangle viewport;
 	

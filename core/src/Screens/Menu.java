@@ -202,7 +202,7 @@ public class Menu extends AbstractScreen {
 
 			}
 		});
-
+		// resize game to fit phone aspect ratio.
 		resized(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		stage.getViewport().setCamera(hudCam);
 		// stage.setViewport(new FitViewport(viewport.width, viewport.height));
@@ -212,31 +212,36 @@ public class Menu extends AbstractScreen {
 		stage.addActor(textButton);
 		Gdx.input.setInputProcessor(stage);
 
-		//
-
+		// create world physics, default -9.81f to simulate gravity
 		world = new World(new Vector2(0, -9.81f), true);
-
+		
+		//initialize box2drenderer for rendering debug objects
 		b2dr = new Box2DDebugRenderer();
-
+		
+		//initialize generic bitap font
 		font = new BitmapFont();
 
-		createPlayer();
+		//createPlayer function create dfor easier to read code, initialize player objects/box2d hitbox objects
+		//createPlayer();
 
+		//init function initalizing all basic setup for backgrounds, middleground, and player
 		init();
+		
 		// set up box2d cam
 		b2dCam = new OrthographicCamera();
 		b2dCam.setToOrtho(false, MainGame.V_WIDTH / PPM, MainGame.V_HEIGHT
 				/ PPM);
 
+		// setup box2d lights - may need cleaning
 		box2dLight.RayHandler.useDiffuseLight(true);
 		handler = new RayHandler(world, viewport);
 		handler.setAmbientLight(0.0f, 0.0f, 0.0f, 0.1f);
 		handler.setShadows(true);
 		handler.setAmbientLight(0.3f);
-
-		 td = new ConeLight(handler, 40, Color.GRAY, 100 / PPM,
-		 player.getPosition().x, player.getPosition().y + 120 / PPM,
-		 270, 15);
+		// td light is player light - needs variable rename and disposing.
+		td = new ConeLight(handler, 40, Color.GRAY, 100 / PPM,
+		player.getPosition().x, player.getPosition().y + 120 / PPM,
+		270, 15);
 
 	}
 

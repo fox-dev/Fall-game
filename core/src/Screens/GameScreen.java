@@ -1177,7 +1177,7 @@ public class GameScreen extends AbstractScreen {
 	
 	public void gameOver(){
 		
-		//td.setActive(false);
+		td.setActive(false);
 		drawTransition(1/60f);
 		
 		if(gameOverRunTime >= 0.5f){

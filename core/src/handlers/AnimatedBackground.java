@@ -49,8 +49,6 @@ public class AnimatedBackground extends Background
 		bg = animation.getKeyFrame(dt);
 		y += speed * dt * Math.abs(player.getBody().getLinearVelocity().y);
 		
-
-		System.out.println("kdjgkjfdkgjdfg   " + y);
 	}
 	
 	public void render(SpriteBatch sb)

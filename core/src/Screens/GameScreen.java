@@ -85,6 +85,9 @@ public class GameScreen extends AbstractScreen {
 		TextButton menuButton;
     	//
 		
+    //Wall Stuff
+		boolean restoring;
+		
 
 	SpriteBatch sb2;
 	
@@ -337,6 +340,8 @@ public class GameScreen extends AbstractScreen {
 	
 		
 		if(!gameOverFlag){
+			
+			/*Accelerometer Stuff
 			if(accelX > -2 && accelX < 2 ){
 				Vector2 vel = player.getBody().getLinearVelocity();
 				vel.x = 0f;
@@ -356,6 +361,7 @@ public class GameScreen extends AbstractScreen {
 				player.getBody().setLinearVelocity(vel);
 			
 			}
+			*/
 			
 		
 			if(MyInput.isPressed(MyInput.BUTTON1) && glide_x > 0 && glide_CD == false){
@@ -409,22 +415,39 @@ public class GameScreen extends AbstractScreen {
 		
 			if(MyInput.isDown(MyInput.BUTTON2)){
 				
-				Vector2 vel = player.getBody().getLinearVelocity();
-				vel.x = -2.3f;
-		
-				player.getBody().setLinearVelocity(vel);
+				
+				if(MyInput.isDown(MyInput.BUTTON1)){
+					Vector2 vel = player.getBody().getLinearVelocity();
+					vel.x = -3.5f;
+					player.getBody().setLinearVelocity(vel);
+				}
+				else{
+					Vector2 vel = player.getBody().getLinearVelocity();
+					vel.x = -2.9f;
+					player.getBody().setLinearVelocity(vel);
+					
+				}
 			
 			}
-		
-			if(MyInput.isDown(MyInput.BUTTON3)){
+			else if(MyInput.isDown(MyInput.BUTTON3)){
 				
-				
+				if(MyInput.isDown(MyInput.BUTTON1)){
+					Vector2 vel = player.getBody().getLinearVelocity();
+					vel.x = 3.5f;
+					player.getBody().setLinearVelocity(vel);
+				}
+				else{
+					Vector2 vel = player.getBody().getLinearVelocity();
+					vel.x = 2.9f;
+					player.getBody().setLinearVelocity(vel);
+				}
+			
+			
+			}
+			else{
 				Vector2 vel = player.getBody().getLinearVelocity();
-				vel.x = 2.3f;
-				
+				vel.x = 0f;
 				player.getBody().setLinearVelocity(vel);
-			
-			
 			}
 			
 		}
@@ -468,6 +491,7 @@ public class GameScreen extends AbstractScreen {
 	
 	
 	public void render(){
+		
 		/*
 		if((int)AssetLoader.bgm.getPosition() == 26){
 				AssetLoader.bgm.stop();
@@ -588,9 +612,11 @@ public class GameScreen extends AbstractScreen {
 		//System.out.println(leftWall.getBody().getPosition().x * PPM);
 		if(Math.abs(x - x2)/PPM >= nextSprite/PPM)
 		{
-			if(leftWall.getBody().getPosition().x < 40/PPM){
+			if(leftWall.getBody().getPosition().x < 40/PPM || restoring == true){
+			
 			addObstacles();
 			}
+		
 			
 			x2 = x;
 			nextSprite = (long) randInt(3, 7);
@@ -1029,8 +1055,7 @@ public class GameScreen extends AbstractScreen {
 		}
 			
 		else if(leftWall.getBody().getPosition().x > 60/PPM){
-
-			
+			restoring = true;
 			//if(!AssetLoader.caveIn.isPlaying()){
 			//	AssetLoader.caveIn.play();
 			//}
@@ -1039,6 +1064,7 @@ public class GameScreen extends AbstractScreen {
 			rightWall.getBody().setLinearVelocity(new Vector2(10/PPM, player.getBody().getLinearVelocity().y));
 		}
 		else if(leftWall.getBody().getPosition().x <= 0/PPM){
+			restoring = false;
 			//System.out.println("STOPPED---------------------------------------");
 			leftWall.getBody().setLinearVelocity(new Vector2(0/PPM, player.getBody().getLinearVelocity().y));
 			rightWall.getBody().setLinearVelocity(new Vector2(0/PPM, player.getBody().getLinearVelocity().y));
@@ -1307,7 +1333,7 @@ public class GameScreen extends AbstractScreen {
 		if (menuVal.getValue() <= cam.position.x) {
 			menuManager.update(delta);
 		}
-		System.out.println(menuVal.getValue()+ ", " + cam.position.x);
+		//System.out.println(menuVal.getValue()+ ", " + cam.position.x);
 		sb2.draw(menu, menuVal.getValue(), cam.position.y - 75, 200, 150); 
 	}
 	

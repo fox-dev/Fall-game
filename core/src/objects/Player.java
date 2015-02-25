@@ -14,6 +14,7 @@ public class Player extends B2DSprite
 {
 	
 	private TextureRegion cliffJumper1, cliffJumper2, cliffJumper3, cliffJumper4;
+	private boolean stopping;
 	
 	public Player(Body body)
 	{
@@ -63,7 +64,7 @@ public class Player extends B2DSprite
 	
 	public void falling()
 	{
-		
+		stopping = true;
 		runtime = 0;
 		animation.setFrameDuration(.1f);
 		animation.setPlayMode(Animation.PlayMode.REVERSED);
@@ -71,7 +72,7 @@ public class Player extends B2DSprite
 	
 	public void stopping()
 	{
-		
+		stopping = false;
 		runtime = 0;
 		animation.setFrameDuration(.05f);
 		animation.setPlayMode(Animation.PlayMode.NORMAL);
@@ -103,6 +104,10 @@ public class Player extends B2DSprite
 	
 	public void setRT(float rt){
 		runtime = rt;
+	}
+	
+	public boolean getStopping(){
+		return stopping;
 	}
 
 }

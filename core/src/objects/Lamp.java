@@ -30,7 +30,7 @@ public class Lamp extends StaticSprite
 		sb.begin();
 		sb.draw(texture, 
 				myLight.getPosition().x * B2DVars.PPM - width / 2,
-				myLight.getPosition().y * B2DVars.PPM - height / 2 - 15
+				myLight.getPosition().y * B2DVars.PPM - height / 2 - 2
 				);
 		sb.end();
 	}

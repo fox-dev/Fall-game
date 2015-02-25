@@ -400,7 +400,7 @@ public class GameScreen extends AbstractScreen {
 					player.getBody().setLinearVelocity(vel);
 					lastStop = depth;
 					multi = 1;
-					glide_x = glide_x - 0.5f;
+					glide_x = glide_x - 0.32f;
 					if(glide_x <= 0){
 						MyInput.setKey(MyInput.BUTTON1, false);
 						glide_CD = true;

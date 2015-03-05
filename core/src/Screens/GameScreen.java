@@ -4,6 +4,7 @@ import static helpers.B2DVars.PPM;
 import static helpers.B2DVars.CL;
 
 import java.util.Random;
+import java.util.Stack;
 
 import BackgroundHandlers.ParallaxBackground;
 import BackgroundHandlers.ParallaxLayer;
@@ -156,7 +157,7 @@ public class GameScreen extends AbstractScreen {
 	
 	private Background[] backgrounds;
 	private Middleground middleBgLeft, mLRepeat,  middleBgRight, mRRepeat;
-	private Middleground[] middlegrounds;
+	private Background mainBg, mainBgRepeat;
 	
 	//private ParallaxLayer l1;
 	//private ParallaxBackground b;
@@ -507,13 +508,17 @@ public class GameScreen extends AbstractScreen {
 			player.update(1/60f);
 		}
 		
-		
-
-		td.setPosition(player.getPosition().x, player.getPosition().y + 3/PPM);
-		
-		
 	
+		td.setPosition(player.getPosition().x, player.getPosition().y + 3/PPM);	
 
+
+		if(mainBg.getYPosition() > B2DVars.TRUE_HEIGHT){
+			mainBg.setYPosition(mainBgRepeat.getYPosition() - mainBgRepeat.getHeight());
+		}
+		if(mainBgRepeat.getYPosition() > B2DVars.TRUE_HEIGHT){
+			mainBgRepeat.setYPosition(mainBg.getYPosition() - mainBg.getHeight());
+		}
+		
 		if(middleBgRight.getYPosition() > B2DVars.TRUE_HEIGHT){
 			middleBgRight.setYPosition(mRRepeat.getYPosition() - mRRepeat.getHeight());
 		}
@@ -532,7 +537,6 @@ public class GameScreen extends AbstractScreen {
 			if(temp instanceof AnimatedBackground){
 				
 				temp.update(runTime);
-				temp.setSpeed(0.002f);
 			}
 			else
 				temp.update(1/60f);
@@ -541,13 +545,13 @@ public class GameScreen extends AbstractScreen {
 			
 		}
 		
-		for(Middleground temp : middlegrounds)
+		/*for(Middleground temp : middlegrounds)
 		{
 			if(temp instanceof Middleground)
 				temp.update(1/60f);
 			
 			temp.render(sb);
-		}
+		}*/
 		
 		
 		Array<Body> tempBodies = new Array<Body>();
@@ -1009,7 +1013,11 @@ public class GameScreen extends AbstractScreen {
 		//b.setPlayer(player);
 		
 		TextureRegion[] bgAnim = {AssetLoader.waterFallBG, AssetLoader.waterFallBG2};
-		AnimatedBackground bg = new AnimatedBackground(bgAnim, cam, player);
+		AnimatedBackground bg = new AnimatedBackground(bgAnim, cam, player, 1f);
+		AnimatedBackground bg2 = new AnimatedBackground(bgAnim, cam, player, 0, bg.getYPosition() - bg.getHeight(), 1f);
+		
+		mainBg = bg;
+		mainBgRepeat = bg2;
 		
 		middleBgLeft = new Middleground(AssetLoader.middleBGLeft, cam, player, 0, 0, 1f);
 		mLRepeat = new Middleground(AssetLoader.middleBGLeft, cam, player, 0, middleBgLeft.getYPosition() - middleBgLeft.getHeight(), 1f);
@@ -1017,10 +1025,8 @@ public class GameScreen extends AbstractScreen {
 		middleBgRight = new Middleground(AssetLoader.middleBGRight, cam, player, B2DVars.TRUE_WIDTH, 0, 1f);
 		mRRepeat = new Middleground(AssetLoader.middleBGRight, cam, player, B2DVars.TRUE_WIDTH, middleBgRight.getYPosition() - middleBgRight.getHeight(), 1f);
 		
-		Background[] bgs = {bg};
+		Background[] bgs = {mainBg, mainBgRepeat, middleBgLeft, mLRepeat, middleBgRight, mRRepeat};
 		backgrounds = bgs;
-		Middleground[] mgs = {middleBgLeft, mLRepeat, middleBgRight, mRRepeat};
-		middlegrounds = mgs;
 		createWalls();
 	}
 	

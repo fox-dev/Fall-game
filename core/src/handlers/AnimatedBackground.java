@@ -32,6 +32,19 @@ public class AnimatedBackground extends Background
 		height = 480;
 	}
 	
+	public AnimatedBackground(TextureRegion[] images, OrthographicCamera cam, Player player, float speed)
+	{
+		this(images, cam, player);
+		this.speed = speed;
+	}
+	
+	public AnimatedBackground(TextureRegion[] images, OrthographicCamera cam, Player player, float x, float y, float s)
+	{
+		this(images, cam, player, s);
+		this.x = x; 
+		this.y = y;
+	}
+	
 	public AnimatedBackground(TextureRegion[] images, OrthographicCamera cam, float width, float height, Player player)
 	{
 		this(images, cam, player);

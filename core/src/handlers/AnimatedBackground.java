@@ -60,7 +60,7 @@ public class AnimatedBackground extends Background
 	public void update (float dt)
 	{
 		bg = animation.getKeyFrame(dt);
-		y += speed * dt * Math.abs(player.getBody().getLinearVelocity().y);
+		y += speed * 1/60f * Math.abs(player.getBody().getLinearVelocity().y);
 		
 	}
 	

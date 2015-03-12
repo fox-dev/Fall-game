@@ -1013,8 +1013,8 @@ public class GameScreen extends AbstractScreen {
 		//b.setPlayer(player);
 		
 		TextureRegion[] bgAnim = {AssetLoader.waterFallBG, AssetLoader.waterFallBG2};
-		AnimatedBackground bg = new AnimatedBackground(bgAnim, cam, player, 1f);
-		AnimatedBackground bg2 = new AnimatedBackground(bgAnim, cam, player, 0, bg.getYPosition() - bg.getHeight(), 1f);
+		AnimatedBackground bg = new AnimatedBackground(bgAnim, cam, player, .5f);
+		AnimatedBackground bg2 = new AnimatedBackground(bgAnim, cam, player, 0, bg.getYPosition() - bg.getHeight(), .5f);
 		
 		mainBg = bg;
 		mainBgRepeat = bg2;
@@ -1211,6 +1211,7 @@ public class GameScreen extends AbstractScreen {
 		
 		td.setActive(false);
 		drawTransition(1/60f);
+		player.getBody().setLinearVelocity(0, 0);
 		
 		if(gameOverRunTime >= 0.5f){
 			sb2.begin();
